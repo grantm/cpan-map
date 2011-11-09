@@ -1,14 +1,13 @@
 Fix trailing empty row/column
 Add a throbber during initial load
 Hook window resize and size viewport
-Include maintainer name in tool-tip
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
 Clear selections button
 Add namespace names overlay (- show/hide when zooming?)
 Use Module::Name or Dist-Name if no match
 Click to select - display extra details in side panel
-Plack app to server content (and proxy API queries)
+Plack app to serve content (and proxy API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)
 Implement map using canvas rather than table
 Link to distribution page on metacpan (open in lightboxed iframe?)

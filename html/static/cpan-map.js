@@ -81,7 +81,7 @@
                 var dist = distros[i][j];
                 if(dist) {
                     var cell_colour = dist_colour(dist);
-                    $cell.attr('title', dist.name)
+                    $cell.attr('title', dist.name + ' (' + dist.maintainer + ')')
                          .addClass(cell_colour);
                 }
                 $row.append( $cell );
