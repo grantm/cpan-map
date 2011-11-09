@@ -18,8 +18,11 @@
 }
 
 .cpan-map div.map-viewport.loading div.init {
-  padding: 2em;
+  padding: 30px;
   background-color: transparent;
+  background-repeat: no-repeat;
+  background-image: url(images/throbber.gif);
+  background-position: 12em 32px;
 }
 
 .cpan-map table.map-plane {

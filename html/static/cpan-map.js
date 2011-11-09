@@ -56,7 +56,7 @@
         $app.append(
             $('<h1 />').text( opt.app_title ),
             $controls,
-            $viewport.html('<div class="init">Loading map data ...</div>')
+            $viewport.html('<div class="init">Loading map data</div>')
         );
         $.ajax({
             url: 'cpan-map-data.json',
