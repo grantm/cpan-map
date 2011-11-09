@@ -1,0 +1,23 @@
+Fix trailing empty row/column
+Zoom -/+
+Add a throbber during initial load
+Set initial zoom to max that will fit
+Include maintainer name in tool-tip
+Search my dist name - highlight match(es?)
+Search by maintainer name - highlight matches
+Clear selections button
+Add namespace names overlay (- show/hide when zooming?)
+Use Module::Name or Dist-Name if no match
+Click to select - display extra details in side panel
+Plack app to server content (and proxy API queries)
+Journey through CPAN (pause/play, faster, slower, rewind, loop)
+Implement map using canvas rather than table
+Link to distribution page on metacpan (open in lightboxed iframe?)
+Link to highlight dependencies
+Link to highlight reverse dependencies
+Switch to using CPANDB as data source?
+Use opacity(?) to represent distribution freshness/age
+Sightseeing ...
+  * Busiest maintainers
+  * Most depended-on modules
+Link to http://cpan-explorer.org/
