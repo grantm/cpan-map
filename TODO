@@ -1,5 +1,4 @@
 Fix trailing empty row/column
-Zoom -/+
 Add a throbber during initial load
 Set initial zoom to max that will fit
 Include maintainer name in tool-tip

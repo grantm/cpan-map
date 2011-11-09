@@ -45,13 +45,13 @@
 .cpan-map table.map-plane tr td:hover { background-color: #0000ff; }
 
 
-.cpan-map table.map-plane.zoom1 td { width:  2px; height:  2px; }
-.cpan-map table.map-plane.zoom2 td { width:  3px; height:  3px; }
-.cpan-map table.map-plane.zoom3 td { width:  4px; height:  4px; }
-.cpan-map table.map-plane.zoom4 td { width:  5px; height:  5px; }
-.cpan-map table.map-plane.zoom5 td { width:  6px; height:  6px; }
-.cpan-map table.map-plane.zoom6 td { width:  8px; height:  8px; }
-.cpan-map table.map-plane.zoom7 td { width: 10px; height: 10px; }
+.cpan-map table.map-plane.zoom0 td { width:  2px; height:  2px; }
+.cpan-map table.map-plane.zoom1 td { width:  3px; height:  3px; }
+.cpan-map table.map-plane.zoom2 td { width:  4px; height:  4px; }
+.cpan-map table.map-plane.zoom3 td { width:  5px; height:  5px; }
+.cpan-map table.map-plane.zoom4 td { width:  6px; height:  6px; }
+.cpan-map table.map-plane.zoom5 td { width:  8px; height:  8px; }
+.cpan-map table.map-plane.zoom6 td { width: 10px; height: 10px; }
 
 .cpan-map ul.map-zoom {
   height: 25px;
