@@ -1,8 +1,8 @@
 Fix trailing empty row/column
 Add a throbber during initial load
-Set initial zoom to max that will fit
+Hook window resize and size viewport
 Include maintainer name in tool-tip
-Search my dist name - highlight match(es?)
+Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
 Clear selections button
 Add namespace names overlay (- show/hide when zooming?)

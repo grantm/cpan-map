@@ -94,12 +94,27 @@
         $viewport.append($plane);
         $plane.draggable({ });
         add_controls($app);
-        set_zoom($app, 6);
+        auto_set_zoom($app);
+    }
+
+    function auto_set_zoom($app) {
+        var opt = app_options($app);
+        var $viewport = $app.find('.map-viewport');
+        var wrap   = $viewport.offset();
+        var border = parseInt($viewport.css('border-left-width'));
+        var width  = $(window).width() - (wrap.left * 2) - (border * 2);
+        var zoom_scales = opt.zoom_scales;
+        for(var i = zoom_scales.length - 1; i > 0; i--) {
+            if(zoom_scales[i] * plane_cols < width) {
+                return set_zoom($app, i);
+            }
+        }
+        return set_zoom($app, 0);
     }
 
     function set_zoom($app, new_zoom) {
         var opt = app_options($app);
-        zoom_scales = opt.zoom_scales;
+        var zoom_scales = opt.zoom_scales;
         if(new_zoom < 0) {
             new_zoom = 0;
         }
