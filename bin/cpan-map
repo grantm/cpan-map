@@ -52,25 +52,33 @@ close($in);
 
 my $i = 0;
 my @plane;
-my %ns_mass;
+my %namespace;
 foreach my $ns ( sort keys %ns_dist ) {
-    my $this_ns = delete $ns_dist{$ns};
-    my @dists = keys %$this_ns;
-    $ns_mass{$ns} = scalar @dists;
+    my $ns_dist = delete $ns_dist{$ns};
+    my @dists = keys %$ns_dist;
+    my $this_ns = $namespace{$ns} = { mass => scalar @dists };
+    $this_ns->{row_total} = 0;
+    $this_ns->{col_total} = 0;
     foreach my $dist_name (sort { lc($a) cmp lc($b) } @dists) {
+        my($prefix) = $dist_name =~ m{^(\w+)};
+        $this_ns->{name} = $prefix if $prefix ne $ns;
         my($row, $col) = map_index_to_plane($i);
         $plane[$row][$col] = {
             index       => $i,
             ns          => $ns,
             name        => $dist_name,
-            maintainer  => $this_ns->{$dist_name},
+            maintainer  => $ns_dist->{$dist_name},
             row         => $row,
             col         => $col,
         };
+        $this_ns->{row_total} += $row;
+        $this_ns->{col_total} += $col;
         $max_row = $row if $row > $max_row;
         $max_col = $col if $col > $max_col;
         $i++;
     }
+    $this_ns->{label_row} = sprintf('%3.1f', delete($this_ns->{row_total}) / $this_ns->{mass});
+    $this_ns->{label_col} = sprintf('%3.1f', delete($this_ns->{col_total}) / $this_ns->{mass});
 }
 
 
@@ -81,15 +89,14 @@ foreach my $x (0..255) {
     last unless $plane[$x];
     foreach my $y (0..255) {
         my $dist = $plane[$x][$y] or next;
-        next if $ns_mass{ $dist->{ns} } < $critical_mass;
+        next if $namespace{ $dist->{ns} }->{mass} < $critical_mass;
         my $dist_ns = $dist->{ns};
         $neighbour{$dist_ns} //= {};
         foreach my $i (0..1) {
-            my $n = $i
-                  ? $plane[$x + 1][$y]
-                  : $plane[$x][$y + 1];
-            next unless $n;
-            next if $ns_mass{ $n->{ns} } < $critical_mass;
+            my($xn, $yn) = $i ? ($x + 1, $y) : ($x, $y + 1);
+            next unless $plane[$xn] and $plane[$xn][$yn];
+            my $n = $plane[$xn][$yn];
+            next if $namespace{ $n->{ns} }->{mass} < $critical_mass;
             if($n->{ns} ne $dist_ns) {
                 $neighbour{$dist_ns}->{ $n->{ns} } = 1;
                 $neighbour{ $n->{ns} }->{$dist_ns} = 1;
@@ -100,7 +107,7 @@ foreach my $x (0..255) {
 my %mass_map = ();
 while(my($ns, $value) = each %neighbour ) {
     $neighbour{$ns} = [ sort keys %$value ];
-    $mass_map{$ns} = { mass => $ns_mass{$ns} };
+    $mass_map{$ns} = { %{ $namespace{$ns} } };
 }
 
 
@@ -118,6 +125,7 @@ while(my($key, $value) = each %$colour_map) {
 
 open my $out, '>', $output_file or die "open($output_file): $!";
 print $out JSON::XS->new->encode({
+#print STDOUT JSON::XS->new->pretty->encode({
     mass_map => \%mass_map,
     distros => {
         rows => $max_row + 1,
