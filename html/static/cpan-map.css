@@ -25,12 +25,26 @@
   background-position: 12em 32px;
 }
 
-.cpan-map div.map-plane table {
+.cpan-map div.map-plane {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.cpan-map div.map-plane table {
   border-collapse: collapse;
   width: 100%;
+}
+
+.cpan-map div.map-plane div.map-labels {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.cpan-map div.map-plane div.map-labels div {
+  position: absolute;
+  font-size: 16px;
 }
 
 .cpan-map div.map-plane table td {

@@ -141,17 +141,19 @@
 
     function show_labels($app) {
         var $labels = $app.find('.map-labels');
+        $labels.html('');
         var opt = app_options($app);
-        //for (var ns in mass_map) {
-            var ns = 'net';
-            //$labels.append(
-                make_label(mass_map[ns], opt.scale);
-            //);
-        //}
-    }
-
-    function make_label(ns, scale) {
-console.log("make_label():", ns, scale);
+        for (var ns in mass_map) {
+            var detail = mass_map[ns];
+            var $label = $('<div />').text(detail.name);
+            $labels.append($label);
+            var width  = $label.width();
+            var height = $label.height();
+            $label.css({
+                top:  '' + (detail.label_row * opt.scale - height / 2) + 'px',
+                left: '' + (detail.label_col * opt.scale - width  / 2) + 'px'
+            });
+        }
     }
 
     function dist_colour(dist) {
