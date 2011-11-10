@@ -72,7 +72,9 @@
         distros    = data.distros.data;
         plane_rows = data.distros.rows;
         plane_cols = data.distros.cols;
-        var $plane = $('<table class="map-plane" />');
+        var $plane = $('<div class="map-plane" />');
+        var $table = $('<table />');
+        var $labels = $('<div class="map-labels" />')
 
         for(var i = 0; i < plane_rows; i++) {
             var $row = $('<tr />');
@@ -86,12 +88,12 @@
                 }
                 $row.append( $cell );
             }
-            $plane.append($row);
+            $table.append($row);
         }
 
         $viewport.removeClass('loading');
         $viewport.html('');
-        $viewport.append($plane);
+        $viewport.append( $plane.append($table, $labels) );
         $plane.draggable({ });
         add_controls($app);
         auto_set_zoom($app);
@@ -134,6 +136,22 @@
         }
         $plane.addClass('zoom' + new_zoom);
         size_viewport($app);
+        show_labels($app);
+    }
+
+    function show_labels($app) {
+        var $labels = $app.find('.map-labels');
+        var opt = app_options($app);
+        //for (var ns in mass_map) {
+            var ns = 'net';
+            //$labels.append(
+                make_label(mass_map[ns], opt.scale);
+            //);
+        //}
+    }
+
+    function make_label(ns, scale) {
+console.log("make_label():", ns, scale);
     }
 
     function dist_colour(dist) {

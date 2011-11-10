@@ -25,14 +25,15 @@
   background-position: 12em 32px;
 }
 
-.cpan-map table.map-plane {
+.cpan-map div.map-plane table {
   position: absolute;
   top: 0;
   left: 0;
   border-collapse: collapse;
+  width: 100%;
 }
 
-.cpan-map table.map-plane td {
+.cpan-map div.map-plane table td {
   font-size: 8px;
   padding: 0;
   border: none;
@@ -40,21 +41,21 @@
   vertical-align: top;
 }
 
-.cpan-map table.map-plane td.c0 { background-color: #bbddff; }
-.cpan-map table.map-plane td.c1 { background-color: #7aff67; }
-.cpan-map table.map-plane td.c2 { background-color: #ffe93d; }
-.cpan-map table.map-plane td.c3 { background-color: #ff97a6; }
-.cpan-map table.map-plane td.c4 { background-color: #ff8749; }
-.cpan-map table.map-plane tr td:hover { background-color: #ff0033; }
+.cpan-map div.map-plane table td.c0 { background-color: #bbddff; }
+.cpan-map div.map-plane table td.c1 { background-color: #7aff67; }
+.cpan-map div.map-plane table td.c2 { background-color: #ffe93d; }
+.cpan-map div.map-plane table td.c3 { background-color: #ff97a6; }
+.cpan-map div.map-plane table td.c4 { background-color: #ff8749; }
+.cpan-map div.map-plane table tr td:hover { background-color: #ff0033; }
 
 
-.cpan-map table.map-plane.zoom0 td { width:  2px; height:  2px; }
-.cpan-map table.map-plane.zoom1 td { width:  3px; height:  3px; }
-.cpan-map table.map-plane.zoom2 td { width:  4px; height:  4px; }
-.cpan-map table.map-plane.zoom3 td { width:  5px; height:  5px; }
-.cpan-map table.map-plane.zoom4 td { width:  6px; height:  6px; }
-.cpan-map table.map-plane.zoom5 td { width:  8px; height:  8px; }
-.cpan-map table.map-plane.zoom6 td { width: 10px; height: 10px; }
+.cpan-map div.map-plane.zoom0 table td { width:  2px; height:  2px; }
+.cpan-map div.map-plane.zoom1 table td { width:  3px; height:  3px; }
+.cpan-map div.map-plane.zoom2 table td { width:  4px; height:  4px; }
+.cpan-map div.map-plane.zoom3 table td { width:  5px; height:  5px; }
+.cpan-map div.map-plane.zoom4 table td { width:  6px; height:  6px; }
+.cpan-map div.map-plane.zoom5 table td { width:  8px; height:  8px; }
+.cpan-map div.map-plane.zoom6 table td { width: 10px; height: 10px; }
 
 .cpan-map ul.map-zoom {
   height: 25px;
