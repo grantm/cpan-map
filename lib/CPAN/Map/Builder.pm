@@ -7,6 +7,7 @@ use FindBin qw();
 require File::Basename;
 require File::Spec;
 require Math::PlanePath::HilbertCurve;
+require Statistics::Descriptive;
 use Data::Dumper;
 
 
@@ -53,6 +54,12 @@ sub progress_message {
 
     return unless $self->{verbose};
     print $message, "\n";
+}
+
+
+sub warning_message {
+    my($self, $message) = @_;
+    warn "WARNING: <<< $message >>>\n";
 }
 
 
@@ -233,7 +240,7 @@ sub identify_mass_areas {
     }
 
     # Assign colors to namespaces with critical mass
-
+    $self->progress_message("Allocating colours to map regions");
     my @critical_ns = sort keys %neighbour;
     my $colour_map = map_colours({}, \%neighbour, @critical_ns)
         or die "Unable to assign colour map";
@@ -241,8 +248,12 @@ sub identify_mass_areas {
     while(my($key, $value) = each %$colour_map) {
         my $mass = $mass_map->{$key};
         $mass->{colour} = $value;
-        $mass->{label_x} = sprintf('%3.1f', delete($mass->{col_sum}) / $mass->{mass});
-        $mass->{label_y} = sprintf('%3.1f', delete($mass->{row_sum}) / $mass->{mass});
+        my $stat_x = delete($mass->{col_stat});
+        $mass->{label_x} = $stat_x->mean;
+        $mass->{label_w} = $stat_x->standard_deviation * 1.5;
+        my $stat_y = delete($mass->{row_stat});
+        $mass->{label_y} = $stat_y->mean;
+        $mass->{label_h} = $stat_y->standard_deviation * 1.5;
     }
 
     my $count = scalar @critical_ns;

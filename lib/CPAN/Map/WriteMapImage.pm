@@ -14,7 +14,7 @@ use constant SOUTH          => 2;
 use constant EAST           => 4;
 use constant WEST           => 8;
 
-my($bg_colour, $border_colour, @map_colour);
+my($bg_colour, $label_colour, $shadow_colour, $border_colour, @map_colour);
 
 
 sub write {
@@ -23,6 +23,10 @@ sub write {
     my $output_file = File::Spec->catfile($output_dir, 'cpan-map.png');
 
     $builder->progress_message("- writing PNG image to $output_file");
+
+    my $font = $builder->{label_font_path} or $builder->warning_message(
+        "can't add map labels without label_font_path"
+    );
 
 
     # Set up image dimensions, colour map and fill the background
@@ -33,6 +37,8 @@ sub write {
     my $im = new GD::Image($cols * SCALE, $rows * SCALE);
 
     $bg_colour     = $im->colorAllocate(0xFF, 0xFF, 0xFF);
+    $label_colour  = $im->colorAllocate(0x44, 0x44, 0x44);
+    $shadow_colour = $im->colorAllocate(0xEE, 0xEE, 0xEE);
     $border_colour = $im->colorAllocate(0x33, 0x33, 0x33);
     @map_colour = (
         $im->colorAllocate(0xBB, 0xDD, 0xFF),
@@ -63,6 +69,16 @@ sub write {
         my $borders = border_flags($dist, $builder, $dist_colour);
         draw_dist($im, $dist->{col}, $dist->{row}, $colour, $borders);
     });
+
+
+    # Add labels for each namespace/mass
+
+    if($font) {
+        $builder->each_namespace(sub {
+            my($ns) = @_;
+            add_mass_label($im, $font, $ns);
+        });
+    }
 
 
     # Write image out to file
@@ -129,6 +145,69 @@ sub draw_dist {
         $im->rectangle($x1 - 1, $y1, $x1, $y2, $border_colour);
     }
 }
+
+
+sub add_mass_label {
+    my($im, $font, $ns) = @_;
+
+    my $x = SCALE * $ns->{label_x};
+    my $y = SCALE * $ns->{label_y};
+    my $w = SCALE * $ns->{label_w};
+    my $h = SCALE * $ns->{label_h};
+    if(0) {
+        $im->rectangle(
+            $x - $w / 2,
+            $y - $h / 2,
+            $x + $w / 2,
+            $y + $h / 2,
+            $map_colour[0]
+        );
+    }
+
+    my $name = $ns->{name} or return;
+    my $size = font_size_from_mass($ns);
+    my @bounds = GD::Image->stringFT(
+        $label_colour, $font, $size, 0, 0, 0, $name
+    );
+    my $width  = abs($bounds[2] - $bounds[0]);
+    my $height = abs($bounds[7] - $bounds[1]);
+    my $text_x = $x - $width / 2;
+    my $text_y = $y + $height / 2;
+    foreach my $delta (
+        [ -2, -2, $shadow_colour ],
+        [  0, -2, $shadow_colour ],
+        [  2, -2, $shadow_colour ],
+        [  2,  0, $shadow_colour ],
+        [  2,  2, $shadow_colour ],
+        [  0,  2, $shadow_colour ],
+        [ -2,  2, $shadow_colour ],
+        [ -2,  0, $shadow_colour ],
+        [  0,  0, $label_colour  ],
+    ) {
+        my($delta_x, $delta_y, $colour) = @$delta;
+        $im->stringFT(
+            $colour,
+            $font,
+            $size,
+            0,
+            $text_x + $delta_x,
+            $text_y + $delta_y,
+            $name
+        );
+    }
+
+}
+
+
+sub font_size_from_mass {
+    my($ns) = @_;
+
+    my $mass = $ns->{mass};
+    return 26 if $mass > 400;
+    return 18 if $mass > 180;
+    return 12;
+}
+
 
 1;
 
