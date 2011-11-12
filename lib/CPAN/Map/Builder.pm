@@ -15,7 +15,7 @@ my @defaults = (
     mod_list_source => $ENV{HOME} . '/.cpan/sources/modules/02packages.details.txt.gz',
     critical_mass   => 30,
     verbose         => 0,
-#    output_map_js   => 'CPAN::Map::WriteJSData',
+    output_map_js   => 'CPAN::Map::WriteJSData',
     output_map_png  => 'CPAN::Map::WriteMapImage',
 );
 
@@ -143,6 +143,11 @@ sub map_distros_to_plane {
         $self->{max_col} = $col if $col > $self->{max_col};
     });
     $self->{plane} = \@plane;
+
+    $self->progress_message(
+        ' - plane mapping produced ' . $self->plane_rows . ' rows of '
+        . $self->plane_cols . ' columns'
+    );
 }
 
 

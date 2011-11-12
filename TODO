@@ -1,4 +1,4 @@
-Add namespace names overlay (- show/hide when zooming?)
+Add noscript message
 Click to select - display extra details in side panel
 Replace call to zcat with more portable version
 Fix author subdir names being seen as maintainer names
