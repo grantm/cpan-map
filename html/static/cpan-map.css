@@ -4,6 +4,11 @@
   font-size: 16px;
 }
 
+.cpan-map div.map-controls {
+  width: 100%;
+  height: 30px;
+}
+
 .cpan-map div.map-viewport {
   border: 3px solid #777;
   position: relative;
@@ -36,6 +41,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  float: left;
 }
 
 .cpan-map ul.map-zoom li {
@@ -46,5 +52,13 @@
 
 .cpan-map ul.map-zoom li:hover {
   background-color: #ccc;
+}
+
+.cpan-map div.map-hover-panel {
+  float: left;
+}
+
+.cpan-map div.map-hover-panel label {
+  margin: 0 0.4em 0 2em;
 }
 

@@ -74,19 +74,21 @@
         var opt = app_options($app);
         parse_data($app, data_parser);
         var $viewport = $app.find('.map-viewport');
-        var $plane = $('<div class="map-plane" />').css({
-                        backgroundImage: 'url(' + meta.map_image + ')',
-                        backgroundRepeat: 'no-repeat'
-                     });
+        var $plane = $('<div class="map-plane" />')
+                    .css({
+                       backgroundImage: 'url(' + meta.map_image + ')',
+                       backgroundRepeat: 'no-repeat'
+                    });
 
         $viewport.removeClass('loading');
         $viewport.html('');
 
         $viewport.append( $plane );
-        $plane.draggable({ });
         add_controls($app);
         size_viewport($app, $viewport);
         set_initial_zoom($app);
+        enable_plane_drag($app, $plane);
+        attach_hover_handler($app, $plane);
     }
 
     function make_data_parser(data) {
@@ -216,16 +218,28 @@
 
     function add_controls($app) {
         var opt = $app.data('options');
-        var $zoom = $('<ul class="map-zoom" />');
-        $app.find('.map-controls').append(
-            $zoom.append(
+
+        var $zoom = $('<ul class="map-zoom" />')
+            .append(
                 $('<li class="zoom-minus">-</li>')
                     .attr('title', opt.zoom_minus_label)
                     .click(function() { inc_zoom($app, -1) }),
                 $('<li class="zoom-plus">+</li>')
                     .attr('title', opt.zoom_plus_label)
                     .click(function() { inc_zoom($app, 1) })
-            )
+            );
+
+        var $hover_panel = $('<div class="map-hover-panel" />')
+            .append(
+                $('<label>Distro</label>'),
+                $('<input class="map-hover-distro" value="" />'),
+                $('<label>Maintainer</label>'),
+                $('<input class="map-hover-maint" value="" />')
+            );
+
+        $app.find('.map-controls').append(
+            $zoom,
+            $hover_panel
         );
     }
 
@@ -239,6 +253,51 @@
     function inc_zoom($app, inc) {
         var opt = app_options($app);
         set_zoom($app, opt.current_zoom + inc);
+    }
+
+    function enable_plane_drag($app, $plane) {
+        var opt = app_options($app);
+        opt.plane_drag_top  = 0;
+        opt.plane_drag_left = 0;
+        $plane.draggable({
+            stop: function(e, ui) {
+                var pos = ui.position;
+                opt.plane_drag_top  = pos.top;
+                opt.plane_drag_left = pos.left;
+            }
+        });
+    }
+
+    function attach_hover_handler($app, $plane) {
+        var opt = app_options($app);
+        var cur_row = -1;
+        var cur_col = -1;
+        var offset  = $plane.offset();
+        var $input_distro = $app.find('input.map-hover-distro');
+        var $input_maint  = $app.find('input.map-hover-maint');
+        $plane.mousemove(function(e) {
+            var pan_top = $plane.css('top');
+            col = Math.floor( ((e.pageX - offset.left) - opt.plane_drag_left) / opt.scale);
+            row = Math.floor( ((e.pageY - offset.top) - opt.plane_drag_top) / opt.scale);
+            if(row == cur_row && col == cur_col) { return; }
+            cur_row = row;
+            cur_col = col;
+            var dist = distro_at_row_col(row, col);
+            if(dist) {
+                $input_distro.val(dist.name);
+                $input_maint.val(dist.maintainer);
+            }
+        });
+    }
+
+    function distro_at_row_col(row, col) {
+        if(distro_at[row]) {
+            var i = distro_at[row][col];
+            if(i !== null) {
+                return distro[i];
+            }
+        }
+        return null;
     }
 
 })(jQuery);
