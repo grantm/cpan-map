@@ -12,7 +12,15 @@ sub write {
     $builder->progress_message("- writing JS data to $output_file");
 
 
-    # Write out the maintainer list first
+    # Write out metadata
+    print $out "[META]\n";
+    printf $out "map_image,%s\n", "cpan-map.png";
+    printf $out "plane_rows,%s\n", $builder->plane_rows;
+    printf $out "plane_cols,%s\n",$ builder->plane_cols;
+    printf $out "max_scale,%s\n", 10;
+
+    # Write out the maintainer list
+    print $out "[MAINTAINERS]\n";
     my %maintainer_num;
     $builder->each_distro(sub {
         my($distro) = @_;
@@ -27,21 +35,23 @@ sub write {
 
 
     # Write out namespace list
+    print $out "[NAMESPACES]\n";
     $i = 0;
     my %ns_num;
     $builder->each_namespace(sub {
         my($ns) = @_;
         printf $out "%s,%s,%X\n", $ns->{name}, $ns->{colour}, $ns->{mass};
-        $ns_num{ $ns->{name} } = $i++;
+        $ns_num{ lc($ns->{name}) } = $i++;
     });
     $builder->progress_message("- listed $i namespaces");
 
 
     # Write out distro list
+    print $out "[DISTRIBUTIONS]\n";
     $i = 0;
     $builder->each_distro(sub {
         my($dist) = @_;
-        my $ns_number = $ns_num{ $dist->{ns} }
+        my $ns_number = defined($ns_num{ $dist->{ns} })
                       ? sprintf('%X', $ns_num{ $dist->{ns} })
                       : '';
         die "Can't find maintainer number for $dist->{maintainer}"

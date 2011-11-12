@@ -34,14 +34,16 @@
         zoom_plus_label  : 'Zoom map in',
         map_data_url     : 'cpan-map-data.json',
         map_margin       : 50,
-        zoom_scales      : [ 3, 4, 5, 6, 8, 10 ]
+        zoom_scales      : [ 3, 4, 5, 6, 8, 10, 20 ]
     };
 
 
     // Application globals
 
-    var distros, mass_map, plane_rows, plane_cols, map_image, max_scale;
-
+    var meta      = {};
+    var namespace = [];
+    var distro    = [];
+    var distro_at = [];
 
     function app_options($app) {
         return $app.data('options');
@@ -61,19 +63,19 @@
         $.ajax({
             url: 'cpan-map-data.txt',
             dataType: 'text',
-            success: function (data) { populate_map($app, data); }
+            success: function (data) {
+                var data_parser = make_data_parser(data);
+                populate_map($app, data_parser);
+            }
         });
     }
 
-    function populate_map($app, data) {
+    function populate_map($app, data_parser) {
         var opt = app_options($app);
+        parse_data($app, data_parser);
         var $viewport = $app.find('.map-viewport');
-        plane_rows = 128;
-        plane_cols = 192;
-        max_scale  = 10;
-        map_image  = 'cpan-map.png';
         var $plane = $('<div class="map-plane" />').css({
-                        backgroundImage: 'url(' + map_image + ')',
+                        backgroundImage: 'url(' + meta.map_image + ')',
                         backgroundRepeat: 'no-repeat'
                      });
 
@@ -87,9 +89,77 @@
         set_initial_zoom($app);
     }
 
+    function make_data_parser(data) {
+        var i = 0;
+        return function() {
+            var j = data.indexOf("\n", i);
+            if(j < 1) {
+                data = null;
+                return null;
+            }
+            var line = data.substring(i, j).split(",");
+            i = j + 1;
+            return line;
+        }
+    }
+
+    function parse_data($app, next_record) {
+        var rec, handler;
+        var maint = [];
+
+        var add_meta = function(rec) {
+            meta[ rec[0] ] = rec[1];
+        }
+
+        var add_maint = function(rec) {
+            maint.push( rec[0] );
+        }
+
+        var add_ns = function(rec) {
+            var ns = {
+                name: rec[0],
+                colour: rec[1],
+                mass: parseInt(rec[2], 16),
+            }
+            namespace.push( ns );
+        }
+
+        var add_distro = function(rec) {
+            var row = parseInt(rec[3], 16);
+            var col = parseInt(rec[4], 16);
+            var dist = {
+                name: rec[0],
+                maintainer: maint[ parseInt(rec[2], 16) ],
+                row: row,
+                col: col
+            }
+            if(rec[1] != '') {
+                ns = namespace[ parseInt(rec[1], 16) ];
+                if(ns) {
+                    dist.ns = ns.name;
+                }
+            }
+            if(!distro_at[row]) {
+                distro_at[row] = [];
+            }
+            distro_at[row][col] = distro.length;
+            distro.push( dist );
+        }
+
+        while(rec = next_record()) {
+            if(rec[0] == '[META]')          { handler = add_meta;   continue; }
+            if(rec[0] == '[MAINTAINERS]')   { handler = add_maint;  continue; }
+            if(rec[0] == '[NAMESPACES]')    { handler = add_ns;     continue; }
+            if(rec[0] == '[DISTRIBUTIONS]') { handler = add_distro; continue; }
+            if(handler) {
+                handler(rec);
+            }
+        }
+
+    }
+
     function size_viewport($app, $viewport) {
         var opt = app_options($app);
-        var plane  = plane_dimensions(max_scale);
         var wrap   = $viewport.offset();
         var border = parseInt($viewport.css('border-left-width'));
         var width  = $(window).width() - (wrap.left * 2) - (border * 2);
@@ -112,8 +182,8 @@
         var zoom_scales = opt.zoom_scales;
         for(var i = zoom_scales.length - 1; i > 0; i--) {
             if(
-                zoom_scales[i] * plane_cols < width
-             && zoom_scales[i] * plane_rows < height
+                zoom_scales[i] * meta.plane_cols < width
+             && zoom_scales[i] * meta.plane_rows < height
             ) {
                 return set_zoom($app, i);
             }
@@ -137,8 +207,8 @@
         opt.scale = zoom_scales[new_zoom];
         var $plane = $app.find('.map-plane');
         var i = parseInt(new_zoom);
-        var width  = opt.scale * plane_cols;
-        var height = opt.scale * plane_rows;
+        var width  = opt.scale * meta.plane_cols;
+        var height = opt.scale * meta.plane_rows;
         $plane.width(width)
               .height(height)
               .css({ backgroundSize: width + 'px ' + height + 'px' });
@@ -161,8 +231,8 @@
 
     function plane_dimensions(opt) {
         return {
-            width:  plane_cols * opt.scale,
-            height: plane_rows * opt.scale
+            width:  meta.plane_cols * opt.scale,
+            height: meta.plane_rows * opt.scale
         };
     }
 

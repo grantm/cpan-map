@@ -1,4 +1,7 @@
+Centre map initial view
+Maintain position when zooming
 Add noscript message
+Zoom on scroll wheel
 Click to select - display extra details in side panel
 Replace call to zcat with more portable version
 Fix author subdir names being seen as maintainer names
