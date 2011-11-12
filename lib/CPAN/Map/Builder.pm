@@ -215,7 +215,7 @@ sub identify_mass_areas {
             my $that_ns = $mass_map->{ $that_dist->{ns} } or return;
             if($this_ns ne $that_ns) {
                 $neighbour{ $this_dist->{ns} }->{ $that_dist->{ns} } = 1;
-                $neighbour{ $that_dist->{ns} }->{ $that_dist->{ns} } = 1;
+                $neighbour{ $that_dist->{ns} }->{ $this_dist->{ns} } = 1;
             }
         }
     });
