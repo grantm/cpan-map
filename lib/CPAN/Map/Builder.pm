@@ -198,24 +198,31 @@ sub identify_mass_areas {
         delete $mass_map->{$key} if $ns->{mass} < $critical_mass;
     }
 
-    # Work out which masses are neighbours (skipping non-critical ones).
-    # Also keep some running totals for calculating centre of mass.
+    # Set up statistics objects for centre of mass calculations
+    foreach my $ns (values %$mass_map) {
+        $ns->{row_stat} = Statistics::Descriptive::Full->new();
+        $ns->{col_stat} = Statistics::Descriptive::Full->new();
+    }
+
+    # Work out which masses are neighbours (skipping non-critical ones)
     my %neighbour;
     $self->each_distro(sub {
         my($this_dist, $i) = @_;
-        my $this_ns = $mass_map->{ $this_dist->{ns} } or return; # == next
-        $this_ns->{row_sum} += $this_dist->{row};
-        $this_ns->{col_sum} += $this_dist->{col};
+        my $this_ns = $this_dist->{ns};
+        my $this_mass = $mass_map->{$this_ns} or return; # == next
+        $this_mass->{row_stat}->add_data($this_dist->{row});
+        $this_mass->{col_stat}->add_data($this_dist->{col});
         $neighbour{ $this_dist->{ns} } //= {};  # this is actually needed
         foreach my $look ('right', 'down') {
             my($row1, $col1) = $look eq 'right'
                              ? ($this_dist->{row}, $this_dist->{col} + 1)
                              : ($this_dist->{row} + 1, $this_dist->{col});
-            my $that_dist = $self->dist_at($row1, $col1)  or return;
-            my $that_ns = $mass_map->{ $that_dist->{ns} } or return;
+            my $that_dist = $self->dist_at($row1, $col1) or next;
+            my $that_ns = $that_dist->{ns};
+            my $that_mass = $mass_map->{$that_ns} or next;
             if($this_ns ne $that_ns) {
-                $neighbour{ $this_dist->{ns} }->{ $that_dist->{ns} } = 1;
-                $neighbour{ $that_dist->{ns} }->{ $this_dist->{ns} } = 1;
+                $neighbour{$this_ns}->{$that_ns} = 1;
+                $neighbour{$that_ns}->{$this_ns} = 1;
             }
         }
     });
