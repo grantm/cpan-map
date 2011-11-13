@@ -153,6 +153,7 @@ div.noscript {
   width: 200px;
   height: 100%;
   margin: 0 0 0 -200px;
+  font-size: 14px;
 }
 
 .cpan-map div.map-separator {

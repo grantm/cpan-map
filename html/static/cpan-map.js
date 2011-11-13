@@ -294,9 +294,8 @@
         var $plane_sight  = $app.find('.map-plane-sight');
         $plane.mousemove(function(e) {
             if(opt.dragging) { return; }
-            var pan_top = $plane.css('top');
-            col = Math.floor( ((e.pageX - offset.left) - opt.plane_drag_left) / opt.scale);
-            row = Math.floor( ((e.pageY - offset.top) - opt.plane_drag_top) / opt.scale);
+            col = Math.floor((e.pageX - offset.left - opt.plane_drag_left) / opt.scale);
+            row = Math.floor((e.pageY - offset.top - opt.plane_drag_top) / opt.scale);
             if(row == cur_row && col == cur_col) { return; }
             cur_row = row;
             cur_col = col;
@@ -310,6 +309,13 @@
                 $input_maint.val(dist.maintainer);
             }
         });
+        $plane.click(function(e) {
+            if(cur_row < 0 || cur_col < 0) { return; }
+            var dist = distro_at_row_col(row, col);
+            if(dist) {
+                get_dist_details($app, dist);
+            }
+        });
     }
 
     function distro_at_row_col(row, col) {
@@ -320,6 +326,13 @@
             }
         }
         return null;
+    }
+
+    function get_dist_details($app, dist) {
+        $app.find('.map-info-panel').html(
+            'Further info about <span title="' + dist.name + '">'
+            + dist.name + '</span> should appear here.'
+        );
     }
 
 })(jQuery);
