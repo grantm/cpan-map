@@ -266,7 +266,11 @@
         opt.plane_drag_top  = 0;
         opt.plane_drag_left = 0;
         $plane.draggable({
+            start: function(e, ui) {
+                opt.dragging = true;
+            },
             stop: function(e, ui) {
+                opt.dragging = false;
                 var pos = ui.position;
                 opt.plane_drag_top  = pos.top;
                 opt.plane_drag_left = pos.left;
@@ -283,6 +287,7 @@
         var $input_maint  = $app.find('input.map-hover-maint');
         var $plane_sight  = $app.find('.map-plane-sight');
         $plane.mousemove(function(e) {
+            if(opt.dragging) { return; }
             var pan_top = $plane.css('top');
             col = Math.floor( ((e.pageX - offset.left) - opt.plane_drag_left) / opt.scale);
             row = Math.floor( ((e.pageY - offset.top) - opt.plane_drag_top) / opt.scale);
