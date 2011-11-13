@@ -5,7 +5,6 @@ Zoom on scroll wheel
 Click to select - display extra details in side panel
 Replace call to zcat with more portable version
 Fix author subdir names being seen as maintainer names
-Dynamically add CSS zoom rules (rather than manually syncing JS + CSS)
 Hook window resize and size viewport
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches

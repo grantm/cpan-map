@@ -80,6 +80,8 @@
                        backgroundRepeat: 'no-repeat'
                     });
 
+        $plane.append( $('<div class="map-plane-sight" />') );
+
         $viewport.removeClass('loading');
         $viewport.html('');
 
@@ -214,6 +216,10 @@
         $plane.width(width)
               .height(height)
               .css({ backgroundSize: width + 'px ' + height + 'px' });
+        $app.find('.map-plane-sight').css({
+            width:  (opt.scale - 2) + 'px',
+            height: (opt.scale - 2) + 'px'
+        });
     }
 
     function add_controls($app) {
@@ -275,6 +281,7 @@
         var offset  = $plane.offset();
         var $input_distro = $app.find('input.map-hover-distro');
         var $input_maint  = $app.find('input.map-hover-maint');
+        var $plane_sight  = $app.find('.map-plane-sight');
         $plane.mousemove(function(e) {
             var pan_top = $plane.css('top');
             col = Math.floor( ((e.pageX - offset.left) - opt.plane_drag_left) / opt.scale);
@@ -282,6 +289,10 @@
             if(row == cur_row && col == cur_col) { return; }
             cur_row = row;
             cur_col = col;
+            $plane_sight.css({
+                top:  (cur_row * opt.scale) + 'px',
+                left: (cur_col * opt.scale) + 'px'
+            });
             var dist = distro_at_row_col(row, col);
             if(dist) {
                 $input_distro.val(dist.name);

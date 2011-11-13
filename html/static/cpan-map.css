@@ -62,3 +62,18 @@
   margin: 0 0.4em 0 2em;
 }
 
+.cpan-map div.map-plane-sight {
+  position: absolute;
+  display: none;
+  border: 1px solid red;
+  background-color: rgba(255, 0, 0, 0.5);
+  opacity: 0.6;
+  box-shadow: 0px 0px 5px white;
+  -moz-box-shadow: 0px 0px 5px white;
+  -webkit-box-shadow: 0px 0px 5px white;
+}
+
+.cpan-map div.map-plane:hover div.map-plane-sight {
+  display: block;
+}
+
