@@ -1,11 +1,10 @@
 Centre map initial view
 Maintain position when zooming
-Add noscript message
 Zoom on scroll wheel
 Click to select - display extra details in side panel
 Replace call to zcat with more portable version
 Fix author subdir names being seen as maintainer names
-Hook window resize and size viewport
+Hook window resize and size viewport + .map-hover-distro
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
 Clear selections button

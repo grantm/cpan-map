@@ -57,8 +57,12 @@
         $app.addClass('cpan-map');
         $app.append(
             $('<h1 />').text( opt.app_title ),
-            $controls,
-            $viewport.html('<div class="init">Loading map data</div>')
+            $('<div class="map-panel" />').append(
+                $controls,
+                $('<div class="map-info-panel" />'),
+                $('<div class="map-separator" />'),
+                $viewport.html('<div class="init">Loading map data</div>')
+            )
         );
         $.ajax({
             url: 'cpan-map-data.txt',
@@ -87,7 +91,7 @@
 
         $viewport.append( $plane );
         add_controls($app);
-        size_viewport($app, $viewport);
+        size_map_panel($app);
         set_initial_zoom($app);
         enable_plane_drag($app, $plane);
         attach_hover_handler($app, $plane);
@@ -162,20 +166,18 @@
 
     }
 
-    function size_viewport($app, $viewport) {
+    function size_map_panel($app) {
         var opt = app_options($app);
-        var wrap   = $viewport.offset();
-        var border = parseInt($viewport.css('border-left-width'));
-        var width  = $(window).width() - (wrap.left * 2) - (border * 2);
-        if(width < 100) {
-            width = 100;
+        var $panel = $app.find('.map-panel');
+        var height = $(window).height() - 80;
+        if(height < 300) {
+            height = 300;
         }
-        var height = $(window).height() - wrap.top - 20;;
-        if(height < 100) {
-            height = 100;
+        $app.height(height);
+        var width  = $(window).width() - 40;
+        if(width < 900) {
+            $app.width(900);
         }
-        $viewport.width(width);
-        $viewport.height(height);
     }
 
     function set_initial_zoom($app) {
@@ -227,26 +229,30 @@
 
         var $zoom = $('<ul class="map-zoom" />')
             .append(
-                $('<li class="zoom-minus">-</li>')
+                $('<li class="zoom-minus"><a>&ndash;</a></li>')
                     .attr('title', opt.zoom_minus_label)
                     .click(function() { inc_zoom($app, -1) }),
-                $('<li class="zoom-plus">+</li>')
+                $('<li class="zoom-plus"><a>+</a></li>')
                     .attr('title', opt.zoom_plus_label)
                     .click(function() { inc_zoom($app, 1) })
             );
 
-        var $hover_panel = $('<div class="map-hover-panel" />')
-            .append(
-                $('<label>Distro</label>'),
-                $('<input class="map-hover-distro" value="" />'),
-                $('<label>Maintainer</label>'),
-                $('<input class="map-hover-maint" value="" />')
-            );
+        var $dist_inp  = $('<input class="map-hover-distro" value="" />');
+        var $maint_inp = $('<input class="map-hover-maint" value="" />');
 
-        $app.find('.map-controls').append(
+        var $controls = $app.find('.map-controls').append(
+            $('<label>Zoom</label>'),
             $zoom,
-            $hover_panel
+            $('<label>Distro</label>'),
+            $dist_inp,
+            $('<label>Maintainer</label>'),
+            $maint_inp
         );
+
+        $dist_inp.width(0);
+        var offset = $maint_inp.offset();
+        var width = $controls.width() + 220 - offset.left - $maint_inp.width();
+        $dist_inp.width(width);
     }
 
     function plane_dimensions(opt) {

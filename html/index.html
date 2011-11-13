@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js">
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <title>Map of CPAN</title>
   <link rel="stylesheet" type="text/css" href="static/cpan-map.css">
   <script type="text/javascript" src="static/jquery-1.7.min.js"></script>
+  <script type="text/javascript">
+    $('html').removeClass('no-js').addClass('js');
+  </script>
   <script type="text/javascript" src="static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js"></script>
   <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
   <script type="text/javascript" src="static/cpan-map.js"></script>
@@ -15,6 +18,12 @@
   </script>
 </head>
 <body>
+
+  <div class="noscript">
+    <h1>Javascript Required</h1>
+    <p>You must enable Javascript to use the <strong>Map of CPAN</strong>
+    application.</p>
+  </div>
 
 </body>
 </html>

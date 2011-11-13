@@ -1,20 +1,65 @@
+* {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  font-size: 100%;
+  font-weight: normal;
+  border: none;
+  color: #000;
+  text-decoration: none;
+}
+
+body {
+  font-family: sans-serif;
+  font-size: 15px;
+}
+
+.no-js body {
+  background-color: #aaaaaa;
+}
+
+div.noscript {
+    display: none;
+}
+
+.no-js div.noscript {
+  display: block;
+  width: 24em;
+  margin: 140px auto;
+  border: 6px solid #e14409;
+  border-radius: 15px;
+  background-color: #e7e7e7;
+}
+
+.no-js div.noscript h1 {
+  font-size: 140%;
+  font-weight: bold;
+  background-color: #e14409;
+  color: #eeeeee;
+  padding: 3px 0 9px 0;
+  text-align: center;
+}
+
+.no-js div.noscript p {
+    font-size: 120%;
+    margin: 1.2em;
+    color: #333333;
+}
+
+.no-js div.noscript strong {
+  font-weight: bold;
+}
 
 .cpan-map {
-  font-family: sans-serif;
-  font-size: 16px;
+  background-color: #333;
+  padding: 20px;
 }
 
-.cpan-map div.map-controls {
-  width: 100%;
-  height: 30px;
-}
-
-.cpan-map div.map-viewport {
-  border: 3px solid #777;
+.cpan-map div.map-panel {
   position: relative;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  background-color: #f7f7f7;
+  height: 100%;
+  margin-left: 200px;
+  padding: 4px 0 0 0;
 }
 
 .cpan-map div.map-viewport.loading {
@@ -23,12 +68,120 @@
 }
 
 .cpan-map div.map-viewport.loading div.init {
-  padding: 30px;
-  background-color: transparent;
+  padding: 160px;
   background-repeat: no-repeat;
   background-image: url(images/throbber.gif);
-  background-position: 12em 32px;
+  background-position: 350px 154px;
+  color: #888888;
+  font-size: 120%;
 }
+
+.cpan-map h1 {
+  position: absolute;
+  top: 22px;
+  left: 20px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #555555;
+}
+
+.cpan-map div.map-controls {
+  position: relative;
+  height: 26px;
+  margin-bottom: 10px;
+  padding: 0 0 0 10px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.cpan-map div.map-controls label {
+  float: left;
+  padding: 3px 6px 0 0;
+  color: #666666;
+  font-size: 120%;
+  font-variant: small-caps;
+}
+
+.cpan-map div.map-controls input {
+  float: left;
+  padding: 4px 3px 2px 3px;
+  background-color: #a7a7a7;
+  color: #000;
+  border: 1px solid #999;
+  border-radius: 5px;
+}
+
+.cpan-map div.map-controls ul,
+.cpan-map div.map-controls input.map-hover-distro {
+  margin-right: 18px;
+}
+
+.cpan-map div.map-controls input.map-hover-maint {
+  width: 8em;
+}
+
+.cpan-map ul.map-zoom {
+  float: left;
+  text
+}
+
+.cpan-map ul.map-zoom li {
+  float: left;
+  margin: 3px;
+}
+
+.cpan-map ul.map-zoom li a {
+  display: block;
+  width: 1.2em;
+  height: 1.2em;
+  padding: 2px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: #666;
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cpan-map ul.map-zoom li a:hover {
+  background-color: #878787;
+}
+
+.cpan-map div.map-info-panel {
+  background-color: #666;
+  float: left;
+  width: 200px;
+  height: 100%;
+  margin: 0 0 0 -200px;
+}
+
+.cpan-map div.map-separator {
+  float: left;
+  width: 10px;
+  height: 100%;
+  background-color: #333;
+}
+
+/*
+.cpan-map div.map-separator:hover {
+  background-color: #444;
+}
+*/
+
+.cpan-map div.map-viewport {
+  position: relative;
+  background-color: #996;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: #666;
+}
+
+
+
+
+
+
 
 .cpan-map div.map-plane {
   position: absolute;
@@ -42,16 +195,6 @@
   padding: 0;
   list-style: none;
   float: left;
-}
-
-.cpan-map ul.map-zoom li {
-  margin: 0;
-  padding: 0 0.6em;
-  float: left;
-}
-
-.cpan-map ul.map-zoom li:hover {
-  background-color: #ccc;
 }
 
 .cpan-map div.map-hover-panel {
