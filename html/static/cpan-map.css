@@ -156,6 +156,12 @@ div.noscript {
   font-size: 14px;
 }
 
+.cpan-map div.map-info-panel.loading {
+  background-image: url(images/throbber.gif);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
 .cpan-map div.map-separator {
   float: left;
   width: 10px;
@@ -232,6 +238,11 @@ div.noscript {
 
 .cpan-map div.map-info-panel .dist-info  p.dist-name {
   white-space: nowrap;
+  font-size: 110%;
+}
+
+.cpan-map div.map-info-panel .dist-info  p.dist-name a {
+  text-decoration: underline;
 }
 
 .cpan-map div.map-info-panel .dist-info label {
@@ -242,5 +253,14 @@ div.noscript {
 
 .cpan-map div.map-info-panel .dist-info p.abstract {
   font-style: italic;
+  margin-bottom: 6px;
+}
+
+.cpan-map div.map-info-panel .dist-info a {
+  color: #0000aa;
+}
+
+.cpan-map div.map-info-panel .dist-info a:hover {
+  text-decoration: underline;
 }
 

@@ -337,13 +337,16 @@
     }
 
     function get_dist_details($app, dist) {
-        $app.find('.map-info-panel').html('');
+        var $info_panel = $app.find('.map-info-panel');
+        $info_panel.html('').addClass('loading');
         var dist_name = dist.name.replace(/::/g, '-');
         $.ajax({
             url: 'http://api.metacpan.org/release/' + dist_name,
             data: { application: 'cpan-map' },
             dataType: 'jsonp',
-            success: function(data) { display_dist_details($app, data); }
+            success: function(data) { display_dist_details($app, data); },
+            error: function() { $info_panel.removeClass('loading'); },
+            timeout: 5000
         });
     }
 
@@ -351,7 +354,9 @@
         if(!data.resources) { data.resources = null; }
         if(!data.abstract) { data.abstract = null; }
         if(!data.download_url) { data.download_url = null; }
-        $app.find('.map-info-panel').html( app_tmpl.dist_info(data) );
+        $app.find('.map-info-panel')
+            .html( app_tmpl.dist_info(data) )
+            .removeClass('loading');
     }
 
 })(jQuery);
