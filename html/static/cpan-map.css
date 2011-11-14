@@ -221,3 +221,26 @@ div.noscript {
   display: block;
 }
 
+.cpan-map div.map-info-panel .dist-info  {
+  background-color: #e7e7e7;
+  padding: 4px;
+}
+
+.cpan-map div.map-info-panel .dist-info  p {
+  margin: 4px 0;
+}
+
+.cpan-map div.map-info-panel .dist-info  p.dist-name {
+  white-space: nowrap;
+}
+
+.cpan-map div.map-info-panel .dist-info label {
+  display: inline-block;
+  width: 6em;
+  font-variant: small-caps;
+}
+
+.cpan-map div.map-info-panel .dist-info p.abstract {
+  font-style: italic;
+}
+

@@ -8,6 +8,7 @@
   <script type="text/javascript">
     $('html').removeClass('no-js').addClass('js');
   </script>
+  <script type="text/javascript" src="underscore.js"></script>
   <script type="text/javascript" src="static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js"></script>
   <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
   <script type="text/javascript" src="static/cpan-map.js"></script>
@@ -24,6 +25,27 @@
     <p>You must enable Javascript to use the <strong>Map of CPAN</strong>
     application.</p>
   </div>
+
+  <script type="text/template" id="tmpl-dist-info">
+    <div class="dist-info">
+      <p class="dist-name" title="<%- distribution %>"><%- distribution %></p>
+      <p><label>Author:</label><a href="#"><%- author %></a></p>
+      <p><label>Version:</label><%- version %></p>
+      <p><label>Released:</label><%- date.replace(/T.*$/, '') %></p>
+      <% if(download_url) { %>
+      <p><a href="<%= download_url %>">Download</a></p>
+      <% } %>
+      <% if(resources && resources.repository && resources.repository.web) { %>
+          <p><a href="<%- resources.repository.web %>">Repository</a></p>
+      <% } %>
+      <% if(resources && resources.bugtracker && resources.bugtracker.web) { %>
+          <p><a href="<%- resources.bugtracker.web %>">Bug Tracker</a></p>
+      <% } %>
+      <% if(abstract) { %>
+          <p class="abstract"><%- abstract %></p>
+      <% } %>
+    </div>
+  </script>
 
 </body>
 </html>

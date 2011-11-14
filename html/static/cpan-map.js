@@ -44,6 +44,8 @@
     var namespace = [];
     var distro    = [];
     var distro_at = [];
+    var app_tmpl  = null;
+
 
     function app_options($app) {
         return $app.data('options');
@@ -72,6 +74,13 @@
                 populate_map($app, data_parser);
             }
         });
+        load_templates();
+    }
+
+    function load_templates() {
+        if(app_tmpl != null) { return; }
+        app_tmpl = {};
+        app_tmpl.dist_info = _.template( $('#tmpl-dist-info').html() );
     }
 
     function populate_map($app, data_parser) {
@@ -328,10 +337,19 @@
     }
 
     function get_dist_details($app, dist) {
-        $app.find('.map-info-panel').html(
-            'Further info about <span title="' + dist.name + '">'
-            + dist.name + '</span> should appear here.'
-        );
+        $.ajax({
+            url: 'http://api.metacpan.org/module/' + dist.name,
+            data: { application: 'cpan-map' },
+            dataType: 'jsonp',
+            success: function(data) { display_dist_details($app, data); }
+        });
+    }
+
+    function display_dist_details($app, data) {
+        if(!data.resources) { data.resources = null; }
+        if(!data.abstract) { data.abstract = null; }
+        if(!data.download_url) { data.download_url = null; }
+        $app.find('.map-info-panel').html( app_tmpl.dist_info(data) );
     }
 
 })(jQuery);
