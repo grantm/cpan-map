@@ -28,8 +28,11 @@
 
   <script type="text/template" id="tmpl-dist-info">
     <div class="dist-info">
-      <p class="dist-name" title="<%- distribution %>"><%- distribution %></p>
-      <p><label>Author:</label><a href="#"><%- author %></a></p>
+      <p class="dist-name"><a href="https://metacpan.org/release/<%- distribution %>" title="<%- distribution %>"><%- distribution %></a></p>
+      <% if(abstract) { %>
+          <p class="abstract"><%- abstract %></p>
+      <% } %>
+      <p><label>Author:</label><%- author %></p>
       <p><label>Version:</label><%- version %></p>
       <p><label>Released:</label><%- date.replace(/T.*$/, '') %></p>
       <% if(download_url) { %>
@@ -40,9 +43,6 @@
       <% } %>
       <% if(resources && resources.bugtracker && resources.bugtracker.web) { %>
           <p><a href="<%- resources.bugtracker.web %>">Bug Tracker</a></p>
-      <% } %>
-      <% if(abstract) { %>
-          <p class="abstract"><%- abstract %></p>
       <% } %>
     </div>
   </script>
