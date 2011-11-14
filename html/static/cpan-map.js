@@ -78,13 +78,13 @@
         var opt = app_options($app);
         parse_data($app, data_parser);
         var $viewport = $app.find('.map-viewport');
-        var $plane = $('<div class="map-plane" />')
-                    .css({
-                       backgroundImage: 'url(' + meta.map_image + ')',
-                       backgroundRepeat: 'no-repeat'
-                    });
+        var $map_image = $('<img class="map" src="' + meta.map_image + '" />');
+        var $plane = $('<div class="map-plane" />');
 
-        $plane.append( $('<div class="map-plane-sight" />') );
+        $plane.append(
+            $map_image,
+            $('<div class="map-plane-sight" />')
+        );
 
         $viewport.removeClass('loading');
         $viewport.html('');
@@ -215,9 +215,8 @@
         var i = parseInt(new_zoom);
         var width  = opt.scale * meta.plane_cols;
         var height = opt.scale * meta.plane_rows;
-        $plane.width(width)
-              .height(height)
-              .css({ backgroundSize: width + 'px ' + height + 'px' });
+        $plane.width(width).height(height);
+        $plane.find('img.map').width(width).height(height);
         $app.find('.map-plane-sight').css({
             width:  (opt.scale - 2) + 'px',
             height: (opt.scale - 2) + 'px'
