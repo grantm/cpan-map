@@ -10,3 +10,4 @@ cover_db
 pod2htm*.tmp
 html/cpan-map-data*
 html/cpan-map.png
+html/test
