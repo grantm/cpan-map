@@ -337,8 +337,10 @@
     }
 
     function get_dist_details($app, dist) {
+        $app.find('.map-info-panel').html('');
+        var dist_name = dist.name.replace(/::/g, '-');
         $.ajax({
-            url: 'http://api.metacpan.org/module/' + dist.name,
+            url: 'http://api.metacpan.org/release/' + dist_name,
             data: { application: 'cpan-map' },
             dataType: 'jsonp',
             success: function(data) { display_dist_details($app, data); }
