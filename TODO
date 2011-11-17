@@ -1,24 +1,38 @@
+Set drag threshold (3px?)
+Add more author info to JS data: full name, avatar
+Use JS framework for routing to support Back button
+Make 'Map of CPAN' title a 'home' button to reset the UI
+Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
+Info pane: Welcome message
+Cache server responses
+Dist info: display namespace name + mass
+Dist info: display CPAN ratings
+Dist info: display author avatar as link to Author info
+Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
+Dist info: link to'Browse' distribution (e.g.: https://metacpan.org/source/DOY/Moose-2.0400/ )
+Dist info: link to highlight dependencies
+Dist info: link to highlight reverse dependencies
+Author info: link to highlight all author's distros
+Author info: include profile links (github, twitter, etc)
 Centre map initial view
 Maintain position when zooming
 Zoom on scroll wheel
-Click to select - display extra details in side panel
-Replace call to zcat with more portable version
+Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Fix author subdir names being seen as maintainer names
-Hook window resize and size viewport + .map-hover-distro
+Hook window resize and size viewport + .map-hover-distro/maint
+Add UI to resize info-pane
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
-Clear selections button
 Use Module::Name or Dist-Name if no match
-Plack app to serve content (and proxy API queries)
+Plack app to serve content (and aggregate API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)
-Implement map using canvas rather than table
-Use dark grey border on mass regions
-Link to distribution page on metacpan (open in lightboxed iframe?)
-Link to highlight dependencies
-Link to highlight reverse dependencies
+Map image: render at multiple scales
+Map image: hi-res version to include submerged masses
+Map image: use opacity(?) to represent distribution freshness/age
 Switch to using CPANDB as data source?
-Use opacity(?) to represent distribution freshness/age
+Replace call to zcat with more portable version
 Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules
+Implement map using canvas rather than image?
 Link to http://cpan-explorer.org/
