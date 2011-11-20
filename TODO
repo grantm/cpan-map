@@ -1,10 +1,8 @@
 Set drag threshold (3px?)
 Add more author info to JS data: full name, avatar
-Use JS framework for routing to support Back button
 Make 'Map of CPAN' title a 'home' button to reset the UI
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
-Info pane: Welcome message
-Cache server responses
+Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
 Dist info: display CPAN ratings
 Dist info: display author avatar as link to Author info
@@ -19,11 +17,10 @@ Maintain position when zooming
 Zoom on scroll wheel
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Fix author subdir names being seen as maintainer names
-Hook window resize and size viewport + .map-hover-distro/maint
 Add UI to resize info-pane
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
-Use Module::Name or Dist-Name if no match
+Link to Module::Name page on MetaCPAN or Dist-Name if no match
 Plack app to serve content (and aggregate API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)
 Map image: render at multiple scales

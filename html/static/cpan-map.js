@@ -85,6 +85,7 @@
         });
 
         this.get('#/', function(context) {
+console.log('about to render:', cpan.meta)
             this.update_info('#tmpl-home', cpan.meta);
         });
 
@@ -387,6 +388,8 @@
                     handler(rec);
                 }
             }
+
+            cpan.meta.distribution_count = cpan.distro.length;
 
         }
 
