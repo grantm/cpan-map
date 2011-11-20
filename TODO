@@ -4,7 +4,7 @@ Make 'Map of CPAN' title a 'home' button to reset the UI
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
-Dist info: display CPAN ratings
+Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
 Dist info: display author avatar as link to Author info
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
 Dist info: link to'Browse' distribution (e.g.: https://metacpan.org/source/DOY/Moose-2.0400/ )
