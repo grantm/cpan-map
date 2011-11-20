@@ -8,15 +8,11 @@
   <script type="text/javascript">
     $('html').removeClass('no-js').addClass('js');
   </script>
-  <script type="text/javascript" src="static/underscore-min.js"></script>
+  <script type="text/javascript" src="static/sammy/sammy-0.7.0.min.js"></script>
+  <script type="text/javascript" src="static/sammy/plugins/sammy.template-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js"></script>
   <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
   <script type="text/javascript" src="static/cpan-map.js"></script>
-  <script type="text/javascript">
-    jQuery(function($) {
-        $('body').cpan_map();
-    });
-  </script>
 </head>
 <body>
 
@@ -26,26 +22,33 @@
     application.</p>
   </div>
 
-  <script type="text/template" id="tmpl-dist-info">
+  <script type="text/template" id="tmpl-home">
     <div class="dist-info">
-      <p class="dist-name"><a href="https://metacpan.org/release/<%- distribution %>" title="<%- distribution %>"><%- distribution %></a></p>
-      <% if(abstract) { %>
-          <p class="abstract"><%- abstract %></p>
+      <p>Welcome!</p>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-distro">
+    <div class="dist-info">
+      <p class="dist-name"><a href="https://metacpan.org/release/<%= meta.distribution %>" title="<%= name %>"><%= name %></a></p>
+      <% if(meta.abstract) { %>
+          <p class="abstract"><%= meta.abstract %></p>
       <% } %>
-      <p><label>Author:</label><%- author %></p>
-      <p><label>Version:</label><%- version %></p>
-      <p><label>Released:</label><%- date.replace(/T.*$/, '') %></p>
-      <% if(download_url) { %>
-      <p><a href="<%= download_url %>">Download</a></p>
+      <p><label>Author:</label><%= maintainer.id %></p>
+      <p><label>Version:</label><%= meta.version %></p>
+      <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
+      <% if(meta.download_url) { %>
+      <p><a href="<%= meta.download_url %>">Download</a></p>
       <% } %>
-      <% if(resources && resources.repository && resources.repository.web) { %>
-          <p><a href="<%- resources.repository.web %>">Repository</a></p>
+      <% if(meta.resources && meta.resources.repository && meta.resources.repository.web) { %>
+          <p><a href="<%= meta.resources.repository.web %>">Repository</a></p>
       <% } %>
-      <% if(resources && resources.bugtracker && resources.bugtracker.web) { %>
-          <p><a href="<%- resources.bugtracker.web %>">Bug Tracker</a></p>
+      <% if(meta.resources && meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
+          <p><a href="<%= meta.resources.bugtracker.web %>">Bug Tracker</a></p>
       <% } %>
     </div>
   </script>
 
 </body>
 </html>
+

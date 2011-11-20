@@ -55,19 +55,28 @@ div.noscript {
   padding: 20px;
 }
 
+.cpan-map h1 {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  font-size: 25px;
+  font-weight: bold;
+  color: #555555;
+}
+
 .cpan-map div.map-panel {
   position: relative;
   height: 100%;
-  margin-left: 200px;
-  padding: 4px 0 0 0;
+  padding: 0 0 0 210px;
+  overflow: hidden;
 }
 
-.cpan-map div.map-viewport.loading {
+.cpan-map .loading div.map-viewport {
   border: none;
   background-color: transparent;
 }
 
-.cpan-map div.map-viewport.loading div.init {
+.cpan-map .loading div.map-viewport div.init {
   padding: 160px;
   background-repeat: no-repeat;
   background-image: url(images/throbber.gif);
@@ -76,21 +85,11 @@ div.noscript {
   font-size: 120%;
 }
 
-.cpan-map h1 {
-  position: absolute;
-  top: 22px;
-  left: 20px;
-  font-size: 25px;
-  font-weight: bold;
-  color: #555555;
-}
-
 .cpan-map div.map-controls {
   position: relative;
   height: 26px;
+  width: 2000px;
   margin-bottom: 10px;
-  padding: 0 0 0 10px;
-  white-space: nowrap;
   overflow: hidden;
 }
 
@@ -114,10 +113,6 @@ div.noscript {
 .cpan-map div.map-controls ul,
 .cpan-map div.map-controls input.map-hover-distro {
   margin-right: 18px;
-}
-
-.cpan-map div.map-controls input.map-hover-maint {
-  width: 8em;
 }
 
 .cpan-map ul.map-zoom {
@@ -148,12 +143,20 @@ div.noscript {
 }
 
 .cpan-map div.map-info-panel {
-  background-color: #666;
-  float: left;
+  position: absolute;
+  top: 36px;
+  left: 0px;
   width: 200px;
+  background-color: #666;
   height: 100%;
-  margin: 0 0 0 -200px;
   font-size: 14px;
+  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.cpan-map div.map-panel.loading div.map-info-panel {
+  background-color: transparent;
 }
 
 .cpan-map div.map-info-panel.loading {
@@ -163,7 +166,9 @@ div.noscript {
 }
 
 .cpan-map div.map-separator {
-  float: left;
+  position: absolute;
+  top: 36px;
+  left: 200px;
   width: 10px;
   height: 100%;
   background-color: #333;
@@ -184,16 +189,12 @@ div.noscript {
   background-color: #666;
 }
 
-
-
-
-
-
-
 .cpan-map div.map-plane {
   position: absolute;
   top: 0;
   left: 0;
+  width: 2000px;
+  height: 2000px;
 }
 
 .cpan-map ul.map-zoom {
