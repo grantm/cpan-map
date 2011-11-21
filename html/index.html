@@ -39,6 +39,9 @@
       <% if(meta.abstract) { %>
           <p class="abstract"><%= meta.abstract %></p>
       <% } %>
+      <% if(maintainer.avatar_url) { %>
+      <div class="avatar"><img src="<%= maintainer.avatar_url %>"></div>
+      <% } %>
       <% if(maintainer.name) { %>
       <p><label>Author:</label><%= maintainer.name %></p>
       <% } %>

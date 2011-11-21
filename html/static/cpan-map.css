@@ -248,6 +248,16 @@ div.noscript {
   text-decoration: underline;
 }
 
+.cpan-map div.map-info-panel .dist-info div.avatar {
+  float: right;
+  margin-left: 4px;
+}
+
+.cpan-map div.map-info-panel .dist-info div.avatar img {
+  display: inline;
+  border: 1px solid #999999
+}
+
 .cpan-map div.map-info-panel .dist-info label {
   display: inline-block;
   width: 6em;

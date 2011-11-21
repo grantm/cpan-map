@@ -26,6 +26,8 @@
         map_data_url          : 'cpan-map-data.txt',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
+        avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
+        default_avatar        : 'static/images/no-photo.png',
         zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ]
     };
 
@@ -298,11 +300,22 @@
                         };
                     }
                     distro.meta = data;
+                    set_avatar_url(distro.maintainer);
                     handler(distro);
                 },
                 error: function() { $info_panel.removeClass('loading'); },
                 timeout: 5000
             });
+        }
+
+        function set_avatar_url(maintainer) {
+            if(maintainer.avatar_url) { return; }
+            if(maintainer.gravatar_id) {
+                maintainer.avatar_url = opt.avatar_url_template.replace(/%ID%/, maintainer.gravatar_id);
+            }
+            else {
+                maintainer.avatar_url = opt.default_avatar;
+            }
         }
 
     });
@@ -314,6 +327,14 @@
     $(function() {
 
         function build_app($el, run_app) {
+            var loc = window.location;
+            opt.app_base_url = loc.protocol + '//' + loc.host
+                             + loc.pathname.replace(/index[.]html$/, '');
+            if(!opt.default_avatar.match(/^\w+:/)) {
+                opt.default_avatar = opt.app_base_url + opt.default_avatar;
+            }
+            opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, escape(opt.default_avatar));
+
             var $controls = $('<div class="map-controls" />');
             var $viewport = $('<div class="map-viewport" />');
             $el.addClass('cpan-map');
@@ -360,8 +381,8 @@
 
             var add_maint = function(rec) {
                 var m = { id: rec[0] };
-                if(rec.length > 1) { m.name     = rec[1]; }
-                if(rec.length > 2) { m.gravatar = rec[2]; }
+                if(rec.length > 1) { m.name        = rec[1]; }
+                if(rec.length > 2) { m.gravatar_id = rec[2]; }
                 cpan.maint.push(m);
             };
 
