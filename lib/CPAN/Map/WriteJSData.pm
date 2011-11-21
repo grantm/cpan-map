@@ -17,6 +17,7 @@ sub write {
     printf $out "mod_list_date,%s\n", $builder->mod_list_date;
     printf $out "module_count,%d\n", $builder->module_count;
     printf $out "distribution_count,%d\n", $builder->total_distros;
+    printf $out "maintainer_count,%d\n", $builder->maintainer_count;
     printf $out "map_image,%s\n", "cpan-map.png";
     printf $out "plane_rows,%s\n", $builder->plane_rows;
     printf $out "plane_cols,%s\n", $builder->plane_cols;
@@ -25,15 +26,19 @@ sub write {
     # Write out the maintainer list
     print $out "[MAINTAINERS]\n";
     my %maintainer_num;
-    $builder->each_distro(sub {
-        my($distro) = @_;
-        $maintainer_num{ $distro->{maintainer} } = undef;
-    });
     my $i = 0;
-    foreach my $name ( sort keys %maintainer_num ) {
-        $maintainer_num{$name} = $i++;
-        print $out $name, "\n";
-    }
+    $builder->each_maintainer(sub {
+        my($maint) = @_;
+        $maintainer_num{ $maint->{id} } = $i++;
+        my $line = $maint->{id};
+        if($maint->{name}) {
+            $line .= ",$maint->{name}";
+            if($maint->{gravatar}) {
+                $line .= ",$maint->{gravatar}";
+            }
+        }
+        print $out "$line\n";
+    });
     $builder->progress_message("- listed $i maintainers");
 
 

@@ -346,9 +346,10 @@
             };
 
             var add_maint = function(rec) {
-                cpan.maint.push({
-                    id: rec[0]
-                });
+                var m = { id: rec[0] };
+                if(rec.length > 1) { m.name     = rec[1]; }
+                if(rec.length > 2) { m.gravatar = rec[2]; }
+                cpan.maint.push(m);
             };
 
             var add_ns = function(rec) {

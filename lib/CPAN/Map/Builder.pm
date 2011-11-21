@@ -9,11 +9,15 @@ require File::Spec;
 require IO::Uncompress::Gunzip;
 require Math::PlanePath::HilbertCurve;
 require Statistics::Descriptive;
+require Gravatar::URL;
 use Data::Dumper;
 
 
+my $cpan_source_dir =  $ENV{HOME} . '/.cpan/sources';  # TODO portability fix
+
 my @defaults = (
-    mod_list_source => $ENV{HOME} . '/.cpan/sources/modules/02packages.details.txt.gz',
+    mod_list_source => $cpan_source_dir . '/modules/02packages.details.txt.gz',
+    authors_source  => $cpan_source_dir . '/authors/01mailrc.txt.gz',
     critical_mass   => 30,
     verbose         => 0,
     output_map_js   => 'CPAN::Map::WriteJSData',
@@ -28,6 +32,7 @@ sub generate {
     $self->list_distros_by_ns;
     $self->map_distros_to_plane;
     $self->identify_mass_areas;
+    $self->load_maintainer_data;
     $self->write_output_mappings;
 }
 
@@ -42,10 +47,13 @@ sub new {
 
 
 sub mod_list_source { shift->{mod_list_source}; }
+sub authors_source  { shift->{authors_source};  }
 sub mod_list_date   { shift->{mod_list_date};   }
 sub module_count    { shift->{module_count};    }
+sub maintainer_count { shift->{maintainer_count}; }
 sub critical_mass   { shift->{critical_mass};   }
 sub mass_map        { shift->{mass_map};        }
+sub maintainers     { shift->{maintainers};     }
 sub total_distros   { shift->{total_distros};   }
 sub output_dir      { shift->{output_dir};      }
 sub plane_rows      { shift->{max_row} + 1;     }
@@ -318,6 +326,52 @@ sub map_colours {
     }
     delete $map->{$ns};
     return;
+}
+
+
+sub load_maintainer_data {
+    my($self) = @_;
+
+    $self->progress_message("Loading maintainer details");
+
+    my $z = gunzip_open($self->authors_source);
+
+    # Work out which maintainers we're interested in
+    my %maint;
+    $self->each_distro(sub {
+        my($distro) = @_;
+        my $key = $distro->{maintainer};
+        $maint{$key} = { id => $key };
+    });
+
+    # Read the authors file to get more details
+    while($_ = $z->getline) {
+        my($id, $name, $email) = m{
+            ^alias
+            \s+(\w+)                   # author ID
+            \s+"(.*?)\s<               # author name
+            (\S*?)>                    # email address
+        }x or next;
+        next unless $maint{$id};
+        $maint{$id}->{name} = $name;
+        if($email && $email =~ /@/) {
+            $maint{$id}->{gravatar} = Gravatar::URL::gravatar_id($email);
+        }
+    }
+    $z->close();
+
+    $self->{maintainers} = \%maint;
+    $self->{maintainer_count} = scalar keys %maint;
+}
+
+
+sub each_maintainer {
+    my($self, $handler) = @_;
+
+    my $maint = $self->maintainers;
+    foreach my $id (sort keys %$maint) {
+        $handler->($maint->{$id});
+    }
 }
 
 
