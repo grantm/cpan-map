@@ -25,6 +25,7 @@
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
+        rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ]
     };
 
@@ -288,6 +289,14 @@
                 data: { application: 'cpan-map' },
                 dataType: 'jsonp',
                 success: function(data) {
+                    if(!data.resources) {
+                        data.resources = { };
+                    }
+                    if(!data.resources.bugtracker) {
+                        data.resources.bugtracker = {
+                            web : opt.rt_dist_url + data.distribution
+                        };
+                    }
                     distro.meta = data;
                     handler(distro);
                 },

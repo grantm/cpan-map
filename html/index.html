@@ -48,10 +48,10 @@
       <% if(meta.download_url) { %>
       <p><a href="<%= meta.download_url %>">Download</a></p>
       <% } %>
-      <% if(meta.resources && meta.resources.repository && meta.resources.repository.web) { %>
+      <% if(meta.resources.repository && meta.resources.repository.web) { %>
           <p><a href="<%= meta.resources.repository.web %>">Repository</a></p>
       <% } %>
-      <% if(meta.resources && meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
+      <% if(meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
           <p><a href="<%= meta.resources.bugtracker.web %>">Bug Tracker</a></p>
       <% } %>
     </div>
