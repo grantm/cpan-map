@@ -42,6 +42,7 @@
     var app = $.sammy(opt.app_selector, function() {
 
         this.use(Sammy.Template, 'tmpl');
+        this.use(Sammy.Title);
 
         var template_cache = {};
 
@@ -49,6 +50,7 @@
             var context = this;
             var html = context.tmpl(template_cache[selector], data);
             $('.map-info-panel').html(html).removeClass('loading');
+            return context;
         });
 
         this.bind('run', function(context, data) {
@@ -85,8 +87,8 @@
         });
 
         this.get('#/', function(context) {
-console.log('about to render:', cpan.meta)
             this.update_info('#tmpl-home', cpan.meta);
+            this.title(opt.app_title);
         });
 
         this.get('#/distro/:name', function(context) {
@@ -94,7 +96,8 @@ console.log('about to render:', cpan.meta)
             var $el = this.$element();
             $el.find('.map-info-panel').html('').addClass('loading');
             ajax_load_distro_detail( this.params['name'], function(distro) {
-                context.update_info('#tmpl-distro', distro);
+                context.update_info('#tmpl-distro', distro)
+                       .title(distro.name + ' | ' + opt.app_title);
             });
         });
 
