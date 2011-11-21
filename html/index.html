@@ -39,7 +39,10 @@
       <% if(meta.abstract) { %>
           <p class="abstract"><%= meta.abstract %></p>
       <% } %>
-      <p><label>Author:</label><%= maintainer.id %></p>
+      <% if(maintainer.name) { %>
+      <p><label>Author:</label><%= maintainer.name %></p>
+      <% } %>
+      <p><label>Author ID:</label><%= maintainer.id %></p>
       <p><label>Version:</label><%= meta.version %></p>
       <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
       <% if(meta.download_url) { %>
