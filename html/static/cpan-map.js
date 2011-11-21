@@ -343,21 +343,21 @@
 
             var add_meta = function(rec) {
                 cpan.meta[ rec[0] ] = rec[1];
-            }
+            };
 
             var add_maint = function(rec) {
                 cpan.maint.push({
                     id: rec[0]
                 });
-            }
+            };
 
             var add_ns = function(rec) {
                 cpan.namespace.push({
                     name: rec[0],
                     colour: rec[1],
-                    mass: parseInt(rec[2], 16),
+                    mass: parseInt(rec[2], 16)
                 });
-            }
+            };
 
             var add_distro = function(rec) {
                 var row = parseInt(rec[3], 16);
@@ -380,7 +380,7 @@
                 cpan.distro_at[row][col] = cpan.distro.length;
                 cpan.distro_num[distro.name] = cpan.distro.length;
                 cpan.distro.push( distro );
-            }
+            };
 
             while(rec = next_record()) {
                 if(rec[0] == '[META]')          { handler = add_meta;   continue; }
