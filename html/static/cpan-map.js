@@ -79,7 +79,11 @@
         this.bind('distro_hover', function(e, distro) {
             var $el = this.$element();
             $el.find('input.map-hover-distro').val(distro.name);
-            $el.find('input.map-hover-maint').val(distro.maintainer.id);
+            var maint = distro.maintainer.id;
+            if(distro.maintainer.name) {
+                maint = maint + ' - ' + distro.maintainer.name
+            }
+            $el.find('input.map-hover-maint').val(maint);
         });
 
         this.bind('distro_select', function(e, distro) {
