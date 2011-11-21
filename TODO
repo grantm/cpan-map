@@ -27,7 +27,7 @@ Map image: render at multiple scales
 Map image: hi-res version to include submerged masses
 Map image: use opacity(?) to represent distribution freshness/age
 Switch to using CPANDB as data source?
-Replace call to zcat with more portable version
+Add meaningful docs to lib/CPAN/Map.pm
 Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules

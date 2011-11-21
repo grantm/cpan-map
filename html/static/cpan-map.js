@@ -392,8 +392,6 @@
                 }
             }
 
-            cpan.meta.distribution_count = cpan.distro.length;
-
         }
 
         build_app(

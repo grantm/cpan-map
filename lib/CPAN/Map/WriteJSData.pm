@@ -14,9 +14,12 @@ sub write {
 
     # Write out metadata
     print $out "[META]\n";
+    printf $out "mod_list_date,%s\n", $builder->mod_list_date;
+    printf $out "module_count,%d\n", $builder->module_count;
+    printf $out "distribution_count,%d\n", $builder->total_distros;
     printf $out "map_image,%s\n", "cpan-map.png";
     printf $out "plane_rows,%s\n", $builder->plane_rows;
-    printf $out "plane_cols,%s\n",$ builder->plane_cols;
+    printf $out "plane_cols,%s\n", $builder->plane_cols;
     printf $out "max_scale,%s\n", 10;
 
     # Write out the maintainer list
@@ -69,5 +72,6 @@ sub write {
 
     close($out);
 }
+
 
 1;

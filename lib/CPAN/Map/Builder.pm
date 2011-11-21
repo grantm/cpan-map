@@ -6,6 +6,7 @@ use warnings;
 use FindBin qw();
 require File::Basename;
 require File::Spec;
+require IO::Uncompress::Gunzip;
 require Math::PlanePath::HilbertCurve;
 require Statistics::Descriptive;
 use Data::Dumper;
@@ -41,6 +42,8 @@ sub new {
 
 
 sub mod_list_source { shift->{mod_list_source}; }
+sub mod_list_date   { shift->{mod_list_date};   }
+sub module_count    { shift->{module_count};    }
 sub critical_mass   { shift->{critical_mass};   }
 sub mass_map        { shift->{mass_map};        }
 sub total_distros   { shift->{total_distros};   }
@@ -63,21 +66,50 @@ sub warning_message {
 }
 
 
+sub gunzip_open {
+    my($path) = @_;
+    my $z = IO::Uncompress::Gunzip->new($path)
+        or die $IO::Uncompress::Gunzip::GunzipError;
+    return $z;
+}
+
+
 sub list_distros_by_ns {
     my $self = shift;
 
     $self->progress_message('Listing all CPAN distros');
 
-    open my $in, '-|', 'zcat', $self->mod_list_source or die "$!";
+    my $z = gunzip_open($self->mod_list_source);
+
+    # Process the header
+
+    my %month_num = qw(
+        jan 01 feb 02 mar 03 apr 04 may 05 jun 06
+        jul 07 aug 08 sep 09 oct 10 nov 11 dec 12
+    );
+    while($_ = $z->getline) {
+        last unless /\S/;
+        if(
+            my($d, $m, $y, $t) = m{
+                ^Last-Updated:\s+\S+,\s+
+                (\d+)\s+(\S\S\S)\s+(\d\d\d\d)\s+(\d\d:\d\d:\d\d)
+            }x
+        ) {
+            $m = $month_num{lc($m)};
+            $self->{mod_list_date} = "$y-$m-$d $t UTC";
+        }
+    }
 
     # Build a big hash of distros by namespace
     my %ns_dist = ();
-    while(<$in>) {
+    my $module_count = 0;
+    while($_ = $z->getline) {
+        $module_count++;
         my($maintainer,$dist) = m{
             ^\S+                       # Module name
             \s+\S+                     # Version number
             \s+
-            (?:[^/]+/)+                # Path to maintainer's director
+            (?:[^/]+/)+                # Path to maintainer's directory
             ([^/]+)/                   # Maintainer's CPAN-ID
             ([^/\s-]+(?:-[^/\s-]+)*)-  # Distribution name
         }x or next;
@@ -85,12 +117,11 @@ sub list_distros_by_ns {
         my($ns) = split '::', $dist, 2;
         $ns_dist{lc($ns)}->{$dist} = $maintainer;
     }
-    close($in);
+    $z->close();
 
     # Save counts ('mass') of distros per namespace and create an alphabetical
     # list of distros
     my(%mass_map, @dist_list);
-    my $i = 0;
     foreach my $ns ( sort keys %ns_dist ) {
         my $ns_dist = delete $ns_dist{$ns};
         my @dists = keys %$ns_dist;
@@ -110,10 +141,12 @@ sub list_distros_by_ns {
         }
     }
 
+    $self->{module_count} = $module_count;
     $self->{total_distros} = scalar @dist_list;
     $self->{dist_list} = \@dist_list;
     $self->{mass_map}  = \%mass_map;
-    $self->progress_message(" - found $self->{total_distros}");
+    $self->progress_message(" - found $self->{module_count} modules");
+    $self->progress_message(" - found $self->{total_distros} distributions");
 }
 
 
