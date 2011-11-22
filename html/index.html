@@ -38,6 +38,8 @@
       <p class="dist-name"><a href="https://metacpan.org/release/<%= meta.distribution %>" title="<%= name %>"><%= name %></a></p>
       <% if(meta.abstract) { %>
           <p class="abstract"><%= meta.abstract %></p>
+      <% } else { %>
+          <p class="abstract"><i>No abstract.</i></p>
       <% } %>
       <% if(maintainer.avatar_url) { %>
       <div class="avatar"><img src="<%= maintainer.avatar_url %>"></div>
