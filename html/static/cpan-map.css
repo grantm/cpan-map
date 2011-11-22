@@ -256,6 +256,9 @@ div.noscript {
 
 .cpan-map div.map-info-panel .dist-info div.avatar img {
   display: inline;
+  width: 80px;
+  height: 80px;
+  background-image: url(images/no-photo.png);
   border: 1px solid #999999;
   border-radius: 5px;
   -moz-border-radius: 5px;
