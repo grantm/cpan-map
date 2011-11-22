@@ -25,6 +25,7 @@
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
+        ajax_author_url_base  : 'http://api.metacpan.org/author/',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png',
@@ -34,6 +35,7 @@
     var cpan = {  // Populated via build_app() call before Sammy.run is called
         meta       : {},
         maint      : [],
+        maint_num  : {},
         namespace  : [],
         distro     : [],
         distro_num : {},
@@ -110,7 +112,7 @@
             var context = this;
             var $el = this.$element();
             $el.find('.map-info-panel').html('').addClass('loading');
-            ajax_load_distro_detail( this.params['name'], function(distro) {
+            ajax_load_distro_detail( this.params.name, function(distro) {
                 context.update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
             });
@@ -124,7 +126,17 @@
             return this.not_implemented();
         });
 
-        this.get('#/maint/:name', function(context) {
+        this.get('#/maint/:cpanid', function(context) {
+            var context = this;
+            var $el = this.$element();
+            $el.find('.map-info-panel').html('').addClass('loading');
+            ajax_load_maint_detail( this.params.cpanid, function(maint) {
+                context.update_info('#tmpl-maint', maint)
+                       .title(maint.name + ' | ' + opt.app_title);
+            });
+        });
+
+        this.get('#/maint/:cpanid/distros', function(context) {
             return this.not_implemented();
         });
 
@@ -328,6 +340,40 @@
             });
         }
 
+        function ajax_load_maint_detail(maint_id, handler) {
+            var i = cpan.maint_num[ maint_id ];
+            if(i === null) { return; }
+            var maint = cpan.maint[i];
+            if(maint == null) { return; }
+            if(maint.meta) {  //  Data is in cache already
+                handler(maint);
+                return;
+            }
+            $.ajax({
+                url: opt.ajax_author_url_base + maint_id,
+                data: { application: 'cpan-map' },
+                dataType: 'jsonp',
+                success: function(data) {
+                    maint.meta = data;
+                    if(data.city) {
+                        data.location = data.city;
+                        if(data.country) {
+                            data.location = data.location + ', ' + data.country;
+                        }
+                    }
+                    else {
+                        if(data.country) {
+                            data.location = data.country;
+                        }
+                    }
+                    set_avatar_url(maint);
+                    handler(maint);
+                },
+                error: function() { $info_panel.removeClass('loading'); },
+                timeout: 5000
+            });
+        }
+
         function set_avatar_url(maintainer) {
             if(maintainer.avatar_url) { return; }
             if(maintainer.gravatar_id) {
@@ -403,6 +449,7 @@
                 var m = { id: rec[0] };
                 if(rec.length > 1) { m.name        = rec[1]; }
                 if(rec.length > 2) { m.gravatar_id = rec[2]; }
+                cpan.maint_num[m.id] = cpan.maint.length;
                 cpan.maint.push(m);
             };
 

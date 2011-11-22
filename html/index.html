@@ -64,6 +64,22 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-maint">
+    <div class="dist-info">
+      <p class="dist-name"><a href="https://metacpan.org/author/<%= id %>" title="<%= (name || id) %>"><%= (name || id) %></a></p>
+      <% if(avatar_url) { %>
+      <div class="avatar"><img src="<%= avatar_url %>"></div>
+      <% } %>
+      <p><label>CPAN ID:</label><a href="#/maint/<%= id %>"><%= id %></a></p>
+      <% if(meta.location) { %>
+        <p><label>Location:</label><%= meta.location %></a></p>
+      <% } %>
+      <% if(meta.website && meta.website[0]) { %>
+          <p><a href="<%= meta.website[0] %>">Web site</a></p>
+      <% } %>
+      <p><a href="#/maint/<%= id %>/distros">Distributions</a></p>
+  </script>
+
 </body>
 </html>
 
