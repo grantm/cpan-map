@@ -5,7 +5,6 @@
   font-size: 100%;
   font-weight: normal;
   border: none;
-  color: #000;
   text-decoration: none;
 }
 
@@ -245,7 +244,7 @@ div.noscript {
   font-size: 110%;
 }
 
-.cpan-map div.map-info-panel .dist-info  p.dist-name a {
+.cpan-map div.map-info-panel .dist-info  p.dist-name a:hover {
   text-decoration: underline;
 }
 
@@ -281,5 +280,20 @@ div.noscript {
 
 .cpan-map div.map-info-panel .dist-info a:hover {
   text-decoration: underline;
+}
+
+.cpan-map div.not-impl {
+  margin: 1.2em 0;
+  color: #333333;
+}
+
+.cpan-map div.not-impl h2 {
+  font-size: 130%;
+  text-align: center;
+  margin: 0 0 1em 0;
+}
+
+.cpan-map div.not-impl p {
+  text-align: center;
 }
 

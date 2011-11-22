@@ -56,6 +56,14 @@
             return context;
         });
 
+        this.helper('not_implemented', function() {   // TODO: unimplement
+            var context = this;
+            var html = '<div class="not-impl"><h2>Sorry &#9785;</h2>'
+                     + '<p>This feature is not yet implemented.</p></div>';
+            $('.map-info-panel').html(html).removeClass('loading');
+            return context;
+        });
+
         this.bind('run', function(context, data) {
             var $el = this.$element();
             initialise_ui_elements($el);
@@ -106,6 +114,18 @@
                 context.update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
             });
+        });
+
+        this.get('#/distro/:name/deps', function(context) {
+            return this.not_implemented();
+        });
+
+        this.get('#/distro/:name/rdeps', function(context) {
+            return this.not_implemented();
+        });
+
+        this.get('#/maint/:name', function(context) {
+            return this.not_implemented();
         });
 
 

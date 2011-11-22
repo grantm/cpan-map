@@ -45,9 +45,9 @@
       <div class="avatar"><img src="<%= maintainer.avatar_url %>"></div>
       <% } %>
       <% if(maintainer.name) { %>
-      <p><label>Author:</label><%= maintainer.name %></p>
+      <p><label>Maintainer:</label><%= maintainer.name %></p>
       <% } %>
-      <p><label>Author ID:</label><%= maintainer.id %></p>
+      <p><label>CPAN ID:</label><a href="#/maint/<%= maintainer.id %>"><%= maintainer.id %></a></p>
       <p><label>Version:</label><%= meta.version %></p>
       <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
       <% if(meta.download_url) { %>
@@ -59,6 +59,8 @@
       <% if(meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
           <p><a href="<%= meta.resources.bugtracker.web %>">Bug Tracker</a></p>
       <% } %>
+      <p><a href="#/distro/<%= name %>/deps">Dependencies</a></p>
+      <p><a href="#/distro/<%= name %>/rdeps">Reverse dependencies</a></p>
     </div>
   </script>
 
