@@ -28,6 +28,7 @@ div.noscript {
   margin: 140px auto;
   border: 6px solid #e14409;
   border-radius: 15px;
+  -moz-border-radius: 15px;
   background-color: #e7e7e7;
 }
 
@@ -255,7 +256,9 @@ div.noscript {
 
 .cpan-map div.map-info-panel .dist-info div.avatar img {
   display: inline;
-  border: 1px solid #999999
+  border: 1px solid #999999;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
 }
 
 .cpan-map div.map-info-panel .dist-info label {
