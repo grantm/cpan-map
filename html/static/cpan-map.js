@@ -51,10 +51,16 @@
 
         var template_cache = {};
 
+        this.helper('loading', function() {
+            this.$element().find('.map-info-panel').html('')
+                .addClass('loading').removeClass('loaded');
+            return this;
+        });
+
         this.helper('update_info', function(selector, data) {
             var context = this;
             var html = context.tmpl(template_cache[selector], data);
-            $('.map-info-panel').html(html).removeClass('loading');
+            $('.map-info-panel').html(html).removeClass('loading').addClass('loaded');
             return context;
         });
 
@@ -109,9 +115,7 @@
         });
 
         this.get('#/distro/:name', function(context) {
-            var context = this;
-            var $el = this.$element();
-            $el.find('.map-info-panel').html('').addClass('loading');
+            var context = this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
                 context.update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
@@ -127,9 +131,7 @@
         });
 
         this.get('#/maint/:cpanid', function(context) {
-            var context = this;
-            var $el = this.$element();
-            $el.find('.map-info-panel').html('').addClass('loading');
+            var context = this.loading();
             ajax_load_maint_detail( this.params.cpanid, function(maint) {
                 context.update_info('#tmpl-maint', maint)
                        .title(maint.name + ' | ' + opt.app_title);

@@ -167,6 +167,10 @@ div.noscript {
   background-position: center center;
 }
 
+.cpan-map div.map-info-panel.loaded {
+  background-color: #e7e7e7;
+}
+
 .cpan-map div.map-separator {
   position: absolute;
   top: 36px;
@@ -230,30 +234,25 @@ div.noscript {
   display: block;
 }
 
-.cpan-map div.map-info-panel .dist-info  {
-  background-color: #e7e7e7;
+.cpan-map div.map-info-panel .info  {
   padding: 4px;
 }
 
-.cpan-map div.map-info-panel .dist-info  p {
+.cpan-map div.map-info-panel .info  p {
   margin: 4px 0;
 }
 
-.cpan-map div.map-info-panel .dist-info  p.dist-name {
+.cpan-map div.map-info-panel .info  p.dist-name {
   white-space: nowrap;
   font-size: 110%;
 }
 
-.cpan-map div.map-info-panel .dist-info  p.dist-name a:hover {
-  text-decoration: underline;
-}
-
-.cpan-map div.map-info-panel .dist-info div.avatar {
+.cpan-map div.map-info-panel .info div.avatar {
   float: right;
   margin-left: 4px;
 }
 
-.cpan-map div.map-info-panel .dist-info div.avatar img {
+.cpan-map div.map-info-panel .info div.avatar img {
   display: inline;
   width: 80px;
   height: 80px;
@@ -263,22 +262,22 @@ div.noscript {
   -moz-border-radius: 5px;
 }
 
-.cpan-map div.map-info-panel .dist-info label {
+.cpan-map div.map-info-panel .info label {
   display: inline-block;
   width: 6em;
   font-variant: small-caps;
 }
 
-.cpan-map div.map-info-panel .dist-info p.abstract {
+.cpan-map div.map-info-panel .info p.abstract {
   font-style: italic;
   margin-bottom: 6px;
 }
 
-.cpan-map div.map-info-panel .dist-info a {
+.cpan-map div.map-info-panel .info a {
   color: #0000aa;
 }
 
-.cpan-map div.map-info-panel .dist-info a:hover {
+.cpan-map div.map-info-panel .info a:hover {
   text-decoration: underline;
 }
 
