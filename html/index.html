@@ -78,7 +78,7 @@
       <% if(maint.meta.website && maint.meta.website[0]) { %>
           <p><a href="<%= maint.meta.website[0] %>">Web site</a></p>
       <% } %>
-      <h2>Distributions:</h2>
+      <h2>Distributions: (<%= distros.length %>)</h2>
       <ul>
       <% for(var i = 0; i < distros.length; i++) { %>
           <li><a href="#/distro/<%= distros[i].name %>"><%= distros[i].name %></a></li>
