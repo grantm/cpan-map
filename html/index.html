@@ -42,7 +42,7 @@
           <p class="abstract"><i>No abstract.</i></p>
       <% } %>
       <% if(maintainer.avatar_url) { %>
-      <div class="avatar"><img src="<%= maintainer.avatar_url %>"></div>
+      <div class="avatar"><a href="#/maint/<%= maintainer.id %>"><img src="<%= maintainer.avatar_url %>"></a></div>
       <% } %>
       <% if(maintainer.name) { %>
       <p><label>Maintainer:</label><%= maintainer.name %></p>
@@ -66,18 +66,23 @@
 
   <script type="text/template" id="tmpl-maint">
     <div class="info">
-      <p class="dist-name"><a href="https://metacpan.org/author/<%= id %>" title="<%= (name || id) %>"><%= (name || id) %></a></p>
-      <% if(avatar_url) { %>
-      <div class="avatar"><img src="<%= avatar_url %>"></div>
+      <p class="dist-name"><a href="https://metacpan.org/author/<%= maint.id %>" title="<%= (maint.name || maint.id) %>"><%= (maint.name || maint.id) %></a></p>
+      <% if(maint.avatar_url) { %>
+      <div class="avatar"><img src="<%= maint.avatar_url %>"></div>
       <% } %>
-      <p><label>CPAN ID:</label><a href="#/maint/<%= id %>"><%= id %></a></p>
-      <% if(meta.location) { %>
-        <p><label>Location:</label><%= meta.location %></a></p>
+      <p><label>CPAN ID:</label><a href="#/maint/<%= maint.id %>"><%= maint.id %></a></p>
+      <% if(maint.meta.location) { %>
+        <p><label>Location:</label><%= maint.meta.location %></a></p>
       <% } %>
-      <% if(meta.website && meta.website[0]) { %>
-          <p><a href="<%= meta.website[0] %>">Web site</a></p>
+      <% if(maint.meta.website && maint.meta.website[0]) { %>
+          <p><a href="<%= maint.meta.website[0] %>">Web site</a></p>
       <% } %>
-      <p><a href="#/maint/<%= id %>/distros">Distributions</a></p>
+      <h2>Distributions:</h2>
+      <ul>
+      <% for(var i = 0; i < distros.length; i++) { %>
+          <li><a href="#/distro/<%= distros[i].name %>"><%= distros[i].name %></a></li>
+      <% } %>
+      </ul>
   </script>
 
 </body>

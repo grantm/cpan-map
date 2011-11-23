@@ -281,6 +281,17 @@ div.noscript {
   text-decoration: underline;
 }
 
+.cpan-map div.map-info-panel .info h2 {
+  font-size: 125%;
+  color: #555555;
+  margin: 0.8em 0 0.2em;
+}
+
+.cpan-map div.map-info-panel .info li {
+  list-style: disc;
+  margin: 0.15em 0 0.15em 1em;
+}
+
 .cpan-map div.not-impl {
   margin: 1.2em 0;
   color: #333333;

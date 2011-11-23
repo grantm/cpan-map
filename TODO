@@ -1,15 +1,15 @@
+Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
+Dist info: link to display ratings in a lightboxed iframe?
 Set drag threshold (3px?)
 Make 'Map of CPAN' title a 'home' button to reset the UI
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
-Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
-Dist info: link to Author info
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
 Dist info: link to 'Browse' distribution (e.g.: https://metacpan.org/source/DOY/Moose-2.0400/ )
 Dist info: link to highlight dependencies
 Dist info: link to highlight reverse dependencies
-Author info: link to highlight all author's distros
+Author info: highlight all author's distros
 Author info: include profile links (github, twitter, etc)
 Centre map initial view
 Maintain position when zooming

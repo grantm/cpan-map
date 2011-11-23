@@ -132,14 +132,15 @@
 
         this.get('#/maint/:cpanid', function(context) {
             var context = this.loading();
-            ajax_load_maint_detail( this.params.cpanid, function(maint) {
-                context.update_info('#tmpl-maint', maint)
+            var cpanid  = this.params.cpanid;
+            ajax_load_maint_detail(cpanid, function(maint) {
+                var data = {
+                    'maint'   : maint,
+                    'distros' : distros_for_maint(cpanid)
+                };
+                context.update_info('#tmpl-maint', data)
                        .title(maint.name + ' | ' + opt.app_title);
             });
-        });
-
-        this.get('#/maint/:cpanid/distros', function(context) {
-            return this.not_implemented();
         });
 
 
@@ -374,6 +375,16 @@
                 error: function() { $info_panel.removeClass('loading'); },
                 timeout: 5000
             });
+        }
+
+        function distros_for_maint(cpanid) {
+            var distros = [];
+            for(var i = 0; i < cpan.distro.length; i++) {
+                if(cpan.distro[i].maintainer.id == cpanid) {
+                    distros.push(cpan.distro[i]);
+                }
+            }
+            return distros;
         }
 
         function set_avatar_url(maintainer) {
