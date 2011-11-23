@@ -50,6 +50,7 @@
       <p><label>CPAN ID:</label><a href="#/maint/<%= maintainer.id %>"><%= maintainer.id %></a></p>
       <p><label>Version:</label><%= meta.version %></p>
       <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
+      <p><a href="https://metacpan.org/source/<%= meta.author %>/<%= meta.name %>">Browse</a></p>
       <% if(meta.download_url) { %>
       <p><a href="<%= meta.download_url %>">Download</a></p>
       <% } %>
