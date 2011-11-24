@@ -73,6 +73,11 @@
             return context;
         });
 
+        this.helper('set_highlights', function(highlights) {
+            cpan.highlights = highlights;
+            this.trigger('show_highlights');
+        });
+
         this.bind('run', function(context, data) {
             var $el = this.$element();
             initialise_ui_elements($el);
@@ -116,16 +121,14 @@
 
         this.get('#/', function(context) {
             this.update_info('#tmpl-home', cpan.meta);
-            cpan.highlights = [];
-            app.trigger('show_highlights');
+            this.set_highlights([]);
             this.title(opt.app_title);
         });
 
         this.get('#/distro/:name', function(context) {
             var context = this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
-                cpan.highlights = [ distro.index ];
-                app.trigger('show_highlights');
+                context.set_highlights([ distro.index ]);
                 context.update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
             });
@@ -142,8 +145,7 @@
         this.get('#/maint/:cpanid', function(context) {
             var context = this.loading();
             var cpanid  = this.params.cpanid;
-            var distros = highlight_distros_for_maint(cpanid);
-            app.trigger('show_highlights');
+            var distros = highlight_distros_for_maint(context, cpanid);
             ajax_load_maint_detail(cpanid, function(maint) {
                 var data = {
                     'maint'   : maint,
@@ -396,7 +398,7 @@
             });
         }
 
-        function highlight_distros_for_maint(cpanid) {
+        function highlight_distros_for_maint(context, cpanid) {
             var highlights = [];
             var distros = [];
             for(var i = 0; i < cpan.distro.length; i++) {
@@ -405,7 +407,7 @@
                     distros.push(cpan.distro[i]);
                 }
             }
-            cpan.highlights = highlights;
+            context.set_highlights(highlights);
             return distros;
         }
 
