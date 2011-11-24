@@ -29,7 +29,7 @@
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png',
-        zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ]
+        zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ] // must match CSS
     };
 
     var cpan = {  // Populated via build_app() call before Sammy.run is called
@@ -39,7 +39,8 @@
         namespace  : [],
         distro     : [],
         distro_num : {},
-        distro_at  : []
+        distro_at  : [],
+        highlights : []
     };
 
     var dim;
@@ -109,14 +110,22 @@
             this.redirect('#/distro/' + distro.name);
         });
 
+        this.bind('show_highlights', function(e) {
+            highlight_distros(this.$element().find('div.map-highlights'));
+        });
+
         this.get('#/', function(context) {
             this.update_info('#tmpl-home', cpan.meta);
+            cpan.highlights = [];
+            app.trigger('show_highlights');
             this.title(opt.app_title);
         });
 
         this.get('#/distro/:name', function(context) {
             var context = this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
+                cpan.highlights = [ distro.index ];
+                app.trigger('show_highlights');
                 context.update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
             });
@@ -133,10 +142,12 @@
         this.get('#/maint/:cpanid', function(context) {
             var context = this.loading();
             var cpanid  = this.params.cpanid;
+            var distros = highlight_distros_for_maint(cpanid);
+            app.trigger('show_highlights');
             ajax_load_maint_detail(cpanid, function(maint) {
                 var data = {
                     'maint'   : maint,
-                    'distros' : distros_for_maint(cpanid)
+                    'distros' : distros
                 };
                 context.update_info('#tmpl-maint', data)
                        .title(maint.name + ' | ' + opt.app_title);
@@ -152,6 +163,7 @@
             $el.find('.map-viewport').html('').append(
                 $('<div class="map-plane" />').append(
                     $('<img class="map" src="' + cpan.meta.map_image + '" />'),
+                    $('<div class="map-highlights" />'),
                     $('<div class="map-plane-sight" />')
                 )
             );
@@ -242,6 +254,12 @@
             opt.current_zoom = new_zoom;
             opt.scale = zoom_scales[new_zoom];
             var $plane = $el.find('.map-plane');
+
+            for(var z = 1; z < zoom_scales.length; z++) {
+                $plane.removeClass('zoom' + z);
+            }
+            $plane.addClass('zoom' + new_zoom);
+
             var i = parseInt(new_zoom);
             var width  = opt.scale * cpan.meta.plane_cols;
             var height = opt.scale * cpan.meta.plane_rows;
@@ -251,6 +269,7 @@
                 width:  (opt.scale - 2) + 'px',
                 height: (opt.scale - 2) + 'px'
             });
+            app.trigger('show_highlights');
         }
 
         function enable_plane_drag($el) {
@@ -377,13 +396,16 @@
             });
         }
 
-        function distros_for_maint(cpanid) {
+        function highlight_distros_for_maint(cpanid) {
+            var highlights = [];
             var distros = [];
             for(var i = 0; i < cpan.distro.length; i++) {
                 if(cpan.distro[i].maintainer.id == cpanid) {
+                    highlights.push(i);
                     distros.push(cpan.distro[i]);
                 }
             }
+            cpan.highlights = highlights;
             return distros;
         }
 
@@ -394,6 +416,22 @@
             }
             else {
                 maintainer.avatar_url = opt.default_avatar;
+            }
+        }
+
+        function highlight_distros($layer) {
+            var scale = opt.scale;
+            $layer.html('');
+            for(var i = 0; i < cpan.highlights.length; i++) {
+                var d = cpan.highlights[i];
+                var distro = cpan.distro[d];
+                $layer.append(
+                    $(
+                        '<div class="marker" style="top: '
+                        + (distro.row * scale) + 'px; left: '
+                        + (distro.col * scale) + 'px;" />'
+                    )
+                );
             }
         }
 
@@ -481,7 +519,8 @@
                     name: rec[0],
                     maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                     row: row,
-                    col: col
+                    col: col,
+                    index: cpan.distro.length
                 }
                 if(rec[1] != '') {
                     ns = cpan.namespace[ parseInt(rec[1], 16) ];
@@ -492,8 +531,8 @@
                 if(!cpan.distro_at[row]) {
                     cpan.distro_at[row] = [];
                 }
-                cpan.distro_at[row][col] = cpan.distro.length;
-                cpan.distro_num[distro.name] = cpan.distro.length;
+                cpan.distro_at[row][col] = distro.index
+                cpan.distro_num[distro.name] = distro.index
                 cpan.distro.push( distro );
             };
 

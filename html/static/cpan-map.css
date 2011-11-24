@@ -219,6 +219,55 @@ div.noscript {
   margin: 0 0.4em 0 2em;
 }
 
+.cpan-map div.map-highlights {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.cpan-map div.map-highlights div.marker {
+  position: absolute;
+  border: 1px solid #0000ff;
+  background-image: url(images/highlight-bg.gif);
+}
+
+.cpan-map div.zoom0 div.map-highlights div.marker {
+  width: 1px;
+  height: 1px;
+}
+
+.cpan-map div.zoom1 div.map-highlights div.marker {
+  width: 2px;
+  height: 2px;
+}
+
+.cpan-map div.zoom2 div.map-highlights div.marker {
+  width: 3px;
+  height: 3px;
+}
+
+.cpan-map div.zoom3 div.map-highlights div.marker {
+  width: 4px;
+  height: 4px;
+}
+
+.cpan-map div.zoom4 div.map-highlights div.marker {
+  width: 6px;
+  height: 6px;
+}
+
+.cpan-map div.zoom5 div.map-highlights div.marker {
+  width: 8px;
+  height: 8px;
+}
+
+.cpan-map div.zoom6 div.map-highlights div.marker {
+  width: 16px;
+  height: 16px;
+  border: 2px dotted #0000ff;
+  opacity: 0.6;
+}
+
 .cpan-map div.map-plane-sight {
   position: absolute;
   display: none;
