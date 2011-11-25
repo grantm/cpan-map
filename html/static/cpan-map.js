@@ -139,7 +139,7 @@
             ajax_load_distro_dependencies( this.params.name, function(distro) {
                 context.set_highlights(distro.dep_highlights);
                 context.update_info('#tmpl-deps', distro)
-                       .title(distro.name + ' | ' + opt.app_title);
+                       .title('Dependencies | ' + distro.name + ' | ' + opt.app_title);
             });
         });
 
