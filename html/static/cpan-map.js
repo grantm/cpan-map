@@ -84,6 +84,9 @@
             $(window).resize(function() { app.trigger('resize'); });
             $el.find('.zoom-plus').click( function() { app.trigger('increase_zoom'); });
             $el.find('.zoom-minus').click( function() { app.trigger('decrease_zoom'); });
+            $el.find('.map-plane-sight').mousewheel( function(e, delta) {
+                app.trigger(delta < 0 ? 'increase_zoom' : 'decrease_zoom');
+            });
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
             });

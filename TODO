@@ -16,7 +16,6 @@ Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
 Author info: include profile links (github, twitter, etc)
 Centre map initial view
 Maintain position when zooming
-Zoom on scroll wheel
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Search by dist name - highlight match(es?)
 Search by maintainer name - highlight matches
