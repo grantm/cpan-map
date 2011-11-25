@@ -1,6 +1,6 @@
 /*
  * Map of CPAN
- * Copyright (c) 2011 Grant McLean <grant@mclean.net.nz>
+ * Copyright (c) 2011 Grant McLean <grantm@cpan.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -135,10 +135,19 @@
         });
 
         this.get('#/distro/:name/deps', function(context) {
-            return this.not_implemented();
+            var context = this.loading();
+            ajax_load_distro_dependencies( this.params.name, function(distro) {
+                context.set_highlights(distro.dep_highlights);
+                context.update_info('#tmpl-deps', distro)
+                       .title(distro.name + ' | ' + opt.app_title);
+            });
         });
 
         this.get('#/distro/:name/rdeps', function(context) {
+            return this.not_implemented();
+        });
+
+        this.get('#/module/:name', function(context) {
             return this.not_implemented();
         });
 
@@ -362,6 +371,63 @@
                 error: function() { $info_panel.removeClass('loading'); },
                 timeout: 5000
             });
+        }
+
+        function ajax_load_distro_dependencies(distro_name, handler) {
+            ajax_load_distro_detail(distro_name, function(distro) {
+                if(!distro.deps) {
+                    var fdeps = format_dependencies(distro.meta.dependency);
+                    distro.deps = fdeps.phased_deps;
+                    distro.dep_highlights = fdeps.highlights;
+                }
+                handler(distro);
+            });
+        }
+
+        function format_dependencies(dep_list) {
+            var by_phase = {};
+            var highlights = [];
+            for(var i = 0; i < dep_list.length; i++) {
+                var dep = dep_list[i];
+                phase = dep.phase || 'runtime';
+                if(!by_phase[phase]) {
+                    by_phase[phase] = [];
+                }
+                var fdep = format_dep(dep);
+                if(fdep.distro) {
+                    highlights.push(fdep.index);
+                }
+                by_phase[phase].push(fdep);
+            }
+            var phased_deps = [];
+            for(var key in by_phase) {
+                if(by_phase.hasOwnProperty(key)) {
+                    phased_deps.push({ 'name' : key, 'deps' : by_phase[key] });
+                }
+            }
+
+            return { 'phased_deps' : phased_deps, 'highlights' : highlights };
+        }
+
+        function format_dep(dep) {
+            var d = {
+                'module'  : dep.module,
+                'version' : dep.version || 0
+            };
+            var distro = distro_for_module( dep.module );
+            if(distro) {
+                d.index = distro.index;
+                d.distro = distro.name;
+            }
+            return d;
+        }
+
+        function distro_for_module(module) {
+            var i = cpan.distro_num[ module ];
+            if(i !== null) {
+                return cpan.distro[i];
+            }
+            return null;
         }
 
         function ajax_load_maint_detail(maint_id, handler) {

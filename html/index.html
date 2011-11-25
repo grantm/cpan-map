@@ -65,6 +65,25 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-deps">
+    <div class="info">
+      <p class="dist-name"><a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>
+      <p>Dependencies by phase</p>
+      <% for(var i = 0; i < deps.length; i++) { var phase = deps[i]; %>
+        <h2>Phase: “<%= phase.name %>”</h2>
+        <ul>
+        <% for(var j = 0; j < phase.deps.length; j++) { var dep = phase.deps[j]; %>
+          <% if(dep.distro) { %>
+          <li><a href="#/distro/<%= dep.distro %>"><%= dep.module %></a></li>
+          <% } else { %>
+          <li><a href="#/module/<%= dep.module %>"><%= dep.module %></a></li>
+          <% } %>
+        <% } %>
+        </ul>
+      <% } %>
+    </div>
+  </script>
+
   <script type="text/template" id="tmpl-maint">
     <div class="info">
       <p class="dist-name"><a href="https://metacpan.org/author/<%= maint.id %>" title="<%= (maint.name || maint.id) %>"><%= (maint.name || maint.id) %></a></p>
