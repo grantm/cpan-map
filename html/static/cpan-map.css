@@ -180,11 +180,10 @@ div.noscript {
   background-color: #333;
 }
 
-/*
 .cpan-map div.map-separator:hover {
   background-color: #444;
+  cursor: e-resize;
 }
-*/
 
 .cpan-map div.map-viewport {
   position: relative;

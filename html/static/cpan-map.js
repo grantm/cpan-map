@@ -92,6 +92,13 @@
             });
         });
 
+        this.bind('ajax_load_failed', function(e) {
+            this.$element().find('.map-info-panel')
+                .html('Ajax load failed')
+                .removeClass('loading');
+            return this;
+        });
+
         this.bind('resize', function(e) {
             size_controls( this.$element() );
         });
@@ -102,6 +109,15 @@
 
         this.bind('decrease_zoom', function(e) {
             set_zoom(this.$element(), opt.current_zoom - 1);
+        });
+
+        this.bind('separator_moved', function(e) {
+            var pos = opt.sep_pos
+            var $el = this.$element();
+            $el.find('.map-info-panel').width(pos);
+            $el.find('.map-panel').css({'padding-left': (pos + 10) + 'px'});
+            dim.info_width = pos;
+            this.trigger('resize');
         });
 
         this.bind('distro_hover', function(e, distro) {
@@ -199,6 +215,7 @@
             size_controls($el);
             set_initial_zoom($el);
             enable_plane_drag($el);
+            enable_separator_drag($el);
             attach_hover_handler($el);
         }
 
@@ -288,8 +305,6 @@
 
         function enable_plane_drag($el) {
             var $plane = $el.find('.map-plane');
-            opt.plane_drag_top  = 0;
-            opt.plane_drag_left = 0;
             $plane.draggable({
                 distance: 4,
                 start: function(e, ui) {
@@ -297,10 +312,23 @@
                 },
                 stop: function(e, ui) {
                     opt.dragging = false;
-                    var pos = ui.position;
-                    opt.plane_drag_top  = pos.top;
-                    opt.plane_drag_left = pos.left;
                 }
+            });
+        }
+
+        function enable_separator_drag($el) {
+            var left_margin = $el.find('.map-panel').offset().left;
+            var $sep = $el.find('.map-separator');
+            $sep.draggable({
+                axis: 'x',
+                containment: [left_margin, 0, 500, 0],
+                drag: function(e, ui) {
+                    var new_pos = ui.offset.left - left_margin;
+                    if(opt.sep_pos != new_pos) {
+                        opt.sep_pos = new_pos;
+                        app.trigger('separator_moved');
+                    }
+                },
             });
         }
 
@@ -308,12 +336,13 @@
             var $plane = $el.find('.map-plane');
             var cur_row = -1;
             var cur_col = -1;
-            var offset  = $plane.offset();
             var $plane_sight  = $el.find('.map-plane-sight');
             $plane.mousemove(function(e) {
                 if(opt.dragging) { return; }
-                col = Math.floor((e.pageX - offset.left - opt.plane_drag_left) / opt.scale);
-                row = Math.floor((e.pageY - offset.top - opt.plane_drag_top) / opt.scale);
+                var offset  = $plane.offset();
+                var voffset = $el.find('.map-viewport').offset();
+                col = Math.floor((e.pageX - offset.left) / opt.scale);
+                row = Math.floor((e.pageY - offset.top) / opt.scale);
                 if(row == cur_row && col == cur_col) { return; }
                 cur_row = row;
                 cur_col = col;
@@ -372,7 +401,7 @@
                     set_avatar_url(distro.maintainer);
                     handler(distro);
                 },
-                error: function() { $info_panel.removeClass('loading'); },
+                error: function() { app.trigger('ajax_load_failed') },
                 timeout: 5000
             });
         }
@@ -463,7 +492,7 @@
                     set_avatar_url(maint);
                     handler(maint);
                 },
-                error: function() { $info_panel.removeClass('loading'); },
+                error: function() { app.trigger('ajax_load_failed') },
                 timeout: 5000
             });
         }
@@ -532,8 +561,8 @@
                 $('<div class="map-panel loading" />').append(
                     $controls,
                     $('<div class="map-info-panel" />'),
-                    $('<div class="map-separator" />'),
-                    $viewport.html('<div class="init">Loading map data</div>')
+                    $viewport.html('<div class="init">Loading map data</div>'),
+                    $('<div class="map-separator" />')
                 )
             );
             $.ajax({
