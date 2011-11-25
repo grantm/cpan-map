@@ -288,6 +288,7 @@
             opt.plane_drag_top  = 0;
             opt.plane_drag_left = 0;
             $plane.draggable({
+                distance: 4,
                 start: function(e, ui) {
                     opt.dragging = true;
                 },
