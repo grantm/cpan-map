@@ -117,8 +117,9 @@ sub list_distros_by_ns {
             ^\S+                       # Module name
             \s+\S+                     # Version number
             \s+
-            (?:[^/]+/)+                # Path to maintainer's directory
+            (?:[^/]+/){2}              # Path to maintainer's directory
             ([^/]+)/                   # Maintainer's CPAN-ID
+            (?:[^/]+/)*                # Optional subdirs
             ([^/\s-]+(?:-[^/\s-]+)*)-  # Distribution name
         }x or next;
         $dist =~  s{-}{::}g;
