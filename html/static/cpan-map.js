@@ -26,6 +26,7 @@
         map_data_url          : 'cpan-map-data.txt',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
+        ajax_rdeps_search_url : 'http://api.metacpan.org/v0/release/_search?q=%2A&filter=release.dependency.module:%MOD_NAME%&fields=name&size=1000',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png',
@@ -163,7 +164,12 @@
         });
 
         this.get('#/distro/:name/rdeps', function(context) {
-            return this.not_implemented();
+            var context = this.loading();
+            ajax_load_distro_reverse_deps( this.params.name, function(distro) {
+                context.set_highlights(distro.rdep_highlights);
+                context.update_info('#tmpl-rdeps', distro)
+                       .title('Reverse Dependencies | ' + distro.name + ' | ' + opt.app_title);
+            });
         });
 
         this.get('#/module/:name', function(context) {
@@ -402,7 +408,7 @@
                     handler(distro);
                 },
                 error: function() { app.trigger('ajax_load_failed') },
-                timeout: 5000
+                timeout: 10000
             });
         }
 
@@ -463,6 +469,60 @@
             return null;
         }
 
+        function ajax_load_distro_reverse_deps(distro_name, handler) {
+            var i = cpan.distro_num[ distro_name ];
+            if(i === null) { return; }
+            var distro = cpan.distro[i];
+            if(distro == null) { return; }
+            if(distro.rdeps) {  //  Data is in cache already
+                handler(distro);
+                return;
+            }
+            var release_name = distro.name.replace(/::/g, '-');
+            var search_url = opt.ajax_rdeps_search_url.replace(/%MOD_NAME%/, release_name);
+            $.ajax({
+                url: search_url,
+                data: { application: 'cpan-map' },
+                dataType: 'jsonp',
+                success: function(data) {
+                    format_reverse_dependencies( distro, (data.hits || {}).hits || [] )
+                    handler(distro);
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function format_reverse_dependencies(distro, hits) {
+            distro.rdeps = [];
+            distro.rdep_highlights = [];
+            var seen = {}
+            for(var i = 0; i < hits.length; i++) {
+                var name = (hits[i].fields || {}).name;
+                if(name) {
+                    name = name.replace(/-[^-]+$/, '');
+                    name = name.replace(/-/g, '::');
+                    if(!seen[name]) {
+                        var d = cpan.distro_num[ name ];
+                        if(typeof(d) !== 'undefined') {
+                            seen[name] = { 'distro' : name, 'index' : d };
+                        }
+                        else {
+                            seen[name] = { 'distro' : name };
+                        }
+                    }
+                }
+            }
+            for(var key in seen) {
+                if(seen.hasOwnProperty(key)) {
+                    if(typeof(seen[key].index) !== 'undefined') {
+                        distro.rdep_highlights.push(seen[key].index);
+                    }
+                    distro.rdeps.push( seen[key] );
+                }
+            }
+        }
+
         function ajax_load_maint_detail(maint_id, handler) {
             var i = cpan.maint_num[ maint_id ];
             if(i === null) { return; }
@@ -493,7 +553,7 @@
                     handler(maint);
                 },
                 error: function() { app.trigger('ajax_load_failed') },
-                timeout: 5000
+                timeout: 10000
             });
         }
 

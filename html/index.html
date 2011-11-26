@@ -89,6 +89,29 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-rdeps">
+    <div class="info">
+      <% if(rdeps.length > 0) { %>
+        <% if(rdeps.length == 1) { %>
+          <p>1 distribution depends on <a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>
+        <% } else { %>
+          <p><%= rdeps.length %> distributions depend on <a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>
+        <% } %>
+        <ul>
+        <% for(var i = 0; i < rdeps.length; i++) { var dist = rdeps[i]; %>
+          <% if(dist.distro) { %>
+          <li><a href="#/distro/<%= dist.distro %>"><%= dist.distro %></a></li>
+          <% } else { %>
+          <li><a href="#/module/<%= dist.module %>"><%= dist.module %></a></li>
+          <% } %>
+        <% } %>
+          </ul>
+      <% } else {%>
+        <p>No distributions which depend on <a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>
+      <% } %>
+    </div>
+  </script>
+
   <script type="text/template" id="tmpl-maint">
     <div class="info">
       <p class="dist-name"><a href="https://metacpan.org/author/<%= maint.id %>" title="<%= (maint.name || maint.id) %>"><%= (maint.name || maint.id) %></a></p>
