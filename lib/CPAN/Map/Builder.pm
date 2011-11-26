@@ -123,6 +123,7 @@ sub list_distros_by_ns {
             ([^/\s-]+(?:-[^/\s-]+)*)-  # Distribution name
         }x or next;
         $dist =~  s{-}{::}g;
+        $dist =~  s{[.]pm$}{};
         my($ns) = split '::', $dist, 2;
         $ns_dist{lc($ns)}->{$dist} = $maintainer;
     }

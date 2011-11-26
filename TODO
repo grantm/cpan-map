@@ -4,7 +4,6 @@ Welcome: include a "What's this all about?" link
 Dist info: link to display ratings in a lightboxed iframe?
 Module: use ajax to determine distro and redirect
 Implement a 404 handler
-What's up with distro name 'CGI.pm'?
 Don't resize controls when info-pane resized
 Add a visible copyright to the UI
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
