@@ -34,6 +34,15 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-not-found">
+    <div class="not-found">
+      <h2>Not Found</h2>
+      <% if(what) { %>
+      <p>Unable to find <%= what %></p>
+      <% } %>
+    </div>
+  </script>
+
   <script type="text/template" id="tmpl-distro">
     <div class="info">
       <p class="dist-name"><a href="https://metacpan.org/release/<%= meta.distribution %>" title="<%= name %>"><%= name %></a></p>

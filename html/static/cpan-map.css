@@ -345,17 +345,20 @@ div.noscript {
   margin: 0.15em 0 0.15em 1em;
 }
 
+.cpan-map div.not-found,
 .cpan-map div.not-impl {
   margin: 1.2em 0;
   color: #333333;
 }
 
+.cpan-map div.not-found h2,
 .cpan-map div.not-impl h2 {
   font-size: 130%;
   text-align: center;
   margin: 0 0 1em 0;
 }
 
+.cpan-map div.not-found p,
 .cpan-map div.not-impl p {
   text-align: center;
 }
