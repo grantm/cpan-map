@@ -11,7 +11,6 @@ Handle transparent avatar images (eg: SHLOMIF) more gracefully
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
 Make 'Map of CPAN' title a 'home' button to reset the UI
-Extract Gravatar ID from metacpan author data and use that if different (e.g.: SILASMONK)
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass

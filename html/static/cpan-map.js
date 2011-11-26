@@ -552,6 +552,7 @@
                             data.location = data.country;
                         }
                     }
+                    delete( maint.avatar_url );
                     set_avatar_url(maint);
                     handler(maint);
                 },
@@ -575,6 +576,9 @@
 
         function set_avatar_url(maintainer) {
             if(maintainer.avatar_url) { return; }
+            if(maintainer.meta && maintainer.meta.gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
+                maintainer.gravatar_id = RegExp.$1;
+            }
             if(maintainer.gravatar_id) {
                 maintainer.avatar_url = opt.avatar_url_template.replace(/%ID%/, maintainer.gravatar_id);
             }
