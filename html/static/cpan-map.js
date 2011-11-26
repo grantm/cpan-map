@@ -100,6 +100,14 @@
             return this;
         });
 
+        this.bind('not_found', function(e, what) {
+            var html = this.tmpl(template_cache['#tmpl-not-found'], { 'what' : what });
+            this.$element().find('.map-info-panel')
+                .html(html)
+                .removeClass('loading');
+            return this;
+        });
+
         this.bind('resize', function(e) {
             size_controls( this.$element() );
         });
@@ -400,10 +408,11 @@
         }
 
         function ajax_load_distro_detail(distro_name, handler) {
-            var i = cpan.distro_num[ distro_name ];
-            if(i === null) { return; }
-            var distro = cpan.distro[i];
-            if(distro == null) { return; }
+            var distro = find_distro_by_name(distro_name);
+            if(!distro) {
+                app.trigger('not_found', 'a distro called "' + distro_name + '"');
+                return;
+            }
             var release_name = distro.name.replace(/::/g, '-');
             if(distro.meta) {  //  Data is in cache already
                 handler(distro);
@@ -429,6 +438,15 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function find_distro_by_name(name) {
+            var i = cpan.distro_num[ name ];
+            if(i === null) { return; }
+            if(cpan.distro[i]) {
+                return cpan.distro[i];
+            }
+            return null;
         }
 
         function ajax_load_distro_dependencies(distro_name, handler) {
@@ -543,10 +561,11 @@
         }
 
         function ajax_load_maint_detail(maint_id, handler) {
-            var i = cpan.maint_num[ maint_id ];
-            if(i === null) { return; }
-            var maint = cpan.maint[i];
-            if(maint == null) { return; }
+            var maint = find_maint_by_id(maint_id);
+            if(!maint) {
+                app.trigger('not_found', 'a maintainer called "' + maint_id + '"');
+                return;
+            }
             if(maint.meta) {  //  Data is in cache already
                 handler(maint);
                 return;
@@ -575,6 +594,14 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function find_maint_by_id(cpanid) {
+            var i = cpan.maint_num[ cpanid ];
+            if(i !== null) {
+                return cpan.maint[i];
+            }
+            return null;
         }
 
         function highlight_distros_for_maint(context, cpanid) {
