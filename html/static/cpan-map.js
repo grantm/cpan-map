@@ -193,6 +193,18 @@
             });
         });
 
+        this.post('#/search/distro', function(context) {
+            var name = (this.params.distro || '').trim();
+            this.redirect('#/distro/' + name);
+            return false;
+        });
+
+        this.post('#/search/maint', function(context) {
+            var name = (this.params.maint || '').toUpperCase().trim().replace(/\s.*$/, '');
+            this.redirect('#/maint/' + name);
+            return false;
+        });
+
 
         // Utility functions used by the app
 
@@ -215,10 +227,14 @@
                     $('<li class="zoom-plus"><a>+</a></li>')
                         .attr('title', opt.zoom_plus_label)
                 ),
-                $('<label>Distro</label>'),
-                $('<input class="map-hover-distro" value="" />').width(0),
-                $('<label>Maintainer</label>'),
-                $('<input class="map-hover-maint" value="" />').width(0)
+                $('<form class="form-dist" action="#/search/distro" method="POST" />').append(
+                    $('<label>Distro</label>'),
+                    $('<input class="map-hover-distro" name="distro" value="" />').width(0)
+                ),
+                $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
+                    $('<label>Maintainer</label>'),
+                    $('<input class="map-hover-maint" name="maint" value="" />').width(0)
+                )
             );
 
             size_controls($el);

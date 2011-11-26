@@ -93,6 +93,11 @@ div.noscript {
   overflow: hidden;
 }
 
+.cpan-map div.map-controls form {
+  display: inline;
+  float: left;
+}
+
 .cpan-map div.map-controls label {
   float: left;
   padding: 3px 6px 0 0;
