@@ -658,16 +658,32 @@
 
         function autocomplete_maint_name(req, resp) {
             var results = [];
+            var extra = [];
             var name = (req.term || '').toUpperCase();
             var len = name.length;
             if(len) {
                 for(var i = 0; i < cpan.maint.length; i++) {
                     if(cpan.maint[i].id.substr(0, len) === name) {
-                        results.push(cpan.maint[i].id + ' - ' + cpan.maint[i].name);
+                        results.push(cpan.maint[i].id + ' - ' + (cpan.maint[i].name || ''));
+                        if(results.length > 100) {
+                            return resp( results );
+                        }
+                    }
+                    else if(cpan.maint[i].id.indexOf(name) >= 0) {
+                        extra.push(cpan.maint[i].id + ' - ' + (cpan.maint[i].name || ''));
+                        if(extra.length > 100) {
+                            break;
+                        }
+                    }
+                    else if(cpan.maint[i].name && cpan.maint[i].name.toUpperCase().indexOf(name) >= 0) {
+                        extra.push(cpan.maint[i].id + ' - ' + cpan.maint[i].name);
+                        if(extra.length > 100) {
+                            break;
+                        }
                     }
                 }
             }
-            resp( results );
+            resp( results.concat(extra) );
         }
 
     });
