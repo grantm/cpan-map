@@ -19,8 +19,6 @@ Author info: include profile links (github, twitter, etc)
 Centre map initial view
 Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
-Search by dist name - highlight match(es?)
-Search by maintainer name - highlight matches
 Link to Module::Name page on MetaCPAN or Dist-Name if no match
 Plack app to serve content (and aggregate API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)

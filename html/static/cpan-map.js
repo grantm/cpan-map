@@ -92,6 +92,10 @@
                 source: autocomplete_maint_name,
                 select: function() { $el.find('.form-maint').submit(); }
             });
+            $el.find('.map-hover-distro').autocomplete({
+                source: autocomplete_distro_name,
+                select: function() { $el.find('.form-distro').submit(); }
+            });
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
             });
@@ -240,7 +244,7 @@
                     $('<li class="zoom-plus"><a>+</a></li>')
                         .attr('title', opt.zoom_plus_label)
                 ),
-                $('<form class="form-dist" action="#/search/distro" method="POST" />').append(
+                $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
                     $('<label>Distro</label>'),
                     $('<input class="map-hover-distro" name="distro" value="" />').width(0)
                 ),
@@ -680,6 +684,27 @@
                         if(extra.length > 100) {
                             break;
                         }
+                    }
+                }
+            }
+            resp( results.concat(extra) );
+        }
+
+        function autocomplete_distro_name(req, resp) {
+            var results = [];
+            var extra = [];
+            var name = (req.term || '').toLowerCase();
+            var len = name.length;
+            if(len) {
+                for(var i = 0; i < cpan.distro.length; i++) {
+                    if(cpan.distro[i].lname.substr(0, len) === name) {
+                        results.push(cpan.distro[i].name);
+                        if(results.length > 100) {
+                            return resp( results );
+                        }
+                    }
+                    else if(extra.length < 100 && cpan.distro[i].lname.indexOf(name) >= 0) {
+                        extra.push(cpan.distro[i].name);
                     }
                 }
             }
