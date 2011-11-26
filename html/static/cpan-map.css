@@ -363,3 +363,7 @@ div.noscript {
   text-align: center;
 }
 
+ul.ui-autocomplete {
+  max-height: 440px;
+  overflow-y: scroll;
+}
