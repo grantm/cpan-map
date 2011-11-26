@@ -109,6 +109,7 @@
             this.$element().find('.map-info-panel')
                 .html(html)
                 .removeClass('loading');
+            this.title('Not Found | ' + opt.app_title);
             return this;
         });
 
