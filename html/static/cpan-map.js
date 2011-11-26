@@ -164,6 +164,9 @@
         });
 
         this.get('#/distro/:name/rdeps', function(context) {
+            return this.not_implemented();
+            // It looked like this approach might work - it didn't :-(
+            // not sure it's even possible via a jsonp GET request
             var context = this.loading();
             ajax_load_distro_reverse_deps( this.params.name, function(distro) {
                 context.set_highlights(distro.rdep_highlights);
