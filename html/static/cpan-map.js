@@ -442,9 +442,14 @@
 
         function find_distro_by_name(name) {
             var i = cpan.distro_num[ name ];
-            if(i === null) { return; }
-            if(cpan.distro[i]) {
+            if(typeof(i) !== 'undefined') {
                 return cpan.distro[i];
+            }
+            name = name.toLowerCase();
+            for(var d = 0; d < cpan.distro.length; d++) {
+                if(cpan.distro[d].lname === name) {
+                    return cpan.distro[d];
+                }
             }
             return null;
         }
@@ -598,7 +603,7 @@
 
         function find_maint_by_id(cpanid) {
             var i = cpan.maint_num[ cpanid ];
-            if(i !== null) {
+            if(typeof(i) !== 'undefined') {
                 return cpan.maint[i];
             }
             return null;
@@ -728,6 +733,7 @@
                 var col = parseInt(rec[4], 16);
                 var distro = {
                     name: rec[0],
+                    lname: rec[0].toLowerCase(),
                     maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                     row: row,
                     col: col,
