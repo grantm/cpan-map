@@ -88,6 +88,10 @@
             $el.find('.map-plane-sight').mousewheel( function(e, delta) {
                 app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom');
             });
+            $el.find('.map-hover-maint').autocomplete({
+                source: autocomplete_maint_name,
+                select: function() { $el.find('.form-maint').submit(); }
+            });
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
             });
@@ -649,6 +653,20 @@
                     )
                 );
             }
+        }
+
+        function autocomplete_maint_name(req, resp) {
+            var results = [];
+            var name = (req.term || '').toUpperCase();
+            var len = name.length;
+            if(len) {
+                for(var i = 0; i < cpan.maint.length; i++) {
+                    if(cpan.maint[i].id.substr(0, len) === name) {
+                        results.push(cpan.maint[i].id + ' - ' + cpan.maint[i].name);
+                    }
+                }
+            }
+            resp( results );
         }
 
     });
