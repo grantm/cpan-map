@@ -105,7 +105,7 @@
       <h2>Distributions: (<%= distros.length %>)</h2>
       <ul>
       <% for(var i = 0; i < distros.length; i++) { %>
-          <li><a href="#/distro/<%= distros[i].name %>"><%= distros[i].name %></a></li>
+          <li><a href="#/distro/<%= distros[i].name %>" title="<%= distros[i].name %>"><%= distros[i].name %></a></li>
       <% } %>
       </ul>
   </script>
