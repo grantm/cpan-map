@@ -714,6 +714,16 @@
     });
 
 
+    app.error = function(message, exception) {
+        var html = $('<div class="info" />').append(
+            $('<p />').text(message)
+        );
+        if(exception) {
+            html.append( $('<p />').text( exception.toString() ) );
+        }
+        this.$element().find('.map-info-panel').html(html).removeClass('loading');
+    };
+
     // On document ready, Add the required UI elements, download the CPAN
     // metadata and then launch the Sammy application.
 
