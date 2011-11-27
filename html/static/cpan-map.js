@@ -754,7 +754,8 @@
                     $('<div class="map-info-panel" />'),
                     $viewport.html('<div class="init">Loading map data</div>'),
                     $('<div class="map-separator" />')
-                )
+                ),
+                $('<p class="copyright">Copyright &copy; 2011 <a href="#/maint/GRANTM">Grant McLean</a></p>')
             );
             $.ajax({
                 url: opt.map_data_url,

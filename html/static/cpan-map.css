@@ -50,6 +50,27 @@ div.noscript {
   font-weight: bold;
 }
 
+p.copyright {
+  position: absolute;
+  right: 20px;
+  bottom: 3px;
+  color: #444444;
+  font-size: 12px;
+}
+
+p.copyright:hover {
+  color: #888888;
+}
+
+p.copyright a {
+  color: #444444;
+  outline: none;
+}
+
+p.copyright:hover a {
+  color: #FF9B08;
+}
+
 .cpan-map {
   background-color: #333;
   padding: 20px;

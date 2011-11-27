@@ -4,7 +4,6 @@ Welcome: include a "What's this all about?" link
 Dist info: link to display ratings in a lightboxed iframe?
 Module: use ajax to determine distro and redirect
 Don't resize controls when info-pane resized
-Add a visible copyright to the UI
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
