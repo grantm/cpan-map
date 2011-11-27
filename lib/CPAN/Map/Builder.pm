@@ -120,10 +120,13 @@ sub list_distros_by_ns {
             (?:[^/]+/){2}              # Path to maintainer's directory
             ([^/]+)/                   # Maintainer's CPAN-ID
             (?:[^/]+/)*                # Optional subdirs
-            ([^/\s-]+(?:-[^/\s-]+)*)-  # Distribution name
+            ([^/\s-]+(?:-[^/\s-]+)*)[.-]  # Distribution name
         }x or next;
+        next if m{[.]pm(?:[.]gz)?$};
         $dist =~  s{-}{::}g;
-        $dist =~  s{[.]pm$}{};
+        $dist =~  s{::\d.+$}{};
+        $dist =~  s{[.].*$}{};
+        $dist =~  s{::[vV]\d+$}{};
         my($ns) = split '::', $dist, 2;
         $ns_dist{lc($ns)}->{$dist} = $maintainer;
     }
