@@ -163,6 +163,7 @@
             this.update_info('#tmpl-home', cpan.meta)
                 .set_highlights([])
                 .title(opt.app_title);
+            this.$element().find('.map-info-panel').removeClass('loaded');
         });
 
         this.get('#/distro/:name', function(context) {

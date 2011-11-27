@@ -26,11 +26,16 @@
   </div>
 
   <script type="text/template" id="tmpl-home">
-    <div class="info">
+    <div class="greeting">
+      <p class="logo"><img src="static/images/logo.png"></p>
       <p>Explore the Map of CPAN by zooming, panning and clicking with your mouse.</p>
-      <p>The map represents a total of <%= ('' + distribution_count).replace(/(\d\d\d)$/, ',$1') %>
-      distributions, containing <%= ('' + module_count).replace(/(\d\d\d)$/, ',$1') %>
-      modules.</p>
+      <p>You can search too.</p>
+      <table>
+        <tr><th>Maintainers</th><td><%= ('' + maintainer_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
+        <tr><th>Distributions</th><td><%= ('' + distribution_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
+        <tr><th>Modules</th><td><%= ('' + module_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
+      </table>
+      <p>Updated:<br><%= mod_list_date%></p>
     </div>
   </script>
 

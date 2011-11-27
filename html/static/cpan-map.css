@@ -309,6 +309,32 @@ p.copyright:hover a {
   display: block;
 }
 
+.cpan-map div.greeting  {
+  margin: 12px 8px;
+}
+
+.cpan-map div.greeting p.logo  {
+  text-align: center;
+  margin: 1.6em 0;
+}
+
+.cpan-map div.greeting p  {
+  margin: 0.8em 0;
+}
+
+.cpan-map div.greeting table  {
+  margin: 1.6em 0;
+}
+
+.cpan-map div.greeting table th  {
+  text-align: left;
+  padding-right: 1em;
+}
+
+.cpan-map div.greeting table td  {
+  text-align: right;
+}
+
 .cpan-map div.map-info-panel .info  {
   padding: 4px;
 }
