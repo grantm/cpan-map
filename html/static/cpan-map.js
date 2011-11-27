@@ -222,6 +222,12 @@
             return false;
         });
 
+        // Final 'catch all' route - display a 404 page
+        this.any(/^/, function(context) {
+            this.update_info('#tmpl-404', { 'hash_path' : window.location.hash});
+            this.$element().find('.map-info-panel').removeClass('loading');
+        });
+
 
         // Utility functions used by the app
 
