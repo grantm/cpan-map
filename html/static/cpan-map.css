@@ -112,6 +112,7 @@ p.copyright:hover a {
   width: 2000px;
   margin-bottom: 10px;
   overflow: hidden;
+  background-color: #333333;
 }
 
 .cpan-map div.map-controls form {
