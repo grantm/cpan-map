@@ -262,6 +262,7 @@
 
             size_controls($el);
             set_initial_zoom($el);
+            center_map($el);
             enable_plane_drag($el);
             enable_separator_drag($el);
             attach_hover_handler($el);
@@ -316,7 +317,25 @@
                     return set_zoom($el, i);
                 }
             }
-            return set_zoom($el, 0);
+            set_zoom($el, 0);
+        }
+
+        function center_map($el) {
+            var $viewport = $el.find('.map-viewport');
+            var width  = $viewport.width();
+            var height = $viewport.height();
+
+            var pwidth = cpan.meta.plane_cols * opt.scale;
+            if(pwidth < width) {
+                var xoffset = (width - pwidth) / 2;
+                $el.find('.map-plane').css({left: xoffset + 'px'});
+            }
+
+            var pheight = cpan.meta.plane_rows * opt.scale;
+            if(pheight < (height - 40)) {
+                var yoffset = (height - pheight - 40) / 2;
+                $el.find('.map-plane').css({top: yoffset + 'px'});
+            }
         }
 
         function set_zoom($el, new_zoom) {

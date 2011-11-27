@@ -13,7 +13,6 @@ Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
 Author info: include profile links (github, twitter, etc)
-Centre map initial view
 Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Link to Module::Name page on MetaCPAN or Dist-Name if no match
