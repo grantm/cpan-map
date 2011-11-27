@@ -79,6 +79,7 @@
         this.helper('set_highlights', function(highlights) {
             cpan.highlights = highlights;
             this.trigger('show_highlights');
+            return this;
         });
 
         this.bind('run', function(context, data) {
@@ -159,16 +160,16 @@
         });
 
         this.get('#/', function(context) {
-            this.update_info('#tmpl-home', cpan.meta);
-            this.set_highlights([]);
-            this.title(opt.app_title);
+            this.update_info('#tmpl-home', cpan.meta)
+                .set_highlights([])
+                .title(opt.app_title);
         });
 
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
-                context.set_highlights([ distro.index ]);
-                context.update_info('#tmpl-distro', distro)
+                context.set_highlights([ distro.index ])
+                       .update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
             });
         });
@@ -176,8 +177,8 @@
         this.get('#/distro/:name/deps', function(context) {
             this.loading();
             ajax_load_distro_dependencies( this.params.name, function(distro) {
-                context.set_highlights(distro.dep_highlights);
-                context.update_info('#tmpl-deps', distro)
+                context.set_highlights(distro.dep_highlights)
+                       .update_info('#tmpl-deps', distro)
                        .title('Dependencies | ' + distro.name + ' | ' + opt.app_title);
             });
         });
@@ -188,8 +189,8 @@
             // not sure it's even possible via a jsonp GET request
             var context = this.loading();
             ajax_load_distro_reverse_deps( this.params.name, function(distro) {
-                context.set_highlights(distro.rdep_highlights);
-                context.update_info('#tmpl-rdeps', distro)
+                context.set_highlights(distro.rdep_highlights)
+                       .update_info('#tmpl-rdeps', distro)
                        .title('Reverse Dependencies | ' + distro.name + ' | ' + opt.app_title);
             });
         });
@@ -236,8 +237,8 @@
 
         // Final 'catch all' route - display a 404 page
         this.any(/^/, function(context) {
-            this.update_info('#tmpl-404', { 'hash_path' : window.location.hash});
-            this.$element().find('.map-info-panel').removeClass('loading');
+            this.update_info('#tmpl-404', { 'hash_path' : window.location.hash})
+                .$element().find('.map-info-panel').removeClass('loading');
         });
 
 
