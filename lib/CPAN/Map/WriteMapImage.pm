@@ -36,7 +36,7 @@ sub write {
 
     my $im = new GD::Image($cols * SCALE, $rows * SCALE);
 
-    $bg_colour     = $im->colorAllocate(0xFF, 0xFF, 0xFF);
+    $bg_colour     = $im->colorAllocate(0x66, 0x66, 0x66);
     $label_colour  = $im->colorAllocate(0x44, 0x44, 0x44);
     $shadow_colour = $im->colorAllocate(0xEE, 0xEE, 0xEE);
     $border_colour = $im->colorAllocate(0x33, 0x33, 0x33);
