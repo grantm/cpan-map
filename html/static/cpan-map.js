@@ -26,6 +26,7 @@
         map_data_url          : 'cpan-map-data.txt',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
+        ajax_module_url_base  : 'http://api.metacpan.org/module/',
         ajax_rdeps_search_url : 'http://api.metacpan.org/v0/release/_search?q=%2A&filter=release.dependency.module:%MOD_NAME%&fields=name&size=1000',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
@@ -41,7 +42,8 @@
         distro     : [],
         distro_num : {},
         distro_at  : [],
-        highlights : []
+        highlights : [],
+        distro_for_module : {}
     };
 
     var dim;
@@ -193,7 +195,17 @@
         });
 
         this.get('#/module/:name', function(context) {
-            return this.not_implemented();
+            this.loading();
+            var mod_name = this.params.name;
+            context.title('Distribution lookup for ' + mod_name + ' | ' + opt.app_title);
+            ajax_map_module_to_distro(mod_name, function(distro_name) {
+                if(distro_name) {
+                    context.redirect('#/distro/' + distro_name);
+                }
+                else {
+                    context.trigger('not_found', 'a distribution containing the module "' + mod_name + '"');
+                }
+            });
         });
 
         this.get('#/maint/:cpanid', function(context) {
@@ -538,11 +550,15 @@
         }
 
         function distro_for_module(module) {
+            var distro_name = cpan.distro_for_module[module];
+            if(distro_name) {
+                return find_distro_by_name(distro_name);
+            }
             var i = cpan.distro_num[ module ];
-            if(i !== null) {
+            if(typeof(i) !== 'undefined') {
                 return cpan.distro[i];
             }
-            return null;
+            return;
         }
 
         function ajax_load_distro_reverse_deps(distro_name, handler) {
@@ -654,6 +670,27 @@
             }
             context.set_highlights(highlights);
             return distros;
+        }
+
+        function ajax_map_module_to_distro(mod_name, handler) {
+            var distro = distro_for_module(mod_name) || find_distro_by_name(mod_name);
+            if(distro) {
+                return handler(distro.name);
+            }
+            var search_url = opt.ajax_module_url_base + mod_name;
+            $.ajax({
+                url: search_url,
+                data: { application: 'cpan-map' },
+                dataType: 'jsonp',
+                success: function(data) {
+                    var distro_name = (data || {}).distribution;
+                    distro_name = distro_name.replace(/-/g, '::');
+                    cpan.distro_for_module[mod_name] = distro_name;
+                    handler(distro_name);
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
         }
 
         function set_avatar_url(maintainer) {

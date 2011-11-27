@@ -1,8 +1,6 @@
 Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
-Dist info: link to highlight reverse dependencies
 Welcome: include a "What's this all about?" link
 Dist info: link to display ratings in a lightboxed iframe?
-Module: use ajax to determine distro and redirect
 Don't resize controls when info-pane resized
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
@@ -12,6 +10,7 @@ Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
+Dist info: link to highlight reverse dependencies
 Author info: include profile links (github, twitter, etc)
 Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
