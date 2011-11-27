@@ -163,7 +163,7 @@
         });
 
         this.get('#/distro/:name', function(context) {
-            var context = this.loading();
+            this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
                 context.set_highlights([ distro.index ]);
                 context.update_info('#tmpl-distro', distro)
@@ -172,7 +172,7 @@
         });
 
         this.get('#/distro/:name/deps', function(context) {
-            var context = this.loading();
+            this.loading();
             ajax_load_distro_dependencies( this.params.name, function(distro) {
                 context.set_highlights(distro.dep_highlights);
                 context.update_info('#tmpl-deps', distro)
@@ -197,7 +197,7 @@
         });
 
         this.get('#/maint/:cpanid', function(context) {
-            var context = this.loading();
+            this.loading();
             var cpanid  = this.params.cpanid;
             var distros = highlight_distros_for_maint(context, cpanid);
             ajax_load_maint_detail(cpanid, function(maint) {
