@@ -34,6 +34,24 @@
         zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ] // must match CSS
     };
 
+    var social_links = {
+        'github'             : 'https://github.com/%ID%',
+        'twitter'            : 'http://twitter.com/%ID%',
+        'perlmonks'          : 'http://www.perlmonks.org/?node=%ID%',
+        'ohloh'              : 'https://www.ohloh.net/accounts/%ID%',
+        'stackoverflow'      : 'http://stackoverflow.com/users/%ID%/',
+        'coderwall'          : 'http://www.coderwall.com/%ID%',
+        'geeklist'           : 'http://geekli.st/%ID%',
+        'githhub-meets-cpan' : 'http://github-meets-cpan.com/user/%ID%',
+        'googleplus'         : 'http://plus.google.com/%ID%',
+        'lastfm'             : 'http://www.last.fm/user/%ID%',
+        'linkedin'           : 'http://www.linkedin.com/in/%ID%',
+        'prepan'             : 'http://prepan.org/user/%ID%',
+        'slideshare'         : 'http://www.slideshare.net/%ID%',
+        'facebook'           : 'https://facebook.com/%ID%',
+        'flickr'             : 'http://www.flickr.com/people/%ID%/'
+    };
+
     var cpan = {  // Populated via build_app() call before Sammy.run is called
         meta       : {},
         maint      : [],
@@ -646,6 +664,7 @@
                     }
                     delete( maint.avatar_url );
                     set_avatar_url(maint);
+                    format_social_links(maint);
                     handler(maint);
                 },
                 error: function() { app.trigger('ajax_load_failed') },
@@ -674,6 +693,38 @@
             return distros;
         }
 
+        function set_avatar_url(maintainer) {
+            if(maintainer.avatar_url) { return; }
+            if(maintainer.meta && maintainer.meta.gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
+                maintainer.gravatar_id = RegExp.$1;
+            }
+            if(maintainer.gravatar_id) {
+                maintainer.avatar_url = opt.avatar_url_template.replace(/%ID%/, maintainer.gravatar_id);
+            }
+            else {
+                maintainer.avatar_url = opt.default_avatar;
+            }
+        }
+
+        function format_social_links(maintainer) {
+            var sites = maintainer.meta.profile || [];
+            var links = [];
+            for(var i = 0; i < sites.length; i++) {
+                var site = sites[i];
+                var url = social_links[ site.name ];
+                if(url) {
+                    links.push({
+                        'name'  : site.name,
+                        'url'   : url.replace(/%ID%/, site.id),
+                        'id'    : site.id
+                    })
+                }
+            }
+            if(links.length > 0) {
+                maintainer.social_links = links;
+            }
+        }
+
         function ajax_map_module_to_distro(mod_name, handler) {
             var distro = distro_for_module(mod_name) || find_distro_by_name(mod_name);
             if(distro) {
@@ -693,19 +744,6 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
-        }
-
-        function set_avatar_url(maintainer) {
-            if(maintainer.avatar_url) { return; }
-            if(maintainer.meta && maintainer.meta.gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
-                maintainer.gravatar_id = RegExp.$1;
-            }
-            if(maintainer.gravatar_id) {
-                maintainer.avatar_url = opt.avatar_url_template.replace(/%ID%/, maintainer.gravatar_id);
-            }
-            else {
-                maintainer.avatar_url = opt.default_avatar;
-            }
         }
 
         function highlight_distros($layer) {

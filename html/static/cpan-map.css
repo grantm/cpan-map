@@ -402,6 +402,7 @@ p.copyright:hover a {
 .cpan-map div.not-found h2,
 .cpan-map div.not-impl h2 {
   font-size: 130%;
+  clear: left;
   text-align: center;
   margin: 0 0 1em 0;
 }
@@ -415,3 +416,42 @@ ul.ui-autocomplete {
   max-height: 440px;
   overflow-y: scroll;
 }
+
+.cpan-map div.map-info-panel ul.social {
+  float: left;
+  width: 100%;
+  margin: 0 0 1em 0;
+}
+
+.cpan-map div.map-info-panel ul.social li {
+  list-style: none;
+  background-image: url(images/social-icons.png);
+  background-repeat: no-repeat;
+  padding: 0;
+  margin: 0;
+  float: left;
+}
+
+ul.social li.soc-github            { background-position: 0    0px; }
+ul.social li.soc-perlmonks         { background-position: 0  -20px; }
+ul.social li.soc-stackoverflow     { background-position: 0  -40px; }
+ul.social li.soc-twitter           { background-position: 0  -60px; }
+ul.social li.soc-ohloh             { background-position: 0  -80px; }
+ul.social li.soc-coderwall         { background-position: 0 -100px; }
+ul.social li.soc-geeklist          { background-position: 0 -120px; }
+ul.social li.soc-github-meets-cpan { background-position: 0 -140px; }
+ul.social li.soc-googleplus        { background-position: 0 -160px; }
+ul.social li.soc-lastfm            { background-position: 0 -180px; }
+ul.social li.soc-linkedin          { background-position: 0 -200px; }
+ul.social li.soc-prepan            { background-position: 0 -220px; }
+ul.social li.soc-slideshare        { background-position: 0 -240px; }
+ul.social li.soc-facebook          { background-position: 0 -260px; }
+ul.social li.soc-flickr            { background-position: 0 -280px; }
+
+ul.social li a {
+  display: block;
+  width: 20px;
+  height: 20px;
+  font-size: 1px;
+}
+

@@ -146,6 +146,13 @@
       <% if(maint.meta.website && maint.meta.website[0]) { %>
           <p><a href="<%= maint.meta.website[0] %>">Web site</a></p>
       <% } %>
+      <% if(maint.social_links) { %>
+        <ul class="social">
+        <% for(var i = 0; i < maint.social_links.length; i++) { var site = maint.social_links[i]; %>
+            <li class="soc-<%= site.name %>"><a href="<%= site.url %>" title="<%= site.name + ' - ' + site.id %>"></a></li>
+        <% } %>
+        </ul>
+      <% } %>
       <h2>Distributions: (<%= distros.length %>)</h2>
       <ul>
       <% for(var i = 0; i < distros.length; i++) { %>
