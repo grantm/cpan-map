@@ -256,8 +256,13 @@
 
         // Final 'catch all' route - display a 404 page
         this.any(/^/, function(context) {
-            this.update_info('#tmpl-404', { 'hash_path' : window.location.hash})
-                .$element().find('.map-info-panel').removeClass('loading');
+            if(window.location.hash.length > 0) {
+                this.update_info('#tmpl-404', { 'hash_path' : window.location.hash})
+                    .$element().find('.map-info-panel').removeClass('loading');
+            }
+            else {
+                this.redirect('#/');
+            }
         });
 
 
