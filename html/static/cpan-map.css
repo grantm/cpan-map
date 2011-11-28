@@ -335,6 +335,11 @@ p.copyright:hover a {
   text-align: right;
 }
 
+.cpan-map div.greeting p.last-update  {
+  font-size: 80%;
+  color: #333333;
+}
+
 .cpan-map div.map-info-panel .info  {
   padding: 4px;
 }
