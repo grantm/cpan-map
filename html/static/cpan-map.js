@@ -432,7 +432,7 @@
                         opt.sep_pos = new_pos;
                         app.trigger('separator_moved');
                     }
-                },
+                }
             });
         }
 
