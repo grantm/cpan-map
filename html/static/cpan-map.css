@@ -254,6 +254,7 @@ p.copyright:hover a {
 .cpan-map div.map-highlights div.marker {
   position: absolute;
   border: 1px solid #0000ff;
+  font-size: 1pt;
   background-image: url(images/highlight-bg.gif);
 }
 
@@ -298,6 +299,7 @@ p.copyright:hover a {
   position: absolute;
   display: none;
   border: 1px solid red;
+  font-size: 1pt;
   background-color: rgba(255, 0, 0, 0.5);
   opacity: 0.6;
   box-shadow: 0px 0px 5px white;
