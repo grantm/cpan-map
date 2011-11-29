@@ -422,6 +422,7 @@ p.copyright:hover a {
 ul.ui-autocomplete {
   max-height: 440px;
   overflow-y: scroll;
+  font-size: 86%;
 }
 
 .cpan-map div.map-info-panel ul.social {
