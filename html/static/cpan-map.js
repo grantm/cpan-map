@@ -775,23 +775,18 @@
             var len = name.length;
             if(len) {
                 for(var i = 0; i < cpan.maint.length; i++) {
-                    if(cpan.maint[i].id.substr(0, len) === name) {
+                    var j = cpan.maint[i].id.indexOf(name);
+                    if(j === 0) {
                         results.push(cpan.maint[i].id + ' - ' + (cpan.maint[i].name || ''));
                         if(results.length > 100) {
                             return resp( results );
                         }
                     }
-                    else if(cpan.maint[i].id.indexOf(name) >= 0) {
+                    else if(extra.length < 100 && j > 0) {
                         extra.push(cpan.maint[i].id + ' - ' + (cpan.maint[i].name || ''));
-                        if(extra.length > 100) {
-                            break;
-                        }
                     }
-                    else if(cpan.maint[i].name && cpan.maint[i].name.toUpperCase().indexOf(name) >= 0) {
+                    else if(extra.length < 100 && cpan.maint[i].name && cpan.maint[i].name.toUpperCase().indexOf(name) >= 0) {
                         extra.push(cpan.maint[i].id + ' - ' + cpan.maint[i].name);
-                        if(extra.length > 100) {
-                            break;
-                        }
                     }
                 }
             }
