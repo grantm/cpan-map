@@ -27,7 +27,15 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
-        ajax_rdeps_search_url : 'http://api.metacpan.org/v0/release/_search?q=%2A&filter=release.dependency.module:%MOD_NAME%&fields=name&size=1000',
+        ajax_rdeps_search_url : 'http://api.metacpan.org/v0/release/_search?source='
+                                + '%7B%22fields%22%3A%5B%22distribution%22%5D%2C%22'
+                                + 'filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A'
+                                + '%7B%22release.dependency.module%22%3A%22DISTRO-NAME%22'
+                                + '%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A'
+                                + '%22released%22%7D%7D%2C%7B%22term%22%3A%7B%'
+                                + '22release.status%22%3A%22latest%22%7D%7D%5D%7D%2C'
+                                + '%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C'
+                                + '%22size%22%3A5000%7D',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png',
@@ -203,9 +211,6 @@
         });
 
         this.get('#/distro/:name/rdeps', function(context) {
-            return this.not_implemented();
-            // It looked like this approach might work - it didn't :-(
-            // not sure it's even possible via a jsonp GET request
             var context = this.loading();
             ajax_load_distro_reverse_deps( this.params.name, function(distro) {
                 context.set_highlights(distro.rdep_highlights)
@@ -595,8 +600,8 @@
                 handler(distro);
                 return;
             }
-            var release_name = distro.name.replace(/::/g, '-');
-            var search_url = opt.ajax_rdeps_search_url.replace(/%MOD_NAME%/, release_name);
+            // query uses Distro::Name rather than Distro-Name
+            var search_url = opt.ajax_rdeps_search_url.replace(/DISTRO-NAME/, distro.name);
             $.ajax({
                 url: search_url,
                 data: { application: 'cpan-map' },
@@ -615,27 +620,17 @@
             distro.rdep_highlights = [];
             var seen = {}
             for(var i = 0; i < hits.length; i++) {
-                var name = (hits[i].fields || {}).name;
+                var name = (hits[i].fields || {}).distribution;
                 if(name) {
-                    name = name.replace(/-[^-]+$/, '');
                     name = name.replace(/-/g, '::');
-                    if(!seen[name]) {
-                        var d = cpan.distro_num[ name ];
-                        if(typeof(d) !== 'undefined') {
-                            seen[name] = { 'distro' : name, 'index' : d };
-                        }
-                        else {
-                            seen[name] = { 'distro' : name };
-                        }
+                    var d = cpan.distro_num[ name ];
+                    if(typeof(d) !== 'undefined') {
+                        distro.rdeps.push( { 'distro' : name, 'index' : d } );
+                        distro.rdep_highlights.push(d);
                     }
-                }
-            }
-            for(var key in seen) {
-                if(seen.hasOwnProperty(key)) {
-                    if(typeof(seen[key].index) !== 'undefined') {
-                        distro.rdep_highlights.push(seen[key].index);
+                    else {
+                        distro.rdeps.push( { 'module' : name } );
                     }
-                    distro.rdeps.push( seen[key] );
                 }
             }
         }

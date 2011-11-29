@@ -10,7 +10,6 @@ Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
-Dist info: link to highlight reverse dependencies
 Author info: include profile links (github, twitter, etc)
 Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
@@ -21,6 +20,7 @@ Map image: render at multiple scales
 Map image: hi-res version to include submerged masses
 Map image: use opacity(?) to represent distribution freshness/age
 Switch to using CPANDB as data source?
+ or perhaps Parse::CPAN::Packages::Fast
 Add meaningful docs to lib/CPAN/Map.pm
 Sightseeing ...
   * Busiest maintainers
