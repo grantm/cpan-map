@@ -119,11 +119,17 @@
             });
             $el.find('.map-hover-maint').autocomplete({
                 source: autocomplete_maint_name,
-                select: function() { $el.find('.form-maint').submit(); }
+                select: function(event, ui) {
+                    $(this).val(ui.item.value);
+                    $el.find('.form-maint').submit();
+                }
             });
             $el.find('.map-hover-distro').autocomplete({
                 source: autocomplete_distro_name,
-                select: function() { $el.find('.form-distro').submit(); }
+                select: function(event, ui) {
+                    $(this).val(ui.item.value);
+                    $el.find('.form-distro').submit();
+                }
             });
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
