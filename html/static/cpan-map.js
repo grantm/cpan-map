@@ -21,6 +21,7 @@
     var opt = {
         app_selector          : 'body',
         app_title             : 'Map of CPAN',
+        intro_title           : 'Welcome to the Map of CPAN',
         zoom_minus_label      : 'Zoom map out',
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
@@ -192,10 +193,12 @@
         });
 
         this.get('#/', function(context) {
+            var $el = this.$element();
             this.update_info('#tmpl-home', cpan.meta)
                 .set_highlights([])
                 .title(opt.app_title);
-            this.$element().find('.map-info-panel').removeClass('loaded');
+            $el.find('.map-info-panel').removeClass('loaded');
+            $el.find('a.show-intro').click( show_intro_dialog );
         });
 
         this.get('#/distro/:name', function(context) {
@@ -314,6 +317,7 @@
             enable_plane_drag($el);
             enable_separator_drag($el);
             attach_hover_handler($el);
+            initialise_intro_dialog();
         }
 
         function size_controls($el) {
@@ -477,6 +481,28 @@
                     app.trigger('distro_select', distro);
                 }
             });
+        }
+
+        function initialise_intro_dialog() {
+            $('#intro').dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                draggable: false,
+                resizable: false,
+                show: "slide",
+                modal: true,
+                title: opt.intro_title,
+                buttons: { "Close": function() { $(this).dialog("close"); } }
+            });
+        }
+
+        function show_intro_dialog() {
+            var dlg_height = $(window).height() - 100;
+            var dlg_width  = $(window).width()  - 100;
+            $('#intro').dialog( "option", {
+                "height" : dlg_height,
+                "width"  : dlg_width
+            }).dialog('open');
         }
 
         function distro_at_row_col(row, col) {

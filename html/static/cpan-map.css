@@ -71,6 +71,11 @@ p.copyright:hover a {
   color: #FF9B08;
 }
 
+div.greeting a {
+  color: #d9bd00;
+  cursor: pointer;
+}
+
 .cpan-map {
   background-color: #333;
   padding: 20px;

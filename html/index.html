@@ -16,6 +16,9 @@
   <script type="text/javascript" src="static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js"></script>
   <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
   <script type="text/javascript" src="static/cpan-map.js"></script>
+  <style type="text/css">
+    #intro { display: none; }
+  </style>
 </head>
 <body>
 
@@ -25,11 +28,91 @@
     application.</p>
   </div>
 
+  <div id="intro">
+
+    <h2>What's this all about?</h2>
+
+    <p>The Map of CPAN is really just meant to be a bit of fun.  Search sites
+    like <a href="http://search.cpan.org/">search.cpan.org</a> and the shiny
+    new <a href="https://metacpan.org">metacpan.org</a> exist to help you find
+    what you're looking for.  The Map of CPAN allows you to find things you
+    <em>weren't looking for</em>.  Zoom in on things that catch your eye.
+    Explore patterns.  Follow links and dependency chains.  Discover stuff.
+    Surprise yourself.  <strong>It's about serendipity!</strong></p>
+
+    <p>Like many things (around 50,000 at <a
+    href="https://www.google.com/search?q=%22inspired+by+xkcd%22">last
+    count</a>!) the Map of CPAN was inspired by <a
+    href="http://xkcd.com/">xkcd</a>.  Randall Munroe's 2006 <a
+    href="http://xkcd.com/195/">Map of the Internet</a> looks laughably dated
+    now &ndash; it shows unallocated IPV4 address space!  But it was a fun
+    concept and it introduced me to the <a
+    href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert space-filling
+    curve</a>.</p>
+
+    <h2>What do the colours mean?</h2>
+
+    <p>Short story: Nothing.</p>
+
+    <p>Longer story: The map was created by taking the names of all the
+    distributions of Perl modules on CPAN and arranging them in alphabetical
+    order.  This has the effect of grouping together distributions that share
+    the same top-level namespace.  The long list of names (a single dimension)
+    was then mapped onto a two dimensional plane using the Hilbert curve
+    algorithm.  The important property of the algorithm is that a sequence of
+    consecutive items from the list will end up physically close to each other
+    on the plane.  Areas on the map are then <a
+    href="http://en.wikipedia.org/wiki/Four_color_theorem">assigned colours</a>
+    similar to the way colours are used on political maps to distinguish the
+    borders of adjacent countries.</p>
+
+    <p>To reduce the visual clutter, only the larger namespaces are coloured.
+    Namespaces containing 30 or more distributions are said to have reached
+    'critical mass' and are assigned a colour which differs from the colours of
+    all the immediate neighbours.  Namespaces with fewer modules are submerged
+    below the light blue primordial soup.  Over time as new modules are
+    uploaded, new areas will rise and continental drift will move and reshape
+    the existing areas.  (And existing areas will change colour).</p>
+
+    <h2>Acknowledgements</h2>
+
+    <p>Mapping to the Hilbert curve was done using Kevin Ryde's amazingly
+    comprehensive <a
+    href="https://metacpan.org/release/Math-PlanePath">Math::PlanePath</a>
+    &ndash; thanks Kevin!</p>
+
+    <p>The map was rendered as a PNG using Lincoln Stein's <a
+    href="https://metacpan.org/release/GD">GD</a> module &ndash; thanks
+    Lincoln!</p>
+
+    <p>All the cool data look-ups are made possible by the awesome <a
+    href="https://metacpan.org/">metacpan.org</a> site which is a fairly young
+    site but has delivered an amazing service in a very short time.  Thanks to
+    Olaf Alders and the <a href="https://metacpan.org/about/contributors">other
+    contributers</a>, many of whom hang out on <a
+    href="irc://irc.perl.org/metacpan">#metacpan on irc.perl.org</a> and have
+    helped me with API queries.</p>
+
+    <p>Of course the common threads that bind all this together are Larry Wall's
+    wonderful <a href="http://www.perl.org/">Perl programming language</a> and
+    the <a href="http://cpan.org/">Comprehensive Perl Archive Network</a>.
+
+    <p>The Map of CPAN user interface is of course more of a JavaScript
+    project than a Perl project.  Thanks to the all the contributers to
+    <a href="http://jquery.org/">jQuery</a>,
+    <a href="http://jqueryui.com/">jQuery UI</a> and
+    <a href="http://sammyjs.org/">Sammy.js</a>.</p>
+
+  </div>
+
   <script type="text/template" id="tmpl-home">
     <div class="greeting">
       <p class="logo"><img src="static/images/logo.png"></p>
       <p>Explore the Map of CPAN by zooming, panning and clicking with your mouse.</p>
       <p>You can search too.</p>
+
+      <p><a class="show-intro">Need more help?</a></p>
+
       <table>
         <tr><th>Maintainers</th><td><%= ('' + maintainer_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
         <tr><th>Distributions</th><td><%= ('' + distribution_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
