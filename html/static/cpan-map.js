@@ -499,6 +499,7 @@
         function show_intro_dialog() {
             var dlg_height = $(window).height() - 100;
             var dlg_width  = $(window).width()  - 100;
+            if(dlg_width > 800) { dlg_width = 800; }
             $('#intro').dialog( "option", {
                 "height" : dlg_height,
                 "width"  : dlg_width
