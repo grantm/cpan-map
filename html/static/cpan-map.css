@@ -166,6 +166,8 @@ div#intro p.note {
   margin-bottom: 10px;
   overflow: hidden;
   background-color: #333333;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .cpan-map div.map-controls form {
