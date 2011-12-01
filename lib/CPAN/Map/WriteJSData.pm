@@ -56,6 +56,7 @@ sub write {
 
     # Write out distro list
     print $out "[DISTRIBUTIONS]\n";
+    my $rating_data = $builder->rating_data;
     $i = 0;
     $builder->each_distro(sub {
         my($dist) = @_;
@@ -64,12 +65,17 @@ sub write {
                       : '';
         die "Can't find maintainer number for $dist->{maintainer}"
             unless defined $maintainer_num{ $dist->{maintainer} };
-        printf $out "%s,%s,%X,%X,%X\n",
+        my $score_count = '';
+        if(my $rating = $rating_data->{ $dist->{name} }) {
+            $score_count = ",$rating->[0],$rating->[1]";
+        }
+        printf $out "%s,%s,%X,%X,%X%s\n",
             $dist->{name},
             $ns_number,
             $maintainer_num{ $dist->{maintainer} },
             $dist->{row},
-            $dist->{col};
+            $dist->{col},
+            $score_count;
         $i++;
     });
     $builder->progress_message("- listed $i distros");

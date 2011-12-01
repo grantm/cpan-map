@@ -946,6 +946,10 @@
                         distro.ns = ns.name;
                     }
                 }
+                if(rec.length > 5) {
+                    distro.rating_score = rec[5];
+                    distro.rating_count = rec[6];
+                }
                 if(!cpan.distro_at[row]) {
                     cpan.distro_at[row] = [];
                 }

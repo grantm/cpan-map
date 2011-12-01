@@ -9,6 +9,7 @@ require File::Spec;
 require IO::Uncompress::Gunzip;
 require Math::PlanePath::HilbertCurve;
 require Statistics::Descriptive;
+require Text::CSV_XS;
 require Gravatar::URL;
 use Data::Dumper;
 
@@ -18,6 +19,7 @@ my $cpan_source_dir =  $ENV{HOME} . '/.cpan/sources';  # TODO portability fix
 my @defaults = (
     mod_list_source => $cpan_source_dir . '/modules/02packages.details.txt.gz',
     authors_source  => $cpan_source_dir . '/authors/01mailrc.txt.gz',
+    ratings_source  => 'all_ratings.csv',
     critical_mass   => 30,
     verbose         => 0,
     output_map_js   => 'CPAN::Map::WriteJSData',
@@ -33,6 +35,7 @@ sub generate {
     $self->map_distros_to_plane;
     $self->identify_mass_areas;
     $self->load_maintainer_data;
+    $self->load_ratings_data;
     $self->write_output_mappings;
 }
 
@@ -48,6 +51,7 @@ sub new {
 
 sub mod_list_source { shift->{mod_list_source}; }
 sub authors_source  { shift->{authors_source};  }
+sub ratings_source  { shift->{ratings_source};  }
 sub mod_list_date   { shift->{mod_list_date};   }
 sub module_count    { shift->{module_count};    }
 sub maintainer_count { shift->{maintainer_count}; }
@@ -56,6 +60,7 @@ sub mass_map        { shift->{mass_map};        }
 sub maintainers     { shift->{maintainers};     }
 sub total_distros   { shift->{total_distros};   }
 sub output_dir      { shift->{output_dir};      }
+sub rating_data     { shift->{rating_data};     }
 sub plane_rows      { shift->{max_row} + 1;     }
 sub plane_cols      { shift->{max_col} + 1;     }
 
@@ -377,6 +382,30 @@ sub each_maintainer {
     foreach my $id (sort keys %$maint) {
         $handler->($maint->{$id});
     }
+}
+
+
+sub load_ratings_data {
+    my $self = shift;
+
+    $self->progress_message("Loading ratings details");
+
+    my $csv = Text::CSV_XS->new ({ binary => 1, eol => $/ });
+    my $file = $self->ratings_source;
+    open my $fh, "<", $file or die "$file: $!";
+
+    my %rating_data;
+    while (my $row = $csv->getline($fh)) {
+        my($distro, $rating, $reviews) = @$row;
+        next if length($distro) == 0 || $distro eq 'distribution';
+        $distro =~ s/-/::/g;
+        $rating_data{$distro} = [ $rating, $reviews ];
+    }
+
+    $self->{rating_data} = \%rating_data;
+
+    my $count = scalar keys %rating_data;
+    $self->progress_message(" - found ratings for $count distributions");
 }
 
 
