@@ -166,8 +166,6 @@ div#intro p.note {
   margin-bottom: 10px;
   overflow: hidden;
   background-color: #333333;
-  -webkit-user-select: none;
-  -moz-user-select: none;
 }
 
 .cpan-map div.map-controls form {
@@ -181,6 +179,8 @@ div#intro p.note {
   color: #666666;
   font-size: 120%;
   font-variant: small-caps;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .cpan-map div.map-controls input {
@@ -206,6 +206,8 @@ div#intro p.note {
 .cpan-map ul.map-zoom li {
   float: left;
   margin: 3px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 .cpan-map ul.map-zoom li a {
