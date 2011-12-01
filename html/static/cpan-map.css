@@ -85,6 +85,7 @@ div#intro {
   color: #666666;
   line-height: 1.4em;
   padding: 10px 40px 40px 40px;
+  font-size: 14px;
 }
 
 div#intro h2 {
@@ -98,17 +99,29 @@ div#intro p {
 }
 
 div#intro a {
-  color: #997d00;
+  color: #bb3300;
   outline: none;
 }
 
 div#intro a:hover {
-  color: #bb3300;
+  color: #dcde00;
   text-decoration: underline;
 }
 
 div#intro strong {
   font-weight: bold;
+}
+
+div#intro ul li {
+  list-style: disc;
+  margin: 0.2em 2em 0.2em 2.4em;
+}
+
+div#intro p.note {
+  margin-top: 2em;
+  font-size: 80%;
+  padding-left: 1em;
+  text-indent: -1em;
 }
 
 .cpan-map {

@@ -30,26 +30,26 @@
 
   <div id="intro">
 
-    <h2>What's this all about?</h2>
+    <h2>What’s this all about?</h2>
 
     <p>The Map of CPAN is really just meant to be a bit of fun.  Search sites
     like <a href="http://search.cpan.org/">search.cpan.org</a> and the shiny
     new <a href="https://metacpan.org">metacpan.org</a> exist to help you find
-    what you're looking for.  The Map of CPAN allows you to find things you
-    <em>weren't looking for</em>.  <strong>Zoom</strong> in on things that
+    what you’re looking for.  The Map of CPAN allows you to find things you
+    <em>weren’t looking for</em>.  <strong>Zoom</strong> in on things that
     catch your eye.  <strong>Explore</strong> patterns.  Follow
     <strong>links</strong> and dependency chains.  <strong>Discover</strong>
-    stuff.  <strong>Surprise</strong> yourself.  <strong>It's about
+    stuff.  <strong>Surprise</strong> yourself.  <strong>It’s about
     serendipity!</strong></p>
 
     <p>The Map of CPAN was <a href="http://xkcd.com/">inspired by xkcd</a>
     (like about <a
-    href="https://www.google.com/search?q=%22inspired+by+xkcd%22">50,000 other
-    things</a>).  Randall Munroe's 2006 <a href="http://xkcd.com/195/">Map of
-    the Internet</a> looks laughably dated now &ndash; it shows unallocated
-    IPV4 address space!  But it was a fun concept and it introduced me to the
-    <a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert space-filling
-    curve</a>.</p>
+    href="https://www.google.com/search?q=%22inspired%20by%20xkcd%22">50,000
+    other things</a>).  Randall Munroe’s 2006 <a
+    href="http://xkcd.com/195/">Map of the Internet</a> may look laughably
+    dated now &ndash; it still shows unallocated IPV4 address space!  But it
+    was a fun concept and set the seed of creating maps out of virtually
+    nothing.</p>
 
     <h2>What do the colours mean?</h2>
 
@@ -60,7 +60,8 @@
     <strong>alphabetical order</strong>.  This has the effect of grouping
     together distributions that share the same top-level
     <strong>namespace</strong>.  The long list of names (a single dimension)
-    was then mapped onto a two dimensional plane using the Hilbert curve
+    was then mapped onto a two dimensional plane using the
+    <a href="http://en.wikipedia.org/wiki/Hilbert_curve">Hilbert curve</a>
     algorithm.  The important property of the algorithm is that a sequence of
     consecutive items from the list will end up physically close to each other
     on the plane.  Areas on the map are then <a
@@ -76,14 +77,45 @@
     modules are uploaded, new areas will rise; continental drift will move and
     reshape the existing areas; and existing areas will change colour.</p>
 
+    <h2>So what’s on the map</h2>
+
+    <p>Each small square on the map represents one
+    <strong>distribution</strong> that is available for download from CPAN.  A
+    distribution is a TAR or ZIP file containing one or more Perl
+    <strong>modules</strong> and associated metadata.  Each distribution
+    was uploaded by a <strong>maintainer</strong> &ndash; that might be the
+    original author of the modules or it might be someone else who has taken
+    over the job of maintenance.</p>
+
+    <p>When you move your mouse over the map, the name of the distribution* and
+    its maintainer will be displayed at the top of the page.  You can ...</p>
+
+    <ul>
+      <li>click on the map to see details of the selected distribution</li>
+      <li>click on ‘<strong>dependencies</strong>’ to find what other
+      distributions this one uses to do its work</li>
+      <li>click on ‘<strong>reverse dependencies</strong>’ to find all the other
+      distributions which use this one</li>
+      <li>click on the maintainer to see all their other distributions</li>
+      <li>type in one of the input boxes to <strong>search</strong> for a
+      distribution or a maintainer</li>
+    </ul>
+
+    <p class="note">* Perl modules use double-colons in their names like
+    ‘Algorithm::Knapsack’, whereas distributions usually use hyphens like
+    ‘Algorithm-Knapsack’. The map application uses colons everywhere even
+    though it’s mapping distributions.  You probably wouldn’t find that
+    confusing at all if it wasn’t for this note.</p>
+
+
     <h2>Acknowledgements</h2>
 
-    <p>Mapping to the Hilbert curve was done using Kevin Ryde's amazingly
+    <p>Mapping to the Hilbert curve was done using Kevin Ryde’s amazingly
     comprehensive <a
     href="https://metacpan.org/release/Math-PlanePath">Math::PlanePath</a>
     &ndash; thanks Kevin!</p>
 
-    <p>The map was rendered as a PNG using Lincoln Stein's <a
+    <p>The map was rendered as a PNG using Lincoln Stein’s <a
     href="https://metacpan.org/release/GD">GD</a> module &ndash; thanks
     Lincoln!</p>
 
@@ -95,15 +127,18 @@
     href="irc://irc.perl.org/metacpan">#metacpan on irc.perl.org</a> and have
     helped me with API queries.</p>
 
-    <p>Of course the common threads that bind all this together are Larry Wall's
+    <p>Of course the common threads that bind all this together are Larry Wall’s
     wonderful <a href="http://www.perl.org/">Perl programming language</a> and
     the <a href="http://cpan.org/">Comprehensive Perl Archive Network</a>.
 
-    <p>The interactive map is of course more of a JavaScript
+    <p>The implementation of the interactive map is more of a JavaScript
     project than a Perl project.  Thanks to the all the contributers to
     <a href="http://jquery.org/">jQuery</a>,
     <a href="http://jqueryui.com/">jQuery UI</a> and
     <a href="http://sammyjs.org/">Sammy.js</a>.</p>
+
+    <p>For an alternative visualisation of CPAN and its inter-dependencies,
+    check out the <a href="http://cpan-explorer.org/">CPAN Explorer</a>.</p>
 
   </div>
 

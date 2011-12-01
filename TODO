@@ -1,5 +1,4 @@
 Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
-Welcome: include a "What's this all about?" link
 Dist info: link to display ratings in a lightboxed iframe?
 Don't resize controls when info-pane resized
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
@@ -7,10 +6,8 @@ Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/REC
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
 Make 'Map of CPAN' title a 'home' button to reset the UI
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
-Info pane: Add author count to initial greeting message
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
-Author info: include profile links (github, twitter, etc)
 Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Link to Module::Name page on MetaCPAN or Dist-Name if no match
@@ -26,4 +23,3 @@ Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules
 Implement map using canvas rather than image?
-Link to http://cpan-explorer.org/
