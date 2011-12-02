@@ -118,12 +118,18 @@
             $el.find('.map-plane-sight').mousewheel( function(e, delta) {
                 app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom');
             });
+            $el.find('label.ctrl-maint').click(function() {
+                $el.find('.map-hover-maint').val('').focus();
+            });
             $el.find('.map-hover-maint').autocomplete({
                 source: autocomplete_maint_name,
                 select: function(event, ui) {
                     $(this).val(ui.item.value);
                     $el.find('.form-maint').submit();
                 }
+            });
+            $el.find('label.ctrl-distro').click(function() {
+                $el.find('.map-hover-distro').val('').focus();
             });
             $el.find('.map-hover-distro').autocomplete({
                 source: autocomplete_distro_name,
@@ -302,11 +308,11 @@
                         .attr('title', opt.zoom_plus_label)
                 ),
                 $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
-                    $('<label>Distro</label>'),
+                    $('<label class="ctrl-distro">Distro</label>'),
                     $('<input class="map-hover-distro" name="distro" value="" />').width(0)
                 ),
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
-                    $('<label>Maintainer</label>'),
+                    $('<label class="ctrl-maint">Maintainer</label>'),
                     $('<input class="map-hover-maint" name="maint" value="" />').width(0)
                 )
             );
