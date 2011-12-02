@@ -524,21 +524,30 @@ ul.ui-autocomplete {
   float: left;
 }
 
-ul.social li.soc-github            { background-position: 0    0px; }
-ul.social li.soc-perlmonks         { background-position: 0  -20px; }
-ul.social li.soc-stackoverflow     { background-position: 0  -40px; }
-ul.social li.soc-twitter           { background-position: 0  -60px; }
-ul.social li.soc-ohloh             { background-position: 0  -80px; }
-ul.social li.soc-coderwall         { background-position: 0 -100px; }
-ul.social li.soc-geeklist          { background-position: 0 -120px; }
-ul.social li.soc-github-meets-cpan { background-position: 0 -140px; }
-ul.social li.soc-googleplus        { background-position: 0 -160px; }
-ul.social li.soc-lastfm            { background-position: 0 -180px; }
-ul.social li.soc-linkedin          { background-position: 0 -200px; }
-ul.social li.soc-prepan            { background-position: 0 -220px; }
-ul.social li.soc-slideshare        { background-position: 0 -240px; }
-ul.social li.soc-facebook          { background-position: 0 -260px; }
-ul.social li.soc-flickr            { background-position: 0 -280px; }
+ul.social li.soc-github            { background-position: 0  -20px; }
+ul.social li.soc-perlmonks         { background-position: 0  -40px; }
+ul.social li.soc-stackoverflow     { background-position: 0  -60px; }
+ul.social li.soc-twitter           { background-position: 0  -80px; }
+ul.social li.soc-ohloh             { background-position: 0 -100px; }
+ul.social li.soc-coderwall         { background-position: 0 -120px; }
+ul.social li.soc-geeklist          { background-position: 0 -140px; }
+ul.social li.soc-github-meets-cpan { background-position: 0 -160px; }
+ul.social li.soc-googleplus        { background-position: 0 -180px; }
+ul.social li.soc-lastfm            { background-position: 0 -200px; }
+ul.social li.soc-linkedin          { background-position: 0 -220px; }
+ul.social li.soc-prepan            { background-position: 0 -240px; }
+ul.social li.soc-slideshare        { background-position: 0 -260px; }
+ul.social li.soc-facebook          { background-position: 0 -280px; }
+ul.social li.soc-flickr            { background-position: 0 -300px; }
+ul.social li.soc-youtube           { background-position: 0 -320px; }
+ul.social li.soc-gitorious         { background-position: 0 -340px; }
+ul.social li.soc-tumblr            { background-position: 0 -360px; }
+ul.social li.soc-bitbucket         { background-position: 0 -380px; }
+ul.social li.soc-reddit            { background-position: 0 -400px; }
+ul.social li.soc-digg              { background-position: 0 -420px; }
+ul.social li.soc-sourceforge       { background-position: 0 -440px; }
+ul.social li.soc-vimeo             { background-position: 0 -460px; }
+ul.social li.soc-pinboard          { background-position: 0 -480px; }
 
 ul.social li a {
   display: block;

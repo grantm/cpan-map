@@ -51,14 +51,23 @@
         'stackoverflow'      : 'http://stackoverflow.com/users/%ID%/',
         'coderwall'          : 'http://www.coderwall.com/%ID%',
         'geeklist'           : 'http://geekli.st/%ID%',
-        'githhub-meets-cpan' : 'http://github-meets-cpan.com/user/%ID%',
+        'github-meets-cpan'  : 'http://github-meets-cpan.com/user/%ID%',
         'googleplus'         : 'http://plus.google.com/%ID%',
         'lastfm'             : 'http://www.last.fm/user/%ID%',
         'linkedin'           : 'http://www.linkedin.com/in/%ID%',
         'prepan'             : 'http://prepan.org/user/%ID%',
         'slideshare'         : 'http://www.slideshare.net/%ID%',
         'facebook'           : 'https://facebook.com/%ID%',
-        'flickr'             : 'http://www.flickr.com/people/%ID%/'
+        'flickr'             : 'http://www.flickr.com/people/%ID%/',
+        'youtube'            : 'http://www.youtube.com/user/%ID%',
+        'gitorious'          : 'https://gitorious.org/~%ID%',
+        'tumblr'             : 'http://%ID%.tumblr.com/',
+        'bitbucket'          : 'http://bitbucket.org/%ID%',
+        'reddit'             : 'http://www.reddit.com/user/%ID%',
+        'digg'               : 'http://digg.com/%ID%',
+        'sourceforge'        : 'http://sourceforge.net/users/%ID%',
+        'vimeo'              : 'http://vimeo.com/%ID%',
+        'pinboard'           : 'http://pinboard.in/u:%ID%'
     };
 
     var cpan = {  // Populated via build_app() call before Sammy.run is called
