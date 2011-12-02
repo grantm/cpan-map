@@ -745,7 +745,7 @@
             for(var i = 0; i < sites.length; i++) {
                 var site = sites[i];
                 var url = social_links[ site.name ];
-                if(url) {
+                if(url && site.id) {
                     links.push({
                         'name'  : site.name,
                         'url'   : url.replace(/%ID%/, site.id),
