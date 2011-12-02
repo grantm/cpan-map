@@ -294,14 +294,6 @@ div#intro p.note {
   float: left;
 }
 
-.cpan-map div.map-hover-panel {
-  float: left;
-}
-
-.cpan-map div.map-hover-panel label {
-  margin: 0 0.4em 0 2em;
-}
-
 .cpan-map div.map-highlights {
   position: absolute;
   top: 0;
