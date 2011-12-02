@@ -1,5 +1,5 @@
-Dist info: display CPAN ratings (pull http://cpanratings.perl.org/csv/all_ratings.csv ?)
-Dist info: link to display ratings in a lightboxed iframe?
+Map image: render at multiple scales
+Dist info: download ratings from http://cpanratings.perl.org/csv/all_ratings.csv
 Don't resize controls when info-pane resized
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
@@ -13,12 +13,10 @@ Click to select - 'lock' selection (turn off hover handling) until the next clic
 Link to Module::Name page on MetaCPAN or Dist-Name if no match
 Plack app to serve content (and aggregate API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)
-Map image: render at multiple scales
 Map image: hi-res version to include submerged masses
 Map image: use opacity(?) to represent distribution freshness/age
 Switch to using CPANDB as data source?
  or perhaps Parse::CPAN::Packages::Fast
-Add meaningful docs to lib/CPAN/Map.pm
 Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules
