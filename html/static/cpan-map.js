@@ -317,11 +317,11 @@
                         .attr('title', opt.zoom_plus_label)
                 ),
                 $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
-                    $('<label class="ctrl-distro">Distro</label>'),
+                    $('<label class="ctrl-distro" title="Click to clear">Distro</label>'),
                     $('<input class="map-hover-distro" name="distro" value="" />').width(0)
                 ),
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
-                    $('<label class="ctrl-maint">Maintainer</label>'),
+                    $('<label class="ctrl-maint" title="Click to clear">Maintainer</label>'),
                     $('<input class="map-hover-maint" name="maint" value="" />').width(0)
                 )
             );
