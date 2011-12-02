@@ -183,6 +183,10 @@ div#intro p.note {
   -moz-user-select: none;
 }
 
+.cpan-map div.map-controls form label:hover {
+  color: #888888;
+}
+
 .cpan-map div.map-controls input {
   float: left;
   padding: 4px 3px 2px 3px;
