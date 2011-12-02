@@ -949,6 +949,10 @@
                 if(rec.length > 5) {
                     distro.rating_score = rec[5];
                     distro.rating_count = rec[6];
+                    distro.rating_stars = Math.floor(parseFloat(rec[5]) * 2 + 0.5) * 5;
+                }
+                else {
+                    distro.rating_stars = null;
                 }
                 if(!cpan.distro_at[row]) {
                     cpan.distro_at[row] = [];

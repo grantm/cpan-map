@@ -457,6 +457,33 @@ div#intro p.note {
   margin: 0.15em 0 0.15em 1em;
 }
 
+.cpan-map div.cpanratings {
+  position: relative;
+  padding-top: 2px;
+  text-indent: 100px;
+  color: #888888;
+  font-size: 90%;
+}
+
+.cpan-map div.cpanratings div.stars {
+    position: absolute;
+    top: -1px;
+    width: 96px;
+    height: 20px;
+    background-image: url(images/rating-stars.png);
+}
+
+.cpan-map div.cpanratings div.stars.s5  { background-position: 0  -20px; }
+.cpan-map div.cpanratings div.stars.s10 { background-position: 0  -40px; }
+.cpan-map div.cpanratings div.stars.s15 { background-position: 0  -60px; }
+.cpan-map div.cpanratings div.stars.s20 { background-position: 0  -80px; }
+.cpan-map div.cpanratings div.stars.s25 { background-position: 0 -100px; }
+.cpan-map div.cpanratings div.stars.s30 { background-position: 0 -120px; }
+.cpan-map div.cpanratings div.stars.s35 { background-position: 0 -140px; }
+.cpan-map div.cpanratings div.stars.s40 { background-position: 0 -160px; }
+.cpan-map div.cpanratings div.stars.s45 { background-position: 0 -180px; }
+.cpan-map div.cpanratings div.stars.s50 { background-position: 0 -200px; }
+
 .cpan-map div.not-found,
 .cpan-map div.not-impl {
   margin: 1.2em 0;
