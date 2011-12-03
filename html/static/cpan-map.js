@@ -766,11 +766,20 @@
                 var site = sites[i];
                 var url = social_links[ site.name ];
                 if(url && site.id) {
-                    links.push({
-                        'name'  : site.name,
-                        'url'   : url.replace(/%ID%/, site.id),
-                        'id'    : site.id
-                    })
+                    if(site.id.match(/^https?:/)) {
+                        links.push({
+                            'name'  : site.name,
+                            'url'   : site.id,
+                            'id'    : site.id.replace(/^.*\/([^\/]+)\/?/, '$1')
+                        });
+                    }
+                    else {
+                        links.push({
+                            'name'  : site.name,
+                            'url'   : url.replace(/%ID%/, site.id),
+                            'id'    : site.id
+                        });
+                    }
                 }
             }
             if(links.length > 0) {
