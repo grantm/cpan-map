@@ -124,6 +124,10 @@
             $(window).resize(function() { app.trigger('resize'); });
             $el.find('.zoom-plus').click( function() { app.trigger('increase_zoom'); });
             $el.find('.zoom-minus').click( function() { app.trigger('decrease_zoom'); });
+            $el.find('label.ctrl-zoom').click(function() {
+                set_initial_zoom($el);
+                center_map($el);
+            });
             $el.find('.map-plane-sight').mousewheel( function(e, delta) {
                 app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom');
             });
@@ -309,7 +313,7 @@
             );
 
             $el.find('.map-controls').append(
-                $('<label>Zoom</label>'),
+                $('<label class="ctrl-zoom" title="Click to reset">Zoom</label>'),
                 $('<ul class="map-zoom" />') .append(
                     $('<li class="zoom-minus"><a>&ndash;</a></li>')
                         .attr('title', opt.zoom_minus_label),
