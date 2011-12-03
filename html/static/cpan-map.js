@@ -699,6 +699,7 @@
                 dataType: 'jsonp',
                 success: function(data) {
                     maint.meta = data;
+                    maint.name = data.name;
                     if(data.city) {
                         data.location = data.city;
                         if(data.country) {
