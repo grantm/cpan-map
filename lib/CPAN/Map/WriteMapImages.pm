@@ -27,10 +27,13 @@ has 'builder' => (
     weak_ref => 1,
 );
 
+has 'scale' => (
+    is       => 'rw',
+    isa      => 'Int',
+);
 
-use constant SCALE          => 10;  # Image scaling factor
+
 use constant LINE_THICKNESS => 1;
-
 use constant NORTH          => 1;
 use constant SOUTH          => 2;
 use constant EAST           => 4;
@@ -44,16 +47,20 @@ sub write {
 
     my $self = $class->new( builder => $builder, output_dir => $output_dir );
 
-    $self->write_image_file($builder);
+    foreach my $scale ( @{ $builder->zoom_scales } ) {
+        $self->scale($scale);
+        $self->write_image_file($builder, $scale);
+    }
 }
 
 
 sub write_image_file {
-    my($self, $builder) = @_;
+    my($self, $builder, $scale) = @_;
 
     my $output_path = File::Spec->catfile(
         $self->output_dir, $self->output_filename
     );
+    $output_path =~ s{(?=[.]png$)}{-$scale};
     $builder->progress_message(" - writing PNG image to $output_path");
 
     my $font = $builder->label_font_path or $builder->warning_message(
@@ -66,12 +73,12 @@ sub write_image_file {
     my $rows = $builder->plane_rows;
     my $cols = $builder->plane_cols;
 
-    my $im = new GD::Image($cols * SCALE, $rows * SCALE);
+    my $im = new GD::Image($cols * $scale, $rows * $scale);
 
     $bg_colour     = $im->colorAllocate(0x66, 0x66, 0x66);
     $label_colour  = $im->colorAllocate(0x44, 0x44, 0x44);
     $shadow_colour = $im->colorAllocate(0xEE, 0xEE, 0xEE);
-    $border_colour = $im->colorAllocate(0x33, 0x33, 0x33);
+    $border_colour = $im->colorAllocate(0x55, 0x55, 0x55);
     @map_colour = (
         $im->colorAllocate(0xBB, 0xDD, 0xFF),
         $im->colorAllocate(0x7A, 0xFF, 0x67),
@@ -96,8 +103,8 @@ sub write_image_file {
     $builder->each_distro(sub {
         my($distro) = @_;
         my $colour = $map_colour[ $dist_colour->($distro) ];
-        my $borders = border_flags($distro, $builder, $dist_colour);
-        draw_dist($im, $distro->col, $distro->row, $colour, $borders);
+        my $borders = $self->border_flags($distro, $builder, $dist_colour);
+        $self->draw_distro($im, $distro->col, $distro->row, $colour, $borders);
     });
 
 
@@ -106,7 +113,7 @@ sub write_image_file {
     if($font) {
         $builder->each_namespace(sub {
             my($ns) = @_;
-            add_mass_label($im, $font, $ns);
+            $self->add_mass_label($im, $font, $ns);
         });
     }
 
@@ -121,7 +128,7 @@ sub write_image_file {
 
 
 sub border_flags {
-    my($distro, $builder, $dist_colour) = @_;
+    my($self, $distro, $builder, $dist_colour) = @_;
 
     my $colour  = $dist_colour->($distro);
     my $row     = $distro->row;
@@ -153,37 +160,51 @@ sub border_flags {
 }
 
 
-sub draw_dist {
-    my($im, $col, $row, $colour, $borders) = @_;
+sub draw_distro {
+    my($self, $im, $col, $row, $colour, $borders) = @_;
 
-    my $x1 = $col * SCALE;
-    my $y1 = $row * SCALE;
-    my $x2 = $x1 + SCALE - 1;
-    my $y2 = $y1 + SCALE - 1;
+    my $scale = $self->scale;
+
+    my $x1 = $col * $scale;
+    my $y1 = $row * $scale;
+    my $x2 = $x1 + $scale - 1;
+    my $y2 = $y1 + $scale - 1;
     $im->filledRectangle($x1, $y1, $x2, $y2, $colour);
 
-    if($borders & NORTH) {
-        $im->rectangle($x1, $y1 - 1, $x2, $y1, $border_colour);
+    if($scale > 6) {
+        if($borders & NORTH) {
+            $im->rectangle($x1, $y1 - 1, $x2, $y1, $border_colour);
+        }
+        if($borders & SOUTH) {
+            $im->rectangle($x1, $y2, $x2, $y2 + 1, $border_colour);
+        }
+        if($borders & EAST) {
+            $im->rectangle($x2, $y1, $x2 + 1, $y2, $border_colour);
+        }
+        if($borders & WEST) {
+            $im->rectangle($x1 - 1, $y1, $x1, $y2, $border_colour);
+        }
     }
-    if($borders & SOUTH) {
-        $im->rectangle($x1, $y2, $x2, $y2 + 1, $border_colour);
-    }
-    if($borders & EAST) {
-        $im->rectangle($x2, $y1, $x2 + 1, $y2, $border_colour);
-    }
-    if($borders & WEST) {
-        $im->rectangle($x1 - 1, $y1, $x1, $y2, $border_colour);
+    else {
+        if($borders & SOUTH) {
+            $im->line($x1, $y2, $x2, $y2, $border_colour);
+        }
+        if($borders & EAST) {
+            $im->line($x2, $y1, $x2, $y2, $border_colour);
+        }
     }
 }
 
 
 sub add_mass_label {
-    my($im, $font, $ns) = @_;
+    my($self, $im, $font, $ns) = @_;
 
-    my $x = SCALE * $ns->label_x;
-    my $y = SCALE * $ns->label_y;
-    my $w = SCALE * $ns->label_w;
-    my $h = SCALE * $ns->label_h;
+    my $scale = $self->scale;
+
+    my $x = $scale * $ns->label_x;
+    my $y = $scale * $ns->label_y;
+    my $w = $scale * $ns->label_w;
+    my $h = $scale * $ns->label_h;
     if(0) {
         $im->rectangle(
             $x - $w / 2,
@@ -195,7 +216,9 @@ sub add_mass_label {
     }
 
     my $name = $ns->name or return;
-    my $size = font_size_from_mass($ns);
+    my $size = $self->font_size_from_mass($ns);
+    return if $size < 5; # Don't bother if it's unreadably small
+
     my @bounds = GD::Image->stringFT(
         $label_colour, $font, $size, 0, 0, 0, $name
     );
@@ -203,18 +226,30 @@ sub add_mass_label {
     my $height = abs($bounds[7] - $bounds[1]);
     my $text_x = $x - $width / 2;
     my $text_y = $y + $height / 2;
+
+    my @thick_border = (
+                    [ -1, -2 ], [  0, -2 ], [  1, -2 ],
+        [ -2, -1 ], [ -1, -1 ], [  0, -1 ], [  1, -1 ], [  2, -1 ],
+        [ -2,  0 ], [ -1,  0 ],             [  1,  0 ], [  2,  0 ],
+        [ -2,  1 ], [ -1,  1 ], [  0,  1 ], [  1,  1 ], [  2,  1 ],
+                    [ -1,  2 ], [  0,  2 ], [  1,  2 ],
+    );
+
+    my @thin_border = (
+        [ -1, -1 ], [  0, -1 ], [  1, -1 ],
+        [ -1,  0 ],             [  1,  0 ],
+        [ -1,  1 ], [  0,  1 ], [  1,  1 ],
+    );
+
+    # Don't anti-alias small font sizes (negative colour index)
+    my $text_colour = $size < 8 ? $label_colour * -1 : $label_colour;
+
     foreach my $delta (
-        [ -2, -2, $shadow_colour ],
-        [  0, -2, $shadow_colour ],
-        [  2, -2, $shadow_colour ],
-        [  2,  0, $shadow_colour ],
-        [  2,  2, $shadow_colour ],
-        [  0,  2, $shadow_colour ],
-        [ -2,  2, $shadow_colour ],
-        [ -2,  0, $shadow_colour ],
-        [  0,  0, $label_colour  ],
+        ($size < 10 ? @thin_border : @thick_border),
+        [ 0, 0 ],
     ) {
-        my($delta_x, $delta_y, $colour) = @$delta;
+        my($delta_x, $delta_y) = @$delta;
+        my $colour = ($delta_x | $delta_y) ? $shadow_colour : $text_colour;
         $im->stringFT(
             $colour,
             $font,
@@ -230,12 +265,17 @@ sub add_mass_label {
 
 
 sub font_size_from_mass {
-    my($ns) = @_;
+    my($self, $ns) = @_;
+
+    my $scale = $self->scale;
+    my $boost = $scale < 6 ? 1.3 : 1;
 
     my $mass = $ns->mass;
-    return 26 if $mass > 400;
-    return 18 if $mass > 180;
-    return 12;
+    return 2.8 * $scale * $boost if $mass > 400;
+    return 2.3 * $scale * $boost if $mass > 250;
+    return 1.8 * $scale * $boost if $mass > 180;
+    return 1.5 * $scale * $boost if $mass >  70;
+    return 1.2 * $scale * $boost;
 }
 
 

@@ -70,13 +70,16 @@ sub write_metadata {
 
     print $out "[META]\n";
     printf $out "mod_list_date,%s\n", $builder->mod_list_date;
+    printf $out "slug_of_the_day,%s\n", $builder->slug_of_the_day;
     printf $out "module_count,%d\n", $builder->module_count;
     printf $out "distribution_count,%d\n", $builder->distro_count;
     printf $out "maintainer_count,%d\n", $builder->maintainer_count;
     printf $out "map_image,%s\n", "cpan-map.png";
     printf $out "plane_rows,%s\n", $builder->plane_rows;
     printf $out "plane_cols,%s\n", $builder->plane_cols;
-    printf $out "max_scale,%s\n", 10;
+
+    my $zoom_scales = join ',', @{ $builder->zoom_scales };
+    print $out "zoom_scales,$zoom_scales\n";
 }
 
 

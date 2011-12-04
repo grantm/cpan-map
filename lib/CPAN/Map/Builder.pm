@@ -37,6 +37,15 @@ has 'output_dir' => (
     ),
 );
 
+has 'zoom_scales' => (
+    is      => 'ro',
+    isa     => 'ArrayRef[Int]',
+    lazy    => 1,
+    default => sub { [ 3, 4, 5, 6, 8, 10, 20 ] },
+    # Note: additions to the zoom-scales list here must be accompanied by
+    # corresponding changes to the CSS file
+);
+
 has 'mod_list_source' => (
     is      => 'rw',
     isa     => 'Str',

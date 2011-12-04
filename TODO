@@ -1,4 +1,6 @@
 Map image: render at multiple scales
+Maintain centering around hover-point when zooming
+Fix re-requesting of image when zooming
 Dist info: download ratings from http://cpanratings.perl.org/csv/all_ratings.csv
 Don't resize controls when info-pane resized
 Handle transparent avatar images (eg: SHLOMIF) more gracefully
@@ -8,7 +10,6 @@ Make 'Map of CPAN' title a 'home' button to reset the UI
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
-Maintain position when zooming
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
 Link to Module::Name page on MetaCPAN or Dist-Name if no match
 Plack app to serve content (and aggregate API queries)

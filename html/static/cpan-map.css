@@ -317,6 +317,10 @@ div#intro p.note {
   background-image: url(images/highlight-bg.gif);
 }
 
+.cpan-map div.map-cache {
+  display: none;
+}
+
 .cpan-map div.zoom0 div.map-highlights div.marker {
   width: 1px;
   height: 1px;

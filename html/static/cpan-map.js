@@ -39,8 +39,7 @@
                                 + '%22size%22%3A5000%7D',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
-        default_avatar        : 'static/images/no-photo.png',
-        zoom_scales           : [ 3, 4, 5, 6, 8, 10, 20 ] // must match CSS
+        default_avatar        : 'static/images/no-photo.png'
     };
 
     var social_links = {
@@ -306,7 +305,7 @@
             $el.find('.map-panel').removeClass('loading');
             $el.find('.map-viewport').html('').append(
                 $('<div class="map-plane" />').append(
-                    $('<img class="map" src="' + cpan.meta.map_image + '" />'),
+                    $('<img class="map" />'),
                     $('<div class="map-highlights" />'),
                     $('<div class="map-plane-sight" />')
                 )
@@ -330,6 +329,7 @@
                 )
             );
 
+            precache_map_images($el);
             size_controls($el);
             set_initial_zoom($el);
             center_map($el);
@@ -337,6 +337,22 @@
             enable_separator_drag($el);
             attach_hover_handler($el);
             initialise_intro_dialog();
+        }
+
+        function precache_map_images($el) {
+            var $cache = $('<div class="map-cache" />');
+            var map_url = cpan.meta.map_image;
+            var scales  = cpan.meta.zoom_scales;
+            cpan.meta.map_image_url = [];
+            for(var i = 0; i < scales.length; i++) {
+                var z = scales[i];
+                var url = map_url.replace(/[.]png$/, '-' + z + '.png');
+                cpan.meta.map_image_url.push( url );
+                $cache.append(
+                    $('<img src="' + url + '" />')
+                );
+            }
+            $el.append( $cache );
         }
 
         function size_controls($el) {
@@ -379,7 +395,7 @@
             var $viewport = $el.find('.map-viewport');
             var width  = $viewport.width();
             var height = $viewport.height();
-            var zoom_scales = opt.zoom_scales;
+            var zoom_scales = cpan.meta.zoom_scales;
             for(var i = zoom_scales.length - 1; i > 0; i--) {
                 if(
                     zoom_scales[i] * cpan.meta.plane_cols < width
@@ -410,7 +426,7 @@
         }
 
         function set_zoom($el, new_zoom) {
-            var zoom_scales = opt.zoom_scales;
+            var zoom_scales = cpan.meta.zoom_scales;
             if(new_zoom < 0) {
                 new_zoom = 0;
             }
@@ -422,6 +438,7 @@
             }
             opt.current_zoom = new_zoom;
             opt.scale = zoom_scales[new_zoom];
+            $el.find('img.map').attr('src', cpan.meta.map_image_url[new_zoom]);
             var $plane = $el.find('.map-plane');
 
             for(var z = 1; z < zoom_scales.length; z++) {
@@ -939,7 +956,13 @@
             var rec, handler;
 
             var add_meta = function(rec) {
-                cpan.meta[ rec[0] ] = rec[1];
+                if(rec.length == 2) {
+                    cpan.meta[ rec[0] ] = rec[1];
+                }
+                else {
+                    var name = rec.shift();
+                    cpan.meta[ name ] = rec;
+                }
             };
 
             var add_maint = function(rec) {
