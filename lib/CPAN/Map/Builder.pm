@@ -74,7 +74,7 @@ has 'output_writers' => (
     default => sub {
         return [
             'CPAN::Map::WriteJSData',
-            'CPAN::Map::WriteMapImage',
+            'CPAN::Map::WriteMapImages',
         ];
     },
 );

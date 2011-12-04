@@ -1,4 +1,4 @@
-package CPAN::Map::WriteMapImage;
+package CPAN::Map::WriteMapImages;
 
 use Moose;
 use namespace::autoclean;
