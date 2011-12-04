@@ -10,8 +10,7 @@ use warnings;
 use CPAN::Map;
 
 CPAN::Map->build(
-    verbose         => 1,
-    label_font_path => '/usr/share/fonts/truetype/msttcorefonts/Arial_Bold.ttf',
+    verbose => 1,
 );
 
 exit;

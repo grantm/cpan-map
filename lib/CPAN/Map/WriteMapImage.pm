@@ -1,10 +1,32 @@
 package CPAN::Map::WriteMapImage;
 
-use strict;
-use warnings;
+use Moose;
+use namespace::autoclean;
 
+require File::Spec;
 require GD;
-use Data::Dumper;
+
+
+has 'output_filename' => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => 'cpan-map.png',
+);
+
+has 'output_dir' => (
+    is       => 'ro',
+    isa      => 'Str',
+    required => 1,
+);
+
+has 'builder' => (
+    is       => 'ro',
+    isa      => 'CPAN::Map::Builder',
+    required => 1,
+    weak_ref => 1,
+);
+
 
 use constant SCALE          => 10;  # Image scaling factor
 use constant LINE_THICKNESS => 1;
@@ -20,11 +42,21 @@ my($bg_colour, $label_colour, $shadow_colour, $border_colour, @map_colour);
 sub write {
     my($class, $builder, $output_dir) = @_;
 
-    my $output_file = File::Spec->catfile($output_dir, 'cpan-map.png');
+    my $self = $class->new( builder => $builder, output_dir => $output_dir );
 
-    $builder->progress_message("- writing PNG image to $output_file");
+    $self->write_image_file($builder);
+}
 
-    my $font = $builder->{label_font_path} or $builder->warning_message(
+
+sub write_image_file {
+    my($self, $builder) = @_;
+
+    my $output_path = File::Spec->catfile(
+        $self->output_dir, $self->output_filename
+    );
+    $builder->progress_message(" - writing PNG image to $output_path");
+
+    my $font = $builder->label_font_path or $builder->warning_message(
         "can't add map labels without label_font_path"
     );
 
@@ -55,19 +87,17 @@ sub write {
 
     # Draw area for each distro
 
-    my $mass_map = $builder->mass_map;
     my $dist_colour = sub {
-        my($dist) = @_;
-        if(my $ns = $mass_map->{ $dist->{ns} }) {
-            return $ns->{colour};
+        if(my $ns = $builder->namespace_for_distro($_[0])) {
+            return $ns->colour;
         }
         return 0;
     };
     $builder->each_distro(sub {
-        my($dist) = @_;
-        my $colour = $map_colour[ $dist_colour->($dist) ];
-        my $borders = border_flags($dist, $builder, $dist_colour);
-        draw_dist($im, $dist->{col}, $dist->{row}, $colour, $borders);
+        my($distro) = @_;
+        my $colour = $map_colour[ $dist_colour->($distro) ];
+        my $borders = border_flags($distro, $builder, $dist_colour);
+        draw_dist($im, $distro->col, $distro->row, $colour, $borders);
     });
 
 
@@ -83,7 +113,7 @@ sub write {
 
     # Write image out to file
 
-    open my $out, '>', $output_file or die "open($output_file): $!";
+    open my $out, '>', $output_path or die "open($output_path): $!";
     binmode($out);
     print $out $im->png;
     close($out);
@@ -91,11 +121,11 @@ sub write {
 
 
 sub border_flags {
-    my($dist, $builder, $dist_colour) = @_;
+    my($distro, $builder, $dist_colour) = @_;
 
-    my $colour  = $dist_colour->($dist);
-    my $row     = $dist->{row};
-    my $col     = $dist->{col};
+    my $colour  = $dist_colour->($distro);
+    my $row     = $distro->row;
+    my $col     = $distro->col;
 
     my $flags = NORTH + SOUTH + EAST + WEST;
 
@@ -150,10 +180,10 @@ sub draw_dist {
 sub add_mass_label {
     my($im, $font, $ns) = @_;
 
-    my $x = SCALE * $ns->{label_x};
-    my $y = SCALE * $ns->{label_y};
-    my $w = SCALE * $ns->{label_w};
-    my $h = SCALE * $ns->{label_h};
+    my $x = SCALE * $ns->label_x;
+    my $y = SCALE * $ns->label_y;
+    my $w = SCALE * $ns->label_w;
+    my $h = SCALE * $ns->label_h;
     if(0) {
         $im->rectangle(
             $x - $w / 2,
@@ -164,7 +194,7 @@ sub add_mass_label {
         );
     }
 
-    my $name = $ns->{name} or return;
+    my $name = $ns->name or return;
     my $size = font_size_from_mass($ns);
     my @bounds = GD::Image->stringFT(
         $label_colour, $font, $size, 0, 0, 0, $name
@@ -202,7 +232,7 @@ sub add_mass_label {
 sub font_size_from_mass {
     my($ns) = @_;
 
-    my $mass = $ns->{mass};
+    my $mass = $ns->mass;
     return 26 if $mass > 400;
     return 18 if $mass > 180;
     return 12;
