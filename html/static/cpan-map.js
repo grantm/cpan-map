@@ -128,7 +128,7 @@
                 center_map($el);
             });
             $el.find('.map-plane-sight').mousewheel( function(e, delta) {
-                app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom');
+                app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom', true);
             });
             $el.find('label.ctrl-maint').click(function() {
                 $el.find('.map-hover-maint').val('').focus();
@@ -175,12 +175,12 @@
             size_controls( this.$element() );
         });
 
-        this.bind('increase_zoom', function(e) {
-            set_zoom(this.$element(), opt.current_zoom + 1);
+        this.bind('increase_zoom', function(e, recenter) {
+            set_zoom(this.$element(), opt.current_zoom + 1, recenter);
         });
 
-        this.bind('decrease_zoom', function(e) {
-            set_zoom(this.$element(), opt.current_zoom - 1);
+        this.bind('decrease_zoom', function(e, recenter) {
+            set_zoom(this.$element(), opt.current_zoom - 1, recenter);
         });
 
         this.bind('separator_moved', function(e) {
@@ -426,8 +426,9 @@
             $el.find('.map-plane').css({top: yoffset + 'px'});
         }
 
-        function set_zoom($el, new_zoom) {
+        function set_zoom($el, new_zoom, recenter) {
             var zoom_scales = cpan.meta.zoom_scales;
+            var centering;
             if(new_zoom < 0) {
                 new_zoom = 0;
             }
@@ -436,6 +437,9 @@
             }
             if(new_zoom === opt.current_zoom) {
                 return;
+            }
+            if(recenter && typeof(opt.current_zoom) !== 'undefined') {
+                centering = save_centering($el);
             }
             opt.current_zoom = new_zoom;
             opt.scale = zoom_scales[new_zoom];
@@ -456,7 +460,41 @@
                 width:  (opt.scale - 2) + 'px',
                 height: (opt.scale - 2) + 'px'
             });
+            if(centering) {
+                apply_centering($el, centering);
+            }
             app.trigger('show_highlights');
+        }
+
+        function save_centering($el) {
+            var $plane = $el.find('.map-plane');
+            var $sight = $el.find('.map-plane-sight');
+            var plane_x = parseInt( $plane.css('left') );
+            var plane_y = parseInt( $plane.css('top') );
+            var sight_x = parseInt( $sight.css('left') );
+            var sight_y = parseInt( $sight.css('top') );
+            return {
+                row: Math.floor( sight_y / opt.scale ),
+                col: Math.floor( sight_x / opt.scale ),
+                viewport_x: plane_x + sight_x,
+                viewport_y: plane_y + sight_y
+            };
+        }
+
+        function apply_centering($el, centering) {
+            var half_scale = Math.floor( opt.scale / 2 );
+            var sight_x = centering.col * opt.scale + half_scale;
+            var sight_y = centering.row * opt.scale + half_scale;
+            var plane_x = centering.viewport_x - sight_x;
+            var plane_y = centering.viewport_y - sight_y;
+            $el.find('.map-plane').css({
+                left: plane_x + 'px',
+                top:  plane_y + 'px',
+            });
+            $el.find('.map-plane-sight').css({
+                left: centering.col * opt.scale + 'px',
+                top:  centering.row * opt.scale + 'px',
+            });
         }
 
         function enable_plane_drag($el) {

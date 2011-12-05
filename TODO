@@ -1,5 +1,3 @@
-Map image: render at multiple scales
-Maintain centering around hover-point when zooming
 Fix re-requesting of image when zooming
 Dist info: download ratings from http://cpanratings.perl.org/csv/all_ratings.csv
 Don't resize controls when info-pane resized
