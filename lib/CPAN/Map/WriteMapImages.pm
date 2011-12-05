@@ -39,7 +39,10 @@ use constant SOUTH          => 2;
 use constant EAST           => 4;
 use constant WEST           => 8;
 
-my($bg_colour, $label_colour, $shadow_colour, $border_colour, @map_colour);
+my(
+    $bg_colour, $label_colour, $thin_label_colour,
+    $shadow_colour, $border_colour, @map_colour
+);
 
 
 sub write {
@@ -75,10 +78,11 @@ sub write_image_file {
 
     my $im = new GD::Image($cols * $scale, $rows * $scale);
 
-    $bg_colour     = $im->colorAllocate(0x66, 0x66, 0x66);
-    $label_colour  = $im->colorAllocate(0x44, 0x44, 0x44);
-    $shadow_colour = $im->colorAllocate(0xEE, 0xEE, 0xEE);
-    $border_colour = $im->colorAllocate(0x55, 0x55, 0x55);
+    $bg_colour         = $im->colorAllocate(0x66, 0x66, 0x66);
+    $label_colour      = $im->colorAllocate(0x44, 0x44, 0x44);
+    $thin_label_colour = $im->colorAllocate(0x66, 0x66, 0x66);
+    $shadow_colour     = $im->colorAllocate(0xEE, 0xEE, 0xEE);
+    $border_colour     = $im->colorAllocate(0x55, 0x55, 0x55);
     @map_colour = (
         $im->colorAllocate(0xBB, 0xDD, 0xFF),
         $im->colorAllocate(0x7A, 0xFF, 0x67),
@@ -217,7 +221,7 @@ sub add_mass_label {
 
     my $name = $ns->name or return;
     my $size = $self->font_size_from_mass($ns);
-    return if $size < 5; # Don't bother if it's unreadably small
+    return if $size < 7; # Don't bother if it's unreadably small
 
     my @bounds = GD::Image->stringFT(
         $label_colour, $font, $size, 0, 0, 0, $name
@@ -242,7 +246,7 @@ sub add_mass_label {
     );
 
     # Don't anti-alias small font sizes (negative colour index)
-    my $text_colour = $size < 8 ? $label_colour * -1 : $label_colour;
+    my $text_colour = $size < 10 ? $thin_label_colour * -1 : $label_colour;
 
     foreach my $delta (
         ($size < 10 ? @thin_border : @thick_border),
@@ -268,14 +272,9 @@ sub font_size_from_mass {
     my($self, $ns) = @_;
 
     my $scale = $self->scale;
-    my $boost = $scale < 6 ? 1.3 : 1;
 
     my $mass = $ns->mass;
-    return 2.8 * $scale * $boost if $mass > 400;
-    return 2.3 * $scale * $boost if $mass > 250;
-    return 1.8 * $scale * $boost if $mass > 180;
-    return 1.5 * $scale * $boost if $mass >  70;
-    return 1.2 * $scale * $boost;
+    return( ($mass/109 + 5.9) * (13 + $scale) / 16 )
 }
 
 
