@@ -419,10 +419,11 @@
             }
 
             var pheight = cpan.meta.plane_rows * opt.scale;
+            var yoffset = 0;
             if(pheight < (height - 40)) {
-                var yoffset = (height - pheight - 40) / 2;
-                $el.find('.map-plane').css({top: yoffset + 'px'});
+                yoffset = (height - pheight - 40) / 2;
             }
+            $el.find('.map-plane').css({top: yoffset + 'px'});
         }
 
         function set_zoom($el, new_zoom) {
