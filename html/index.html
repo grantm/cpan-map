@@ -202,6 +202,9 @@
       <% if(meta.download_url) { %>
       <p><a href="<%= meta.download_url %>">Download</a></p>
       <% } %>
+      <% if(meta.resources.homepage) { %>
+          <p><a href="<%= meta.resources.homepage %>">Homepage</a></p>
+      <% } %>
       <% if(meta.resources.repository && meta.resources.repository.web) { %>
           <p><a href="<%= meta.resources.repository.web %>">Repository</a></p>
       <% } %>
