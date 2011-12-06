@@ -489,11 +489,11 @@
             var plane_y = centering.viewport_y - sight_y;
             $el.find('.map-plane').css({
                 left: plane_x + 'px',
-                top:  plane_y + 'px',
+                top:  plane_y + 'px'
             });
             $el.find('.map-plane-sight').css({
                 left: centering.col * opt.scale + 'px',
-                top:  centering.row * opt.scale + 'px',
+                top:  centering.row * opt.scale + 'px'
             });
         }
 
