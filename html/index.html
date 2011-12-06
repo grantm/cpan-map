@@ -151,6 +151,8 @@
 
       <p><a class="show-intro">Need more help?</a></p>
 
+      <p><a href="#/sights">Sightseeing tours</a></p>
+
       <table>
         <tr><th>Maintainers</th><td><%= ('' + maintainer_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
         <tr><th>Distributions</th><td><%= ('' + distribution_count).replace(/(\d\d\d)$/, ',$1') %></td></tr>
@@ -173,6 +175,16 @@
     <div class="not-found">
       <h2>404 Not Found</h2>
       <p>The URL target '<%= hash_path %>' is not valid.</p>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-sights">
+    <div class="info">
+      <p>This page will eventually link to leader-boards and other
+      sights of interest.</p>
+      <ul>
+        <li><a href="#/sights/distro-counts">Mainter distro counts</a></li>
+      </ul>
     </div>
   </script>
 

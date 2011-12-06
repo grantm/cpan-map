@@ -222,6 +222,15 @@
             $el.find('a.show-intro').click( show_intro_dialog );
         });
 
+        this.get('#/sights', function(context) {
+            context.update_info('#tmpl-sights')
+                   .title('Sightseeing Tours | ' + opt.app_title);
+        });
+
+        this.get('#/sights/distro-counts', function(context) {
+            this.not_implemented();
+        });
+
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
