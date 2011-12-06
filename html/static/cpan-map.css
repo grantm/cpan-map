@@ -448,6 +448,11 @@ div#intro p.note {
   -moz-border-radius: 5px;
 }
 
+.cpan-map div.map-info-panel .info div.avatar img.loaded {
+  background-image: none;
+  background-color: #999999;
+}
+
 .cpan-map div.map-info-panel .info label {
   display: inline-block;
   width: 6em;

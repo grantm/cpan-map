@@ -1,6 +1,5 @@
 Dist info: download ratings from http://cpanratings.perl.org/csv/all_ratings.csv
 Don't resize controls when info-pane resized
-Handle transparent avatar images (eg: SHLOMIF) more gracefully
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
 Make 'Map of CPAN' title a 'home' button to reset the UI

@@ -100,6 +100,9 @@
             var context = this;
             var html = context.tmpl(template_cache[selector], data);
             $('.map-info-panel').html(html).removeClass('loading').addClass('loaded');
+            $('.map-info-panel').find('div.avatar img').load(function() {
+                $(this).addClass('loaded');
+            });
             return context;
         });
 
