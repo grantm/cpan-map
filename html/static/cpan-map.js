@@ -228,7 +228,9 @@
         });
 
         this.get('#/sights/distro-counts', function(context) {
-            this.not_implemented();
+            var maints = top_maintainters_by_distro();
+            context.update_info('#tmpl-distro-counts', { 'maints' : maints })
+                   .title('Maintainer distro counts | ' + opt.app_title);
         });
 
         this.get('#/distro/:name', function(context) {
@@ -872,6 +874,22 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function top_maintainters_by_distro() {
+            if(cpan.top_maintainters_by_distro) {
+                return cpan.top_maintainters_by_distro;
+            }
+            var maints = [];
+            for(var i = 0; i < cpan.maint.length; i++) {
+                var maint = cpan.maint[i];
+                if(maint.distro_count >= 50) {
+                    maints.push(maint);
+                }
+            }
+            maints.sort(function(a, b) { return b.distro_count - a.distro_count } );
+            cpan.top_maintainters_by_distro = maints;
+            return maints;
         }
 
         function highlight_distros($layer) {

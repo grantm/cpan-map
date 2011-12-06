@@ -582,3 +582,20 @@ ul.social li a {
   font-size: 1px;
 }
 
+table.leaderboard {
+  border-collapse: collapse;
+}
+
+table.leaderboard tr.odd {
+  background-color: #f7f7f7;
+}
+
+table.leaderboard td {
+  vertical-align: top;
+  padding: 3px 3px;
+}
+
+table.leaderboard td.score {
+  text-align: right;
+}
+

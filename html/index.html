@@ -183,8 +183,26 @@
       <p>This page will eventually link to leader-boards and other
       sights of interest.</p>
       <ul>
-        <li><a href="#/sights/distro-counts">Mainter distro counts</a></li>
+        <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
       </ul>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-distro-counts">
+    <div class="info">
+      <p>Maintainers with 50 or more distributions:</p>
+      <table class="leaderboard">
+        <% for(var i = 0; i < maints.length; i++) {
+            var maint = maints[i];
+            var row_class = (i % 2) ? 'even' : 'odd';
+        %>
+        <tr class="<%= row_class %>">
+          <td class="rank"><%= i + 1 %></td>
+          <td><a href="#/maint/<%= maint.id %>"><%= maint.name %></a></td>
+          <td class="score"><%= maint.distro_count %></td>
+        </tr>
+        <% } %>
+      <table>
     </div>
   </script>
 
