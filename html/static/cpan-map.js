@@ -302,10 +302,12 @@
 
         function initialise_ui_elements($el) {
 
+            var $plane = $('<div class="map-plane" />');
+            add_map_images($plane);
+
             $el.find('.map-panel').removeClass('loading');
             $el.find('.map-viewport').html('').append(
-                $('<div class="map-plane" />').append(
-                    $('<img class="map" />'),
+                $plane.append(
                     $('<div class="map-highlights" />'),
                     $('<div class="map-plane-sight" />')
                 )
@@ -329,7 +331,6 @@
                 )
             );
 
-            precache_map_images($el);
             size_controls($el);
             set_initial_zoom($el);
             center_map($el);
@@ -339,20 +340,18 @@
             initialise_intro_dialog();
         }
 
-        function precache_map_images($el) {
-            var $cache = $('<div class="map-cache" />');
+        function add_map_images($plane) {
             var map_url = cpan.meta.map_image;
             var scales  = cpan.meta.zoom_scales;
-            cpan.meta.map_image_url = [];
             for(var i = 0; i < scales.length; i++) {
                 var z = scales[i];
                 var url = map_url.replace(/[.]png$/, '-' + z + '.png');
-                cpan.meta.map_image_url.push( url );
-                $cache.append(
-                    $('<img src="' + url + '" />')
+                $plane.append(
+                    $('<img src="' + url + '" class="map zoom' + i + '" />')
+                    .width(opt.cols * z)
+                    .height(opt.rows * z)
                 );
             }
-            $el.append( $cache );
         }
 
         function size_controls($el) {
@@ -443,10 +442,9 @@
             }
             opt.current_zoom = new_zoom;
             opt.scale = zoom_scales[new_zoom];
-            $el.find('img.map').attr('src', cpan.meta.map_image_url[new_zoom]);
             var $plane = $el.find('.map-plane');
 
-            for(var z = 1; z < zoom_scales.length; z++) {
+            for(var z = 0; z < zoom_scales.length; z++) {
                 $plane.removeClass('zoom' + z);
             }
             $plane.addClass('zoom' + new_zoom);
@@ -455,7 +453,6 @@
             var width  = opt.scale * cpan.meta.plane_cols;
             var height = opt.scale * cpan.meta.plane_rows;
             $plane.width(width).height(height);
-            $plane.find('img.map').width(width).height(height);
             $el.find('.map-plane-sight').css({
                 width:  (opt.scale - 2) + 'px',
                 height: (opt.scale - 2) + 'px'

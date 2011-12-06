@@ -288,6 +288,14 @@ div#intro p.note {
   background-color: #666;
 }
 
+.cpan-map ul.map-zoom {
+  height: 25px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  float: left;
+}
+
 .cpan-map div.map-plane {
   position: absolute;
   top: 0;
@@ -296,13 +304,20 @@ div#intro p.note {
   height: 2000px;
 }
 
-.cpan-map ul.map-zoom {
-  height: 25px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  float: left;
+.cpan-map div.map-plane img {
+  display: none;
 }
+
+.cpan-map div.map-plane.zoom0 img.zoom0 { display: block; }
+.cpan-map div.map-plane.zoom1 img.zoom1 { display: block; }
+.cpan-map div.map-plane.zoom2 img.zoom2 { display: block; }
+.cpan-map div.map-plane.zoom3 img.zoom3 { display: block; }
+.cpan-map div.map-plane.zoom4 img.zoom4 { display: block; }
+.cpan-map div.map-plane.zoom5 img.zoom5 { display: block; }
+.cpan-map div.map-plane.zoom6 img.zoom6 { display: block; }
+.cpan-map div.map-plane.zoom7 img.zoom7 { display: block; }
+.cpan-map div.map-plane.zoom8 img.zoom8 { display: block; }
+.cpan-map div.map-plane.zoom9 img.zoom9 { display: block; }
 
 .cpan-map div.map-highlights {
   position: absolute;
