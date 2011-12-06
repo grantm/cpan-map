@@ -466,6 +466,7 @@
         function save_centering($el) {
             var $plane = $el.find('.map-plane');
             var $sight = $el.find('.map-plane-sight');
+            var half_scale = Math.floor( opt.scale / 2 );
             var plane_x = parseInt( $plane.css('left') );
             var plane_y = parseInt( $plane.css('top') );
             var sight_x = parseInt( $sight.css('left') );
@@ -473,17 +474,17 @@
             return {
                 row: Math.floor( sight_y / opt.scale ),
                 col: Math.floor( sight_x / opt.scale ),
-                viewport_x: plane_x + sight_x,
-                viewport_y: plane_y + sight_y
+                viewport_x: plane_x + sight_x + half_scale,
+                viewport_y: plane_y + sight_y + half_scale
             };
         }
 
         function apply_centering($el, centering) {
             var half_scale = Math.floor( opt.scale / 2 );
-            var sight_x = centering.col * opt.scale + half_scale;
-            var sight_y = centering.row * opt.scale + half_scale;
-            var plane_x = centering.viewport_x - sight_x;
-            var plane_y = centering.viewport_y - sight_y;
+            var sight_x = centering.col * opt.scale;
+            var sight_y = centering.row * opt.scale;
+            var plane_x = centering.viewport_x - sight_x - half_scale;
+            var plane_y = centering.viewport_y - sight_y - half_scale;
             $el.find('.map-plane').css({
                 left: plane_x + 'px',
                 top:  plane_y + 'px'
