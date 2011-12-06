@@ -1006,7 +1006,7 @@
             };
 
             var add_maint = function(rec) {
-                var m = { id: rec[0] };
+                var m = { id: rec[0], distro_count: 0 };
                 if(rec.length > 1) { m.name        = rec[1]; }
                 if(rec.length > 2) { m.gravatar_id = rec[2]; }
                 cpan.maint_num[m.id] = cpan.maint.length;
@@ -1032,6 +1032,7 @@
                     col: col,
                     index: cpan.distro.length
                 }
+                distro.maintainer.distro_count++;
                 if(rec[1] != '') {
                     ns = cpan.namespace[ parseInt(rec[1], 16) ];
                     if(ns) {
