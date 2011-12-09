@@ -233,6 +233,15 @@
                    .title('Maintainer distro counts | ' + opt.app_title);
         });
 
+        this.get('#/sights/favorites-leaderboard', function(context) {
+            this.loading();
+            ajax_load_favorites_leaderboard( function(data) {
+                context.set_highlights(data.highlights)
+                       .update_info('#tmpl-favorites-leaderboard', data)
+                       .title('++ Top 100 Leaderboard | ' + opt.app_title);
+            });
+        });
+
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
@@ -890,6 +899,49 @@
             maints.sort(function(a, b) { return b.distro_count - a.distro_count } );
             cpan.top_maintainters_by_distro = maints;
             return maints;
+        }
+
+        function ajax_load_favorites_leaderboard(handler) {
+            var query = {
+                "size": 0,
+                "query": { "match_all": {} },
+                "facets": {
+                    "leaderboard": {
+                        "terms": {
+                            "field": "distribution",
+                            "size": 100
+                        }
+                    }
+                }
+            };
+            ajax_leaderboard_url = 'http://api.metacpan.org/favorite/_search?source=' +
+                escape(JSON.stringify(query)) + '&application=cpan-map';
+            $.ajax({
+                url: ajax_leaderboard_url,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var highlights  = [];
+                    var distro_list = [];
+                    var hits = ((data.facets || {}).leaderboard || {}).terms || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var name = hits[i].term.replace(/-/g, '::');
+                        distro_list.push({
+                            "score": hits[i].count,
+                            "name":  name
+                        });
+                        var distro = find_distro_by_name(name);
+                        if(distro) {
+                            highlights.push(distro.index);
+                        }
+                    }
+                    handler({
+                        "highlights": highlights,
+                        "distro_list": distro_list,
+                    });
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
         }
 
         function highlight_distros($layer) {

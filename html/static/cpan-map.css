@@ -584,6 +584,15 @@ ul.social li a {
 
 table.leaderboard {
   border-collapse: collapse;
+  margin-top: 1em;
+}
+
+table.leaderboard th {
+  background-color: #888888;
+  color: #eeeeee;
+  border-left: 1px solid #eeeeee;
+  font-weight: bold;
+  padding: 1px 2px;
 }
 
 table.leaderboard tr.odd {

@@ -184,6 +184,7 @@
       sights of interest.</p>
       <ul>
         <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
+        <li><a href="#/sights/favorites-leaderboard">++ Top 100 leaderboard</a></li>
       </ul>
     </div>
   </script>
@@ -202,7 +203,32 @@
           <td class="score"><%= maint.distro_count %></td>
         </tr>
         <% } %>
-      <table>
+      </table>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-favorites-leaderboard">
+    <div class="info">
+      <p>The <a href="https://metacpan.org">metacpan.org</a> web site allows
+      you to give your favourite distributions a ‘++’.</p>
+      <p>The most popular distributions are:</p>
+      <table class="leaderboard">
+        <tr>
+          <th>Rank</th>
+          <th>Distribution</th>
+          <th>Count</th>
+        </tr>
+        <% for(var i = 0; i < distro_list.length; i++) {
+            var distro = distro_list[i];
+            var row_class = (i % 2) ? 'even' : 'odd';
+        %>
+        <tr class="<%= row_class %>">
+          <td class="rank"><%= i + 1 %></td>
+          <td><a href="#/distro/<%= distro.name %>"><%= distro.name %></a></td>
+          <td class="score"><%= distro.score %></td>
+        </tr>
+        <% } %>
+      </table>
     </div>
   </script>
 
