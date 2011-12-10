@@ -365,10 +365,11 @@
 
         function add_map_images($plane) {
             var map_url = cpan.meta.map_image;
+            var slug    = '-' + cpan.meta.slug_of_the_day;
             var scales  = cpan.meta.zoom_scales;
             for(var i = 0; i < scales.length; i++) {
                 var z = scales[i];
-                var url = map_url.replace(/[.]png$/, '-' + z + '.png');
+                var url = map_url.replace(/[.]png$/, '-' + z + slug + '.png');
                 $plane.append(
                     $('<img src="' + url + '" class="map zoom' + i + '" />')
                     .width(opt.cols * z)
@@ -1019,138 +1020,138 @@
         this.$element().find('.map-info-panel').html(html).removeClass('loading');
     };
 
-    // On document ready, Add the required UI elements, download the CPAN
-    // metadata and then launch the Sammy application.
+    // Called from the main CpanMap() function (typically on document ready):
+    // Add the required UI elements, download the CPAN metadata and then launch
+    // the Sammy application.
 
-    $(function() {
+    function build_app($el, run_app) {
+        var loc = window.location;
+        opt.app_base_url = loc.protocol + '//' + loc.host
+                         + loc.pathname.replace(/index[.]html$/, '');
+        if(!opt.default_avatar.match(/^\w+:/)) {
+            opt.default_avatar = opt.app_base_url + opt.default_avatar;
+        }
+        opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, escape(opt.default_avatar));
 
-        function build_app($el, run_app) {
-            var loc = window.location;
-            opt.app_base_url = loc.protocol + '//' + loc.host
-                             + loc.pathname.replace(/index[.]html$/, '');
-            if(!opt.default_avatar.match(/^\w+:/)) {
-                opt.default_avatar = opt.app_base_url + opt.default_avatar;
+        var $controls = $('<div class="map-controls" />');
+        var $viewport = $('<div class="map-viewport" />');
+        $el.addClass('cpan-map');
+        $el.append(
+            $('<h1 />').text( opt.app_title ),
+            $('<div class="map-panel loading" />').append(
+                $controls,
+                $('<div class="map-info-panel" />'),
+                $viewport.html('<div class="init">Loading map data</div>'),
+                $('<div class="map-separator" />')
+            ),
+            $('<p class="copyright">Copyright &copy; 2011 <a href="#/maint/GRANTM">Grant McLean</a></p>')
+        );
+        $.ajax({
+            url: opt.map_data_url,
+            dataType: 'text',
+            success: function (data) {
+                var parser = make_data_parser(data);
+                parse_data(parser);
+                run_app();
             }
-            opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, escape(opt.default_avatar));
+        });
+    }
 
-            var $controls = $('<div class="map-controls" />');
-            var $viewport = $('<div class="map-viewport" />');
-            $el.addClass('cpan-map');
-            $el.append(
-                $('<h1 />').text( opt.app_title ),
-                $('<div class="map-panel loading" />').append(
-                    $controls,
-                    $('<div class="map-info-panel" />'),
-                    $viewport.html('<div class="init">Loading map data</div>'),
-                    $('<div class="map-separator" />')
-                ),
-                $('<p class="copyright">Copyright &copy; 2011 <a href="#/maint/GRANTM">Grant McLean</a></p>')
-            );
-            $.ajax({
-                url: opt.map_data_url,
-                dataType: 'text',
-                success: function (data) {
-                    var parser = make_data_parser(data);
-                    parse_data(parser);
-                    run_app();
-                }
+    function make_data_parser(data) {
+        var i = 0;
+        return function() {
+            var j = data.indexOf("\n", i);
+            if(j < 1) {
+                data = null;
+                return null;
+            }
+            var line = data.substring(i, j).split(",");
+            i = j + 1;
+            return line;
+        }
+    }
+
+    function parse_data(next_record) {
+        var rec, handler;
+
+        var add_meta = function(rec) {
+            if(rec.length == 2) {
+                cpan.meta[ rec[0] ] = rec[1];
+            }
+            else {
+                var name = rec.shift();
+                cpan.meta[ name ] = rec;
+            }
+        };
+
+        var add_maint = function(rec) {
+            var m = { id: rec[0], distro_count: 0 };
+            if(rec.length > 1) { m.name        = rec[1]; }
+            if(rec.length > 2) { m.gravatar_id = rec[2]; }
+            cpan.maint_num[m.id] = cpan.maint.length;
+            cpan.maint.push(m);
+        };
+
+        var add_ns = function(rec) {
+            cpan.namespace.push({
+                name: rec[0],
+                colour: rec[1],
+                mass: parseInt(rec[2], 16)
             });
-        }
+        };
 
-        function make_data_parser(data) {
-            var i = 0;
-            return function() {
-                var j = data.indexOf("\n", i);
-                if(j < 1) {
-                    data = null;
-                    return null;
+        var add_distro = function(rec) {
+            var row = parseInt(rec[3], 16);
+            var col = parseInt(rec[4], 16);
+            var distro = {
+                name: rec[0],
+                lname: rec[0].toLowerCase(),
+                maintainer: cpan.maint[ parseInt(rec[2], 16) ],
+                row: row,
+                col: col,
+                index: cpan.distro.length
+            }
+            distro.maintainer.distro_count++;
+            if(rec[1] != '') {
+                ns = cpan.namespace[ parseInt(rec[1], 16) ];
+                if(ns) {
+                    distro.ns = ns.name;
                 }
-                var line = data.substring(i, j).split(",");
-                i = j + 1;
-                return line;
+            }
+            if(rec.length > 5) {
+                distro.rating_score = rec[5];
+                distro.rating_count = rec[6];
+                distro.rating_stars = Math.floor(parseFloat(rec[5]) * 2 + 0.5) * 5;
+            }
+            else {
+                distro.rating_stars = null;
+            }
+            if(!cpan.distro_at[row]) {
+                cpan.distro_at[row] = [];
+            }
+            cpan.distro_at[row][col] = distro.index
+            cpan.distro_num[distro.name] = distro.index
+            cpan.distro.push( distro );
+        };
+
+        while(rec = next_record()) {
+            if(rec[0] == '[META]')          { handler = add_meta;   continue; }
+            if(rec[0] == '[MAINTAINERS]')   { handler = add_maint;  continue; }
+            if(rec[0] == '[NAMESPACES]')    { handler = add_ns;     continue; }
+            if(rec[0] == '[DISTRIBUTIONS]') { handler = add_distro; continue; }
+            if(handler) {
+                handler(rec);
             }
         }
 
-        function parse_data(next_record) {
-            var rec, handler;
+    }
 
-            var add_meta = function(rec) {
-                if(rec.length == 2) {
-                    cpan.meta[ rec[0] ] = rec[1];
-                }
-                else {
-                    var name = rec.shift();
-                    cpan.meta[ name ] = rec;
-                }
-            };
-
-            var add_maint = function(rec) {
-                var m = { id: rec[0], distro_count: 0 };
-                if(rec.length > 1) { m.name        = rec[1]; }
-                if(rec.length > 2) { m.gravatar_id = rec[2]; }
-                cpan.maint_num[m.id] = cpan.maint.length;
-                cpan.maint.push(m);
-            };
-
-            var add_ns = function(rec) {
-                cpan.namespace.push({
-                    name: rec[0],
-                    colour: rec[1],
-                    mass: parseInt(rec[2], 16)
-                });
-            };
-
-            var add_distro = function(rec) {
-                var row = parseInt(rec[3], 16);
-                var col = parseInt(rec[4], 16);
-                var distro = {
-                    name: rec[0],
-                    lname: rec[0].toLowerCase(),
-                    maintainer: cpan.maint[ parseInt(rec[2], 16) ],
-                    row: row,
-                    col: col,
-                    index: cpan.distro.length
-                }
-                distro.maintainer.distro_count++;
-                if(rec[1] != '') {
-                    ns = cpan.namespace[ parseInt(rec[1], 16) ];
-                    if(ns) {
-                        distro.ns = ns.name;
-                    }
-                }
-                if(rec.length > 5) {
-                    distro.rating_score = rec[5];
-                    distro.rating_count = rec[6];
-                    distro.rating_stars = Math.floor(parseFloat(rec[5]) * 2 + 0.5) * 5;
-                }
-                else {
-                    distro.rating_stars = null;
-                }
-                if(!cpan.distro_at[row]) {
-                    cpan.distro_at[row] = [];
-                }
-                cpan.distro_at[row][col] = distro.index
-                cpan.distro_num[distro.name] = distro.index
-                cpan.distro.push( distro );
-            };
-
-            while(rec = next_record()) {
-                if(rec[0] == '[META]')          { handler = add_meta;   continue; }
-                if(rec[0] == '[MAINTAINERS]')   { handler = add_maint;  continue; }
-                if(rec[0] == '[NAMESPACES]')    { handler = add_ns;     continue; }
-                if(rec[0] == '[DISTRIBUTIONS]') { handler = add_distro; continue; }
-                if(handler) {
-                    handler(rec);
-                }
-            }
-
-        }
-
+    window.CpanMap = function(options) {
+        $.extend(opt, options);
         build_app(
             $(opt.app_selector),
             function() { app.run('#/'); }
         );
-
-    });
+    }
 
 })(jQuery);

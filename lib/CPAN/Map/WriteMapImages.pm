@@ -63,7 +63,8 @@ sub write_image_file {
     my $output_path = File::Spec->catfile(
         $self->output_dir, $self->output_filename
     );
-    $output_path =~ s{(?=[.]png$)}{-$scale};
+    my $slug = $builder->slug_of_the_day;
+    $output_path =~ s{(?=[.]png$)}{-$scale-$slug};
     $builder->progress_message(" - writing PNG image to $output_path");
 
     my $font = $builder->label_font_path or $builder->warning_message(

@@ -4,22 +4,29 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta http-equiv="imagetoolbar" content="no" >
   <title>Map of CPAN</title>
-  <link rel="stylesheet" type="text/css" href="static/cpan-map.css">
-  <link rel="shortcut icon" href="static/images/cpan-map.ico">
-  <script type="text/javascript" src="static/jquery-1.7.min.js"></script>
   <script type="text/javascript">
-    $('html').removeClass('no-js').addClass('js');
+    document.documentElement.className = 'js';
   </script>
+  <style type="text/css">
+    #intro, .js div.noscript { display: none; }
+  </style>
+  <link rel="stylesheet" type="text/css" href="static/cpan-map.css">
+  <script type="text/javascript" src="static/jquery-1.7.min.js"></script>
   <script type="text/javascript" src="static/jquery.mousewheel.min.js"></script>
   <script type="text/javascript" src="static/sammy/sammy-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/sammy/plugins/sammy.template-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/sammy/plugins/sammy.title-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
   <script type="text/javascript" src="static/cpan-map.js"></script>
-  <style type="text/css">
-    #intro { display: none; }
-  </style>
+  <script type="text/javascript">
+    jQuery(function() {
+        CpanMap({
+            map_data_url: 'cpan-map-data.txt'
+        });
+    });
+  </script>
+  <link rel="stylesheet" type="text/css" href="static/jqueryui/1.8.16/themes/base/minified/jquery.ui.all.min.css">
+  <link rel="shortcut icon" href="static/images/cpan-map.ico">
 </head>
 <body>
 
