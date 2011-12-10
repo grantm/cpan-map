@@ -200,12 +200,17 @@
     <div class="info">
       <p>Maintainers with 50 or more distributions:</p>
       <table class="leaderboard">
+        <tr>
+          <th>Rank</th>
+          <th>Maintainer</th>
+          <th>Distros</th>
+        </tr>
         <% for(var i = 0; i < maints.length; i++) {
             var maint = maints[i];
             var row_class = (i % 2) ? 'even' : 'odd';
         %>
         <tr class="<%= row_class %>">
-          <td class="rank"><%= i + 1 %></td>
+          <td class="rank"><%= maint.rank %></td>
           <td><a href="#/maint/<%= maint.id %>"><%= maint.name %></a></td>
           <td class="score"><%= maint.distro_count %></td>
         </tr>
@@ -230,7 +235,7 @@
             var row_class = (i % 2) ? 'even' : 'odd';
         %>
         <tr class="<%= row_class %>">
-          <td class="rank"><%= i + 1 %></td>
+          <td class="rank"><%= distro.rank %></td>
           <td><a href="#/distro/<%= distro.name %>"><%= distro.name %></a></td>
           <td class="score"><%= distro.score %></td>
         </tr>

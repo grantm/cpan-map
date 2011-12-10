@@ -898,6 +898,7 @@
                 }
             }
             maints.sort(function(a, b) { return b.distro_count - a.distro_count } );
+            add_rankings(maints, 'distro_count');
             cpan.top_maintainters_by_distro = maints;
             return maints;
         }
@@ -935,6 +936,7 @@
                             highlights.push(distro.index);
                         }
                     }
+                    add_rankings(distro_list, 'score');
                     handler({
                         "highlights": highlights,
                         "distro_list": distro_list,
@@ -943,6 +945,21 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function add_rankings(list, field) {
+            var last = null;
+            var rank;
+            for(var i = 0; i < list.length; i++) {
+                if(i > 0  &&  list[i-1][field] === list[i][field]) {
+                    list[i-1].rank = rank + '=';
+                    list[i].rank   = rank + '=';
+                }
+                else {
+                    rank = i + 1;
+                    list[i].rank = rank;
+                }
+            }
         }
 
         function highlight_distros($layer) {
