@@ -84,6 +84,7 @@ has 'output_writers' => (
         return [
             'CPAN::Map::WriteJSData',
             'CPAN::Map::WriteMapImages',
+            'CPAN::Map::WriteDocRoot',
         ];
     },
 );
