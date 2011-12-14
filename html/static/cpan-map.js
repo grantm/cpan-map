@@ -230,6 +230,7 @@
         this.get('#/sights/distro-counts', function(context) {
             var maints = top_maintainters_by_distro();
             context.update_info('#tmpl-distro-counts', { 'maints' : maints })
+                   .set_highlights([])
                    .title('Maintainer distro counts | ' + opt.app_title);
         });
 
