@@ -78,6 +78,7 @@ sub write {
     $self->copy_js_data_file();
     $self->copy_images();
     $self->write_html();
+    $self->copy_other_files();
 }
 
 
@@ -255,6 +256,16 @@ sub write_html {
 }
 
 
+sub copy_other_files {
+    my($self) = @_;
+    chdir($self->src_dir) or die "chdir(" . $self->src_dir . "): $!";
+    my @files = grep { $_ ne 'index.html' } glob('*.html');
+    foreach my $path ( @files ) {
+        $self->copy_file($path);
+    }
+}
+
+
 sub read_file {
     my($self, $path) = @_;
     my $src_path = File::Spec->catfile($self->src_dir, $path);
@@ -274,7 +285,7 @@ sub write_file {
     print $fh $data;
     close($fh);
     if(-T $dst_path) {
-        gzip $dst_path => $dst_path . '.gz'
+        gzip $dst_path => $dst_path . '.gz', -Level => 9
             or die "gzip failed: $GzipError\n";
     }
     return $path;
