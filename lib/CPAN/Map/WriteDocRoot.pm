@@ -235,7 +235,7 @@ sub copy_images {
 
     $self->builder->progress_message(" - copying image files");
     my $src_dir = $self->src_dir;
-    my @files = File::Find::Rule->name(qr{[.](gif|png|jpe?g)$}i)->in($src_dir);
+    my @files = File::Find::Rule->name(qr{[.](gif|png|jpe?g|ico)$}i)->in($src_dir);
     foreach my $path (@files) {
         $path =~ s{\Q$src_dir\E}{};
         $self->copy_file($path);
