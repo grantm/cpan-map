@@ -939,7 +939,7 @@
                     add_rankings(distro_list, 'score');
                     handler({
                         "highlights": highlights,
-                        "distro_list": distro_list,
+                        "distro_list": distro_list
                     });
                 },
                 error: function() { app.trigger('ajax_load_failed') },
