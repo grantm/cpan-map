@@ -12,6 +12,8 @@ require URI;
 require JavaScript::Minifier::XS;
 require CSS::Minifier::XS;
 
+use IO::Compress::Gzip qw(gzip $GzipError);
+
 
 my %external_script = (
     'static/jquery-1.7.min.js'
@@ -270,6 +272,11 @@ sub write_file {
     File::Path::make_path($dir_path) unless -d $dir_path;
     open my $fh, '>', $dst_path or die "open(>$dst_path): $!";
     print $fh $data;
+    close($fh);
+    if(-T $dst_path) {
+        gzip $dst_path => $dst_path . '.gz'
+            or die "gzip failed: $GzipError\n";
+    }
     return $path;
 }
 
