@@ -224,6 +224,7 @@
 
         this.get('#/sights', function(context) {
             context.update_info('#tmpl-sights')
+                   .set_highlights([])
                    .title('Sightseeing Tours | ' + opt.app_title);
         });
 
