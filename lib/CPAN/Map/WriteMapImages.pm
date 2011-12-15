@@ -116,6 +116,7 @@ sub write_image_file {
     # Add labels for each namespace/mass
 
     if($font) {
+        die "Font file does not exist: $font" unless -e $font;
         $builder->each_namespace(sub {
             my($ns) = @_;
             $self->add_mass_label($im, $font, $ns);
