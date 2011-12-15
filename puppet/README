@@ -1,0 +1,8 @@
+This directory contains the Puppet configs required to bring up the Map of CPAN
+application on a Debian squeeze server (or an Ubuntu server too).
+
+Once Puppet is installed (see below), run the following command to apply the
+configs:
+
+  sudo ./puppet/apply-config
+

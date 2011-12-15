@@ -1,0 +1,20 @@
+#!/usr/bin/perl
+##############################################################################
+#
+# Simple wrapper script to invoke puppet with appropriate parameters.
+#
+
+use strict;
+use warnings;
+
+use FindBin;
+
+die "apply-config must be run as root\n" unless $> == 0;
+
+if(!-e '/usr/bin/puppet') {
+    die "You must first install puppet:\n\n  apt-get install puppet\n\n";
+}
+my $conf_root = $FindBin::Bin;
+$ENV{FACTER_conf_root} = $conf_root;
+
+system "puppet --confdir $conf_root --verbose $conf_root/manifests/site.pp";
