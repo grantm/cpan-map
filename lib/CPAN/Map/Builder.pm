@@ -125,7 +125,7 @@ has 'slug_of_the_day'  => ( is => 'rw', isa => 'Str' );
 has 'plane_rows'       => ( is => 'rw', isa => 'Int' );
 has 'plane_cols'       => ( is => 'rw', isa => 'Int' );
 has 'module_count'     => ( is => 'rw', isa => 'Int' );
-has 'plane'            => ( is => 'rw', isa => 'ArrayRef[ArrayRef[Int]]' );
+has 'plane'            => ( is => 'rw', isa => 'Ref' );
 
 
 sub generate {
