@@ -1,3 +1,7 @@
+# Package requires backports:
+#
+#   deb http://backports.debian.org/debian-backports squeeze-backports main
+#
 
 class cpan-map::nginx {
 
@@ -22,6 +26,7 @@ class cpan-map::nginx {
             notify  => Exec["nginx-reload"];
 
         '/etc/nginx/sites-available/cpan-map':
+            require => Package['nginx-full'],
             source  => "puppet:///modules/cpan-map/etc/nginx/cpan-map.conf",
             owner   => root,
             group   => root,
@@ -29,10 +34,12 @@ class cpan-map::nginx {
             notify  => Exec["nginx-reload"];
 
         '/etc/nginx/sites-enabled/cpan-map':
+            require => File['/etc/nginx/sites-available/cpan-map'],
             ensure  => '../sites-available/cpan-map',
             notify  => Exec["nginx-reload"];
 
         '/etc/nginx/htpasswd':
+            require => Package['nginx-full'],
             owner   => root,
             group   => www-data,
             mode    => 640,
