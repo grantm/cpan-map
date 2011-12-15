@@ -73,7 +73,7 @@ has 'label_font_path' => (
     is      => 'rw',
     isa     => 'Str',
     lazy    => 1,
-    default => '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf',
+    default => '/usr/share/fonts/truetype/ttf-liberation/LiberationSans-Regular.ttf',
 );
 
 has 'output_writers' => (
