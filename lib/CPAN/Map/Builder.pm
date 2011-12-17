@@ -292,6 +292,7 @@ sub list_distros_by_ns {
             $self->slug_of_the_day(substr($hex, 0, 8));
         }
     }
+    die "Failed to extract timestamp from module-list" unless $self->slug_of_the_day;
 
     # Build a big hash of distros by namespace prefix
     my %prefix_dists = ();
