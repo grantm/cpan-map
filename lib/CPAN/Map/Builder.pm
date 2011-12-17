@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use FindBin qw();
+use File::Path qw(make_path);
 require File::Basename;
 require File::Spec;
 require JSON::XS;
@@ -233,6 +234,8 @@ sub update_source_data {
 
     my $data_dir = $self->source_data_dir;
     $self->progress_message("Updating source data in $data_dir");
+
+    make_path($data_dir) if not -d $data_dir;
 
     my $cpan_mirror = $self->config_item(
         'cpan_mirror' => 'http://cpan.perl.org/'
