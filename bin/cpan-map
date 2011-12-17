@@ -1,17 +1,95 @@
 #!/usr/bin/perl
 #
-# This script generates the JSON file and PNG map image used by the
+# This script generates the JSON file and PNG map images used by the
 # HTML/Javascript map frontend.
 #
 
 use strict;
 use warnings;
 
+use Pod::Usage;
+use Getopt::Long qw(GetOptions);
+
 use CPAN::Map;
 
-CPAN::Map->build(
-    verbose => 1,
-);
+my(%opt);
+if(!GetOptions(\%opt,
+    'config_file|config-file|c',
+    'refresh_data|refresh-data|d',
+    'verbose|v',
+    'help|?'
+)) {
+    pod2usage(-exitval => 1,  -verbose => 0);
+}
+
+pod2usage(-exitstatus => 0, -verbose => 2) if $opt{help};
+
+CPAN::Map->build(%opt);
 
 exit;
+
+
+__END__
+
+=head1 NAME
+
+cpan-map - wrapper script for generating the 'Map of CPAN' web app
+
+=head1 SYNOPSIS
+
+  cpan-map [options] <files>
+
+  Options:
+
+   --config-file <file>   override default config file path
+   --refresh-data         update files in source_data directory
+   --verbose              display progress messages
+   --help                 detailed help message
+
+=head1 DESCRIPTION
+
+This script is a thin wrapper around the CPAN::Map module which is used to
+generate the map images and summary data file for the 'Map of CPAN' web app's
+HTML and Javascript front-end.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<< --config-file <path> >> (alias -c)
+
+Override the configuration file path.  Default value: F<$HOME/.config/cpan-map>.
+The config file is JSON format e.g.:
+
+    {
+        "cpan_mirror" : "http://cpan.catalyst.net.nz/CPAN/"
+    }
+
+=item B<--refresh-data> (alias -r)
+
+When this option is provided, up-to-date copies of the data files in the
+F<source_data> directory will be downloaded.
+
+=item B<--verbose> (alias -v)
+
+Display progress messages.  Without this option, output will only be provided
+in the case of errors.
+
+=item B<--help> (alias -?)
+
+Display this documentation.
+
+=back
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2011 Grant McLean C<< <grantm@cpan.org> >>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License, Version 3 or later by the
+Free Software Foundation.  You should have received a copy of the GNU Affero
+General Public License along with this program.  If not, see
+L<http://www.gnu.org/licenses/>.
+
+=cut
 

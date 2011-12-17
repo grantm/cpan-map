@@ -1,10 +1,9 @@
-gzip text files when publishing
 Link to Module::Name page on MetaCPAN or Dist-Name if no dist = module match
-Dist info: automate download ratings from http://cpanratings.perl.org/csv/all_ratings.csv
 Don't resize controls when info-pane resized
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
 Make 'Map of CPAN' title a 'home' button to reset the UI
+Drill down to see sub namespaces
 Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)

@@ -6,13 +6,22 @@ use namespace::autoclean;
 use FindBin qw();
 require File::Basename;
 require File::Spec;
+require JSON::XS;
+require LWP::Simple;
 require IO::Uncompress::Gunzip;
 require Text::CSV_XS;
 use Digest::MD5 qw(md5_hex);
 use Data::Dumper;
 
 
-my $cpan_source_dir =  $ENV{HOME} . '/.cpan/sources';  # TODO portability fix
+my $default_config = File::Spec->catfile($ENV{HOME}, '.config', 'cpan-map');
+
+has 'refresh_data' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    lazy    => 1,
+    default => 0
+);
 
 has 'verbose' => (
     is      => 'rw',
@@ -21,11 +30,42 @@ has 'verbose' => (
     default => 0
 );
 
+has 'config_file' => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => $default_config,
+);
+
+has 'config' => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        my $config_file = $self->config_file;
+        return {} if !-e $config_file  and  $config_file eq $default_config;
+        open my $fh, '<', $config_file;
+        local($/);
+        my $json_text = <$fh>;
+        return JSON::XS::decode_json($json_text);
+    },
+);
+
 has 'critical_mass' => (
     is      => 'rw',
     isa     => 'Int',
     lazy    => 1,
     default => 30
+);
+
+has 'source_data_dir' => (
+    is      => 'ro',
+    isa     => 'Str',
+    lazy    => 1,
+    default => File::Spec->catdir(
+        File::Basename::dirname($FindBin::Bin), 'source_data'
+    ),
 );
 
 has 'output_dir' => (
@@ -50,23 +90,34 @@ has 'mod_list_source' => (
     is      => 'rw',
     isa     => 'Str',
     lazy    => 1,
-    default => $cpan_source_dir . '/modules/02packages.details.txt.gz',
+    default => sub {
+        File::Spec->catfile(shift->source_data_dir, '02packages.details.txt.gz');
+    },
 );
 
 has 'authors_source' => (
     is      => 'rw',
     isa     => 'Str',
     lazy    => 1,
-    default => $cpan_source_dir . '/authors/01mailrc.txt.gz',
+    default => sub {
+        File::Spec->catfile(shift->source_data_dir, '01mailrc.txt.gz');
+    },
+);
+
+has 'ratings_source_url' => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => 'http://cpanratings.perl.org/csv/all_ratings.csv',
 );
 
 has 'ratings_source' => (
     is      => 'rw',
     isa     => 'Str',
     lazy    => 1,
-    default => File::Spec->catfile(
-        File::Basename::dirname($FindBin::Bin), 'all_ratings.csv'
-    ),
+    default => sub {
+        File::Spec->catfile(shift->source_data_dir, 'all_ratings.csv');
+    },
 );
 
 has 'label_font_path' => (
@@ -132,6 +183,9 @@ sub generate {
     my $class = shift;
     my $self  = $class->new(@_);
 
+    if($self->refresh_data) {
+        $self->update_source_data;
+    }
     $self->list_distros_by_ns;
     $self->map_distros_to_plane;
     $self->identify_mass_areas;
@@ -164,6 +218,47 @@ sub gunzip_open {
         or die $IO::Uncompress::Gunzip::GunzipError;
 
     return $z;
+}
+
+
+sub config_item {
+    my($self, $key, $default) = @_;
+
+    return $self->config->{$key} // $default;
+}
+
+
+sub update_source_data {
+    my($self) = @_;
+
+    my $data_dir = $self->source_data_dir;
+    $self->progress_message("Updating source data in $data_dir");
+
+    my $cpan_mirror = $self->config_item(
+        'cpan_mirror' => 'http://cpan.perl.org/'
+    );
+
+    my($src_url, $dst_file, $status);
+
+    $src_url  = $cpan_mirror . 'modules/02packages.details.txt.gz';
+    $dst_file = $self->mod_list_source;
+    $status   = LWP::Simple::mirror($src_url, $dst_file);
+    die "Status code: $status downloading $src_url"
+        unless $status =~ m/^(200|304)$/;
+
+    $src_url  = $cpan_mirror . 'authors/01mailrc.txt.gz';
+    $dst_file = $self->authors_source;
+    $status   = LWP::Simple::mirror($src_url, $dst_file);
+    die "Status code: $status downloading $src_url"
+        unless $status =~ m/^(200|304)$/;
+
+    $dst_file = $self->ratings_source;
+    if(!-e $dst_file  or  -M $dst_file > 0.8) {
+        $src_url  = $self->ratings_source_url;
+        $status   = LWP::Simple::mirror($src_url, $dst_file);
+        die "Status code: $status downloading $src_url"
+            unless $status =~ m/^(200|304)$/;
+    }
 }
 
 
