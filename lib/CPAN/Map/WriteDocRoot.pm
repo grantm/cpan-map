@@ -79,6 +79,7 @@ sub write {
     $self->copy_images();
     $self->write_html();
     $self->copy_other_files();
+    $self->purge_old_files();
 }
 
 
@@ -262,6 +263,18 @@ sub copy_other_files {
     my @files = grep { $_ ne 'index.html' } glob('*.html');
     foreach my $path ( @files ) {
         $self->copy_file($path);
+    }
+}
+
+
+sub purge_old_files {
+    my($self) = @_;
+    $self->builder->progress_message(" - purging old generated files");
+    chdir($self->dst_dir) or die "chdir(" . $self->dst_dir . "): $!";
+    my @files = (glob('cpan-map-*-*.png'), glob('cpan-map-data-*.txt*'));
+    foreach my $path ( @files ) {
+        next if -M $path < 0.9; # Keep files less than a day old
+        unlink($path);
     }
 }
 

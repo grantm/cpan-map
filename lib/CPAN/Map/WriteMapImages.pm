@@ -50,10 +50,22 @@ sub write {
 
     my $self = $class->new( builder => $builder, output_dir => $output_dir );
 
+    $self->purge_old_files;
     foreach my $scale ( @{ $builder->zoom_scales } ) {
         $self->scale($scale);
         $self->write_image_file($builder, $scale);
     }
+}
+
+
+sub purge_old_files {
+    my($self) = @_;
+    my $pattern = File::Spec->catfile(
+        $self->output_dir, $self->output_filename
+    );
+    $pattern =~ s{(?=[.]png$)}{*};
+    $self->builder->progress_message(" - purging old files $pattern");
+    unlink(glob($pattern));
 }
 
 
