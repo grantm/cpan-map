@@ -22,6 +22,7 @@ class cpan-map::apt-packages {
         "bsd-mailx":                      ensure => installed;
         "ttf-liberation":                 ensure => installed;
         "libterm-readline-gnu-perl":      ensure => installed;
+        "libjson-xs-perl":                ensure => installed;
         "libmoose-perl":                  ensure => installed;
         "libnamespace-autoclean-perl":    ensure => installed;
         "libio-compress-perl":            ensure => installed;
