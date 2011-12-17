@@ -38,13 +38,6 @@ class cpan-map::nginx {
             ensure  => '../sites-available/cpan-map',
             notify  => Exec["nginx-reload"];
 
-        '/etc/nginx/htpasswd':
-            require => Package['nginx-full'],
-            owner   => root,
-            group   => www-data,
-            mode    => 640,
-            content => "treasure:qJRb6lIMLQRug\n";
-
     }
 
 }
