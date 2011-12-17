@@ -19,6 +19,7 @@ class cpan-map::apt-packages {
         "apt-file":                       ensure => installed;
         "perl-doc":                       ensure => installed;
         "man-db":                         ensure => installed;
+        "bsd-mailx":                      ensure => installed;
         "ttf-liberation":                 ensure => installed;
         "libterm-readline-gnu-perl":      ensure => installed;
         "libmoose-perl":                  ensure => installed;
