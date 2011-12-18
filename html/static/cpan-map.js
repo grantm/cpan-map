@@ -244,6 +244,15 @@
             });
         });
 
+        this.get('#/sights/recent-uploads', function(context) {
+            this.loading();
+            ajax_load_recent_uploads( function(data) {
+                context.set_highlights(data.highlights)
+                       .update_info('#tmpl-recent-uploads', data)
+                       .title('Recent Uploads | ' + opt.app_title);
+            });
+        });
+
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
@@ -947,6 +956,68 @@
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function ajax_load_recent_uploads(handler) {
+            var query_url = make_query_url('/release/_search', {
+                "query": { "match_all": {} },
+                "size": 100,
+                "fields": [ "name", "distribution", "version", "author", "date" ],
+                "filter": { "term": {"release.status": "latest"} },
+                "sort": [ { "date": "desc" } ]
+            });
+            $.ajax({
+                url: query_url,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var highlights  = [];
+                    var distro_list = [];
+                    var now = new Date().getTime();
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var row = hits[i].fields;
+                        var name = row.distribution.replace(/-/g, '::');
+                        var distro = find_distro_by_name(name);
+                        if(!distro) {
+                            continue;
+                        }
+                        var uploader = row.author || '';
+                        var maint = find_maint_by_id(row.author);
+                        if(maint) {
+                            uploader = maint.name + " (" + maint.id + ")";
+                        }
+                        var age = Math.floor((now - Date.parse(row.date)) / 3600000);
+                        if(age > 1) {
+                            age = age + ' hours';
+                        }
+                        else {
+                            age = '1 hour';
+                        }
+                        distro_list.push({
+                            "name":  name,
+                            "maint": uploader,
+                            "version": row.version,
+                            "age": age
+                        });
+                        highlights.push(distro.index);
+                        if(distro_list.length >= 60) {
+                            break;
+                        }
+                    }
+                    handler({
+                        "highlights": highlights,
+                        "distro_list": distro_list
+                    });
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function make_query_url(path, query) {
+            return 'http://api.metacpan.org' +
+                path + '?source=' +
+                escape(JSON.stringify(query)) + '&application=cpan-map';
         }
 
         function add_rankings(list, field) {

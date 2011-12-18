@@ -199,6 +199,7 @@
       <ul>
         <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
         <li><a href="#/sights/favorites-leaderboard">++ Top 100 leaderboard</a></li>
+        <li><a href="#/sights/recent-uploads">Recent Uploads</a></li>
       </ul>
     </div>
   </script>
@@ -245,6 +246,25 @@
           <td class="rank"><%= distro.rank %></td>
           <td><a href="#/distro/<%= distro.name %>"><%= distro.name %></a></td>
           <td class="score"><%= distro.score %></td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-recent-uploads">
+    <div class="info">
+      <p>Recent uploads:</p>
+      <table class="leaderboard">
+        <tr>
+          <th>Distribution</th>
+        </tr>
+        <% for(var i = 0; i < distro_list.length; i++) {
+            var distro = distro_list[i];
+            var row_class = (i % 2) ? 'even' : 'odd';
+        %>
+        <tr class="<%= row_class %>">
+          <td><a href="#/distro/<%= distro.name %>" title="Version <%= distro.version %> uploaded by <%= distro.maint %> <%= distro.age %> ago"><%= distro.name %></a></td>
         </tr>
         <% } %>
       </table>
