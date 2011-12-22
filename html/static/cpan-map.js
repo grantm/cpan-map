@@ -1182,7 +1182,9 @@
         $el.addClass('cpan-map');
         $el.append(
             $('<div class="map-controls" />').append(
-                $('<h1 />').text( opt.app_title )
+                $('<h1 />').append(
+                    $('<a href="#/" />').text( opt.app_title )
+                )
             ),
             $('<div class="map-panel loading" />').append(
                 $('<div class="map-info-panel" />'),
