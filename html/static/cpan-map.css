@@ -152,8 +152,8 @@ div#intro p.note {
 
 .cpan-map h1 {
   position: absolute;
-  top: 18px;
-  left: 20px;
+  top: -2px;
+  left: 2px;
   font-size: 25px;
   font-weight: bold;
   color: #555555;
@@ -161,7 +161,6 @@ div#intro p.note {
 
 .cpan-map div.map-panel {
   position: relative;
-  height: 100%;
   padding: 0 0 0 210px;
   overflow: hidden;
 }
@@ -222,6 +221,7 @@ div#intro p.note {
   border: 1px solid #999;
   border-radius: 5px;
   -moz-border-radius: 5px;
+  outline: none;
 }
 
 .cpan-map div.map-controls ul,
@@ -261,7 +261,7 @@ div#intro p.note {
 
 .cpan-map div.map-info-panel {
   position: absolute;
-  top: 36px;
+  top: 0;
   left: 0px;
   width: 200px;
   background-color: #666;
@@ -288,10 +288,9 @@ div#intro p.note {
 
 .cpan-map div.map-separator {
   position: absolute;
-  top: 36px;
+  top: 0px;
   left: 200px;
   width: 10px;
-  height: 100%;
   background-color: #333;
 }
 
@@ -303,10 +302,13 @@ div#intro p.note {
 .cpan-map div.map-viewport {
   position: relative;
   background-color: #996;
-  height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
   background-color: #666;
+}
+
+.cpan-map label.ctrl-zoom {
+  margin-left: 210px;
 }
 
 .cpan-map ul.map-zoom {

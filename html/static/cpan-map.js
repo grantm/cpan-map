@@ -360,11 +360,11 @@
                 ),
                 $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
                     $('<label class="ctrl-distro" title="Click to clear">Distro</label>'),
-                    $('<input class="map-hover-distro" name="distro" value="" />').width(0)
+                    $('<input class="map-hover-distro" name="distro" value="" />').width(1)
                 ),
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
                     $('<label class="ctrl-maint" title="Click to clear">Maintainer</label>'),
-                    $('<input class="map-hover-maint" name="maint" value="" />').width(0)
+                    $('<input class="map-hover-maint" name="maint" value="" />').width(1)
                 )
             );
 
@@ -407,26 +407,26 @@
             }
             $el.width(app_width);
 
+            var $controls = $el.find('.map-controls');
             var $panel = $el.find('.map-info-panel');
-            var panel_height = app_height - parseInt( $panel.css('top') );
+            var panel_height = app_height - ($panel.offset().top - $controls.offset().top);
             $panel.height( panel_height );
             $el.find('.map-separator').height( panel_height );
             $el.find('.map-viewport').height( panel_height );
 
-            var $controls = $el.find('.map-controls');
             var $input1 = $controls.find('.map-hover-distro');
             var $input2 = $controls.find('.map-hover-maint');
             if(!dim) {
-                dim = { info_width: 200 };
+                dim = { };
                 dim.controls_base_width =
-                    $input2.offset().left - $controls.offset().left;
+                    $input2.offset().left - $controls.offset().left + 6;
             }
-            var inp_width = app_width - dim.info_width - 16 - dim.controls_base_width;
+            var inp_width = app_width - dim.controls_base_width;
             if(inp_width < 250) {
                 inp_width = 250;
             }
-            $input1.width( Math.floor(inp_width * 3 / 5) );
-            $input2.width( Math.floor(inp_width * 2 / 5) );
+            $input1.width( Math.floor(inp_width / 2) );
+            $input2.width( Math.floor(inp_width / 2) );
         }
 
         function set_initial_zoom($el) {
@@ -458,8 +458,8 @@
 
             var pheight = cpan.meta.plane_rows * opt.scale;
             var yoffset = 0;
-            if(pheight < (height - 40)) {
-                yoffset = (height - pheight - 40) / 2;
+            if(pheight < height) {
+                yoffset = (height - pheight) / 2;
             }
             $el.find('.map-plane').css({top: yoffset + 'px'});
         }
@@ -1178,13 +1178,13 @@
         }
         opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, escape(opt.default_avatar));
 
-        var $controls = $('<div class="map-controls" />');
         var $viewport = $('<div class="map-viewport" />');
         $el.addClass('cpan-map');
         $el.append(
-            $('<h1 />').text( opt.app_title ),
+            $('<div class="map-controls" />').append(
+                $('<h1 />').text( opt.app_title )
+            ),
             $('<div class="map-panel loading" />').append(
-                $controls,
                 $('<div class="map-info-panel" />'),
                 $viewport.html('<div class="init">Loading map data</div>'),
                 $('<div class="map-separator" />')
