@@ -353,10 +353,6 @@ div#intro p.note {
   background-image: url(images/highlight-bg.gif);
 }
 
-.cpan-map div.map-cache {
-  display: none;
-}
-
 .cpan-map div.zoom0 div.map-highlights div.marker {
   width: 1px;
   height: 1px;
@@ -408,6 +404,81 @@ div#intro p.note {
 
 .cpan-map div.map-plane:hover div.map-plane-sight {
   display: block;
+}
+
+.cpan-map div.uploads-ticker {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-family: sans-serif;
+}
+
+.cpan-map div.uploads-ticker div.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #888888;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+}
+
+.cpan-map div.uploads-ticker label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #880000;
+  color: #aaaaaa;
+  width: 150px;
+  padding: 2px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.cpan-map div.uploads-ticker div.x {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 4px;
+  font-weight: bold;
+  background-color: #444444;
+  color: #888888;
+  cursor: pointer;
+}
+
+.cpan-map div.uploads-ticker label a {
+  color: #aaaaaa;
+  font-weight: bold;
+}
+
+.cpan-map div.uploads-ticker ul {
+  position: relative;
+  left: 0;
+  top: 0;
+  margin-left: 150px;
+  width: 4000px;
+}
+
+.cpan-map div.uploads-ticker ul li {
+  float: left;
+  padding: 2px 16px;
+  color: #404040;
+}
+
+.cpan-map div.uploads-ticker ul li a {
+  color: #222244;
+  font-weight: bold;
+  padding-right: 8px;
+  outline: none;
+}
+
+.cpan-map div.uploads-ticker ul li a:hover {
+  color: #f7f7f7;
 }
 
 .cpan-map div.greeting  {

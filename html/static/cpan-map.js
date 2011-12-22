@@ -156,6 +156,9 @@
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
             });
+            ajax_load_recent_uploads( function(data) {
+                build_ticker($el, data.distro_list);
+            });
         });
 
         this.bind('ajax_load_failed', function(e) {
@@ -408,6 +411,7 @@
             var panel_height = app_height - parseInt( $panel.css('top') );
             $panel.height( panel_height );
             $el.find('.map-separator').height( panel_height );
+            $el.find('.map-viewport').height( panel_height );
 
             var $controls = $el.find('.map-controls');
             var $input1 = $controls.find('.map-hover-distro');
@@ -1098,6 +1102,57 @@
         }
 
     });
+
+    function build_ticker($el, items) {
+        var $viewport = $el.find('.map-viewport');
+        var $ul = $('<ul />').css({
+            'left': parseInt($viewport.width()) - 150
+        });
+        for(var i = 0; i < items.length; i++) {
+            if(i > 30) { continue; }
+            var distro = items[i];
+            $ul.append(
+                $('<li />').append (
+                    $('<a />').text(items[i].name).attr({
+                        href: '#/distro/' + distro.name,
+                        title: 'Version ' + distro.version + ' uploaded by ' + distro.maint
+                    }),
+                    items[i].age.replace(/ hour/, 'hr')
+                )
+            );
+        }
+        $ul.append( $('<li>. . . . . . . . .</li>') );
+        var $ticker = $('<div class="uploads-ticker" />').append(
+            $('<div class="mask" />'),
+            $ul,
+            $('<label><a href="#/sights/recent-uploads">Recent Uploads:</a></label>'),
+            $('<div class="x">X</div>').click(function() {
+                $(this).parent().remove();
+            })
+        );
+        $viewport.append( $ticker );
+
+        function start_ticker () {
+            var w = parseInt($ul.find('li').outerWidth());
+            var x = parseInt($ul.css('left'));
+            var target = x > 0 ? 0 : (0 - w);
+            var delta  = x - target;
+            $ul.animate({ left: target }, delta * 20, 'linear', function() {
+                if(target < 0) {
+                    $ul.append( $ul.find('li:first').detach() );
+                    $ul.css({'left': 0});
+                }
+                setTimeout(start_ticker, 2000);
+            });
+        }
+
+        $ul.hover(
+            function() { $(this).stop(true); },
+            start_ticker
+        );
+
+        $ticker.animate({ bottom: 0 }, 700, start_ticker);
+    }
 
 
     app.error = function(message, exception) {
