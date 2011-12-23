@@ -182,13 +182,18 @@ div#intro p.note {
   font-size: 120%;
 }
 
-.cpan-map div.map-controls {
+.cpan-map div.map-controls-wrapper {
   position: relative;
   height: 26px;
-  width: 2000px;
   margin-bottom: 10px;
   overflow: hidden;
   background-color: #333333;
+  white-space: nowrap;
+}
+
+.cpan-map div.map-controls {
+  width: 2000px;
+  white-space: nowrap;
 }
 
 .cpan-map div.map-controls form {
@@ -234,7 +239,6 @@ div#intro p.note {
 
 .cpan-map ul.map-zoom {
   float: left;
-  text
 }
 
 .cpan-map ul.map-zoom li {
@@ -260,6 +264,10 @@ div#intro p.note {
 
 .cpan-map ul.map-zoom li a:hover {
   background-color: #878787;
+}
+
+.cpan-map span.map-controls-end {
+  float: left;
 }
 
 .cpan-map div.map-info-panel {

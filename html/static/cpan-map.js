@@ -365,7 +365,8 @@
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
                     $('<label class="ctrl-maint" title="Click to clear">Maintainer</label>'),
                     $('<input class="map-hover-maint" name="maint" value="" />').width(1)
-                )
+                ),
+                $('<span class="map-controls-end" />')
             );
 
             size_controls($el);
@@ -417,9 +418,10 @@
             var $input1 = $controls.find('.map-hover-distro');
             var $input2 = $controls.find('.map-hover-maint');
             if(!dim) {
+                var $end = $controls.find('.map-controls-end');
                 dim = { };
                 dim.controls_base_width =
-                    $input2.offset().left - $controls.offset().left + 6;
+                    $end.offset().left - $controls.offset().left;
             }
             var inp_width = app_width - dim.controls_base_width;
             if(inp_width < 250) {
@@ -1181,10 +1183,11 @@
         var $viewport = $('<div class="map-viewport" />');
         $el.addClass('cpan-map');
         $el.append(
-            $('<div class="map-controls" />').append(
+            $('<div class="map-controls-wrapper" />').append(
                 $('<h1 />').append(
                     $('<a href="#/" />').text( opt.app_title )
-                )
+                ),
+                $('<div class="map-controls" />')
             ),
             $('<div class="map-panel loading" />').append(
                 $('<div class="map-info-panel" />'),
