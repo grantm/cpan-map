@@ -1110,6 +1110,7 @@
         var $ul = $('<ul />').css({
             'left': parseInt($viewport.width()) - 150
         });
+        var paused = false;
         for(var i = 0; i < items.length; i++) {
             if(i > 30) { continue; }
             var distro = items[i];
@@ -1135,6 +1136,7 @@
         $viewport.append( $ticker );
 
         function start_ticker () {
+            if(paused) { return; }
             var w = parseInt($ul.find('li').outerWidth());
             var x = parseInt($ul.css('left'));
             var target = x > 0 ? 0 : (0 - w);
@@ -1144,13 +1146,14 @@
                     $ul.append( $ul.find('li:first').detach() );
                     $ul.css({'left': 0});
                 }
-                setTimeout(start_ticker, 2000);
+                paused = true;
+                setTimeout(function() { paused = false; start_ticker() }, 2000);
             });
         }
 
         $ul.hover(
             function() { $(this).stop(true); },
-            start_ticker
+            function() { start_ticker(); }
         );
 
         $ticker.animate({ bottom: 0 }, 700, start_ticker);
