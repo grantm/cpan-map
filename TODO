@@ -1,18 +1,18 @@
+Add [x] buttons to clear input boxes
+Display main module POD in dialog box
+Synthesize an abstract from main module POD
 Link to Module::Name page on MetaCPAN or Dist-Name if no dist = module match
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
-Make 'Map of CPAN' title a 'home' button to reset the UI
 Drill down to see sub namespaces
-Breadcrumbs: Home > Distro > Dependencies; Home > Recent; Home > Supermaint
 Dist info: display namespace name + mass
 Dist info: link to distribution page on metacpan (open in lightboxed iframe?)
 Click to select - 'lock' selection (turn off hover handling) until the next click (leave a tooltip to explain?)
+Support for touch devices
 Plack app to serve content (and aggregate API queries)
 Journey through CPAN (pause/play, faster, slower, rewind, loop)
 Map image: hi-res version to include submerged masses
 Map image: use opacity(?) to represent distribution freshness/age
-Switch to using CPANDB as data source?
- or perhaps Parse::CPAN::Packages::Fast
 Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules
