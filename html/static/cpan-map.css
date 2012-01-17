@@ -212,14 +212,13 @@ div#intro p.note {
   -moz-user-select: none;
 }
 
-.cpan-map div.map-controls label:hover {
+.cpan-map div.map-controls label.ctrl-zoom:hover {
   color: #888888;
   cursor: pointer;
 }
 
 .cpan-map div.map-controls form:hover label {
   color: #888888;
-  cursor: pointer;
 }
 
 .cpan-map div.map-controls input {
@@ -233,13 +232,22 @@ div#intro p.note {
   outline: none;
 }
 
-.clearbutton {
+.cpan-map div.map-controls form a.clearbutton {
   position: absolute;
+  padding: 2px;
   right: 6px;
-  top: 8px;
+  top: 6px;
   width: 10px;
   height: 10px;
   background-image: url(images/cross.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.cpan-map div.map-controls form a.clearbutton:hover {
+  border: 1px solid #666666;
+  padding: 1px;
+  cursor: pointer;
 }
 
 .cpan-map div.map-controls ul,
