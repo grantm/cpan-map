@@ -199,6 +199,7 @@ div#intro p.note {
 .cpan-map div.map-controls form {
   display: inline;
   float: left;
+  position:relative;
 }
 
 .cpan-map div.map-controls label {
@@ -223,7 +224,7 @@ div#intro p.note {
 
 .cpan-map div.map-controls input {
   float: left;
-  padding: 4px 3px 2px 3px;
+  padding: 4px 18px 2px 3px;
   background-color: #a7a7a7;
   color: #000;
   border: 1px solid #999;
@@ -232,8 +233,17 @@ div#intro p.note {
   outline: none;
 }
 
+.clearbutton {
+  position: absolute;
+  right: 6px;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  background-image: url(images/cross.png);
+}
+
 .cpan-map div.map-controls ul,
-.cpan-map div.map-controls input.map-hover-distro {
+.cpan-map div.map-controls form.form-distro {
   margin-right: 18px;
 }
 

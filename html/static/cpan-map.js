@@ -351,14 +351,20 @@
                 ),
                 $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
                     $('<label class="ctrl-distro" title="Click to clear">Distro</label>'),
-                    $('<input class="map-hover-distro" name="distro" value="" />').width(1)
+                    $('<input class="map-hover-distro" name="distro" value="" />').width(1),
+                    $('<a class="clearbutton" />')
                 ),
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
                     $('<label class="ctrl-maint" title="Click to clear">Maintainer</label>'),
-                    $('<input class="map-hover-maint" name="maint" value="" />').width(1)
+                    $('<input class="map-hover-maint" name="maint" value="" />').width(1),
+                    $('<a class="clearbutton" />')
                 ),
                 $('<span class="map-controls-end" />')
             );
+
+            $el.find(".clearbutton").click(function(){
+                $(this).parent().find("input").val('').focus();
+            });
 
             size_controls($el);
             set_initial_zoom($el);
