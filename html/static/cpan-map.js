@@ -28,15 +28,6 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
-        ajax_rdeps_search_url : 'http://api.metacpan.org/v0/release/_search?source='
-                                + '%7B%22fields%22%3A%5B%22distribution%22%5D%2C%22'
-                                + 'filter%22%3A%7B%22and%22%3A%5B%7B%22term%22%3A'
-                                + '%7B%22release.dependency.module%22%3A%22DISTRO-NAME%22'
-                                + '%7D%7D%2C%7B%22term%22%3A%7B%22release.maturity%22%3A'
-                                + '%22released%22%7D%7D%2C%7B%22term%22%3A%7B%'
-                                + '22release.status%22%3A%22latest%22%7D%7D%5D%7D%2C'
-                                + '%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%2C'
-                                + '%22size%22%3A5000%7D',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png'
@@ -754,9 +745,21 @@
                 return;
             }
             // query uses Distro::Name rather than Distro-Name
-            var search_url = opt.ajax_rdeps_search_url.replace(/DISTRO-NAME/, distro.name);
+            var query_url = make_query_url('/release/_search', {
+                "query":  { "match_all": {} },
+                "filter": {
+                    "and": [
+                        { "term": { "release.dependency.module": distro.name } },
+                        { "term": { "release.maturity":          "released"  } },
+                        { "term": { "release.status":            "latest"    } }
+                    ]
+                },
+                "fields": [ "distribution" ],
+                "sort":   [ "distribution" ],
+                "size":   5000
+            });
             $.ajax({
-                url: search_url,
+                url: query_url,
                 data: { application: 'cpan-map' },
                 dataType: 'jsonp',
                 success: function(data) {
