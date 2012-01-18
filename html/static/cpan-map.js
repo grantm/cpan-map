@@ -124,18 +124,12 @@
             $el.find('.map-plane-sight').mousewheel( function(e, delta) {
                 app.trigger(delta < 0 ? 'decrease_zoom' : 'increase_zoom', true);
             });
-            $el.find('label.ctrl-maint').click(function() {
-                $el.find('.map-hover-maint').val('').focus();
-            });
             $el.find('.map-hover-maint').autocomplete({
                 source: autocomplete_maint_name,
                 select: function(event, ui) {
                     $(this).val(ui.item.value);
                     $el.find('.form-maint').submit();
                 }
-            });
-            $el.find('label.ctrl-distro').click(function() {
-                $el.find('.map-hover-distro').val('').focus();
             });
             $el.find('.map-hover-distro').autocomplete({
                 source: autocomplete_distro_name,
@@ -350,14 +344,14 @@
                         .attr('title', opt.zoom_plus_label)
                 ),
                 $('<form class="form-distro" action="#/search/distro" method="POST" />').append(
-                    $('<label class="ctrl-distro" title="Click to clear">Distro</label>'),
+                    $('<label class="ctrl-distro">Distro</label>'),
                     $('<input class="map-hover-distro" name="distro" value="" />').width(1),
-                    $('<a class="clearbutton" />')
+                    $('<a class="clearbutton" title="Click to clear" />')
                 ),
                 $('<form class="form-maint" action="#/search/maint" method="POST" />').append(
-                    $('<label class="ctrl-maint" title="Click to clear">Maintainer</label>'),
+                    $('<label class="ctrl-maint">Maintainer</label>'),
                     $('<input class="map-hover-maint" name="maint" value="" />').width(1),
-                    $('<a class="clearbutton" />')
+                    $('<a class="clearbutton" title="Click to clear" />')
                 ),
                 $('<span class="map-controls-end" />')
             );
