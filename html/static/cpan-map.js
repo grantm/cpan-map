@@ -629,15 +629,20 @@
 
         function show_pod_dialog() {
             $('#pod-dialog').html("Loading...");
-            var module_name = $("p.dist-name").text();
+            var distro_name = $("p.dist-name").text();
+            var distro = find_distro_by_name(distro_name);
             $('#pod-dialog').dialog( "option", {
-                title: "POD for " + module_name
+                title: "POD for " + distro_name
             });
             $.ajax({
-                url: "http://mapofcpan.org/api/pod/" + module_name,
+                url: "http://mapofcpan.org/api/pod/" + distro_name,
                 dataType: 'jsonp',
                 success: function (data) {
-                    $('#pod-dialog').html(data.pod);
+                    var pod_html = '<div class="pod-header">' +
+                        '<a href="http://metacpan.org/author/' + distro.maintainer.id + '">' + distro.maintainer.name + '</a> / ' +
+                        '<a href="http://metacpan.org/release/' + distro.dname + '">' + distro.dname + '</a> / ' +
+                        '<a href="http://metacpan.org/module/' + distro.name + '">' + distro.name + '</a></div>' + data.pod;
+                    $('#pod-dialog').html(pod_html);
                     $('#pod-dialog ul#index a').click(function(event){
                         var target = $(this).attr("href");
                         $(target)[0].scrollIntoView( true );
