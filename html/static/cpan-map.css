@@ -150,7 +150,7 @@ div#intro p.note {
   padding: 20px;
 }
 
-.cpan-map h1 {
+.cpan-map h1.app-title {
   position: absolute;
   top: -2px;
   left: 2px;

@@ -1190,7 +1190,7 @@
         $el.addClass('cpan-map');
         $el.append(
             $('<div class="map-controls-wrapper" />').append(
-                $('<h1 />').append(
+                $('<h1 class="app-title" />').append(
                     $('<a href="#/" />').text( opt.app_title )
                 ),
                 $('<div class="map-controls" />')
