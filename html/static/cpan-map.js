@@ -1305,6 +1305,7 @@
             var col = parseInt(rec[4], 16);
             var distro = {
                 name: rec[0],
+                dname: rec[0].replace(/::/g, '-'),
                 lname: rec[0].toLowerCase(),
                 maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                 row: row,
