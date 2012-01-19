@@ -28,6 +28,8 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
+        ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
+                                'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png'
@@ -238,6 +240,15 @@
                 context.set_highlights(data.highlights)
                        .update_info('#tmpl-recent-uploads', data)
                        .title('Recent Uploads | ' + opt.app_title);
+            });
+        });
+
+        this.get('#/sights/profile-updates', function(context) {
+            this.loading();
+            ajax_load_profile_updates( function(data) {
+                context.set_highlights([])
+                       .update_info('#tmpl-profile-updates', data)
+                       .title('Recent Profile Updates | ' + opt.app_title);
             });
         });
 
@@ -1065,6 +1076,26 @@
                     handler({
                         "highlights": highlights,
                         "distro_list": distro_list
+                    });
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function ajax_load_profile_updates(handler) {
+            $.ajax({
+                url: opt.ajax_recent_updates,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var maint_list = [];
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var row = hits[i].fields;
+                        maint_list.push(row);
+                    }
+                    handler({
+                        "maint_list": maint_list
                     });
                 },
                 error: function() { app.trigger('ajax_load_failed') },

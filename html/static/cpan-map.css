@@ -796,3 +796,6 @@ table.leaderboard td.score {
   text-align: right;
 }
 
+table.leaderboard td.date {
+  white-space: nowrap;
+}
