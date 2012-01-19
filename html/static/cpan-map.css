@@ -558,6 +558,10 @@ div#intro p.note {
   cursor: pointer;
 }
 
+.cpan-map div.map-info-panel .info  p.dist-name:hover {
+  text-decoration: underline;
+}
+
 .cpan-map div.map-info-panel .info div.avatar {
   float: right;
   margin-left: 4px;
