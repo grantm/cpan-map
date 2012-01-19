@@ -38,6 +38,9 @@ class cpan-map::apt-packages {
         "libmath-libm-perl":              ensure => installed;
         "libconstant-defer-perl":         ensure => installed;
         "libmath-planepath-perl":         ensure => installed;
+        "libplack-perl":                  ensure => installed;
+        "libfcgi-perl":                   ensure => installed;
+        "libfcgi-procmanager-perl":       ensure => installed;
     }
 }
 
