@@ -638,6 +638,12 @@
                 dataType: 'jsonp',
                 success: function (data) {
                     $('#pod-dialog').html(data.pod);
+                    $('#pod-dialog ul#index a').click(function(event){
+                        var target = $(this).attr("href");
+                        $(target)[0].scrollIntoView( true );
+                        event.preventDefault();
+                        return false;
+                    });
                 }
             });
             var dlg_height = $(window).height() - 100;
