@@ -554,6 +554,8 @@ div#intro p.note {
 .cpan-map div.map-info-panel .info  p.dist-name {
   white-space: nowrap;
   font-size: 110%;
+  color: #00A;
+  cursor: pointer;
 }
 
 .cpan-map div.map-info-panel .info div.avatar {

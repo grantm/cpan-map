@@ -247,6 +247,7 @@
                 context.set_highlights([ distro.index ])
                        .update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
+                $("p.dist-name").click(show_pod_dialog);
             });
         });
 
@@ -367,6 +368,7 @@
             enable_separator_drag($el);
             attach_hover_handler($el);
             initialise_intro_dialog();
+            initialise_pod_dialog();
         }
 
         function add_map_images($plane) {
@@ -606,6 +608,42 @@
             var dlg_width  = $(window).width()  - 100;
             if(dlg_width > 800) { dlg_width = 800; }
             $('#intro').dialog( "option", {
+                "height" : dlg_height,
+                "width"  : dlg_width
+            }).dialog('open');
+        }
+
+        function initialise_pod_dialog() {
+            var pod_div = $('<div id="pod-dialog" />');
+            $("body").append(pod_div);
+            $('#pod-dialog').dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                draggable: false,
+                resizable: false,
+                show: "slide",
+                modal: true,
+                buttons: { "Close": function() { $(this).dialog("close"); } }
+            });
+        }
+
+        function show_pod_dialog() {
+            $('#pod-dialog').html("Loading...");
+            var module_name = $("p.dist-name").text();
+            $('#pod-dialog').dialog( "option", {
+                title: "POD for " + module_name
+            });
+            $.ajax({
+                url: "http://mapofcpan.org/api/pod/" + module_name,
+                dataType: 'jsonp',
+                success: function (data) {
+                    $('#pod-dialog').html(data.pod);
+                }
+            });
+            var dlg_height = $(window).height() - 100;
+            var dlg_width  = $(window).width()  - 100;
+            if(dlg_width > 800) { dlg_width = 800; }
+            $('#pod-dialog').dialog( "option", {
                 "height" : dlg_height,
                 "width"  : dlg_width
             }).dialog('open');
