@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+#
+# To launch this app in a FastCGI container for the Nginx frontend web server:
+#
+# plackup --daemonize --server FCGI --host localhost --port 9099 --app /home/grant/projects/cpan-map/psgi/api.psgi
 
 use strict;
 use warnings;
