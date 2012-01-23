@@ -658,10 +658,16 @@
                 dataType: 'jsonp',
                 success: function (data) {
                     var main_module = distro.main_module || distro.name;
-                    var pod_html = '<div class="pod-header">' +
-                        '<a href="http://metacpan.org/author/' + distro.maintainer.id + '">' + distro.maintainer.name + '</a> / ' +
-                        '<a href="http://metacpan.org/release/' + distro.dname + '">' + distro.dname + '</a> / ' +
-                        '<a href="http://metacpan.org/module/' + main_module + '">' + main_module + '</a></div>' + data.pod;
+                    var pod_html = '<div class="pod-header">metacpan.org ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/author/' + distro.maintainer.id +
+                        '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/release/' + distro.dname +
+                        '" title="Distribution">' + distro.dname + '</a> ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/module/' + main_module +
+                        '" title="Module">' + main_module + '</a></div>' + data.pod;
                     $('#pod-dialog').html(pod_html);
                 }
             });
