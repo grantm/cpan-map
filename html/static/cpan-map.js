@@ -658,7 +658,7 @@
                 dataType: 'jsonp',
                 success: function (data) {
                     var main_module = distro.main_module || distro.name;
-                    var pod_html = '<div class="pod-header">metacpan.org ' +
+                    var pod_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
                         '<span class="sep">&#9656;</span> ' +
                         '<a href="http://metacpan.org/author/' + distro.maintainer.id +
                         '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
@@ -669,6 +669,9 @@
                         '<a href="http://metacpan.org/module/' + main_module +
                         '" title="Module">' + main_module + '</a></div>' + data.pod;
                     $('#pod-dialog').html(pod_html);
+                    $('#pod-dialog').find('h1').append(
+                        '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
+                    );
                 }
             });
             var dlg_height = $(window).height() - 100;

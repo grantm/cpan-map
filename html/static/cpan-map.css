@@ -188,6 +188,16 @@ div#intro p.note {
   font-weight: bold;
 }
 
+#pod-dialog h1 a.pod-top {
+  font-size: 82%;
+  padding: 2px;
+  color: #a7a7a7;
+}
+
+#pod-dialog h1:hover a.pod-top {
+  color: #666666;
+}
+
 #pod-dialog h2 {
   margin: 1em 0 0 0;
   font-size: 108%;
