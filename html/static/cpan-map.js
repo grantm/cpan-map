@@ -28,6 +28,8 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
+        ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
+                                'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png'
@@ -241,12 +243,22 @@
             });
         });
 
+        this.get('#/sights/profile-updates', function(context) {
+            this.loading();
+            ajax_load_profile_updates( function(data) {
+                context.set_highlights([])
+                       .update_info('#tmpl-profile-updates', data)
+                       .title('Recent Profile Updates | ' + opt.app_title);
+            });
+        });
+
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
                 context.set_highlights([ distro.index ])
                        .update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
+                $("p.dist-name").click(show_pod_dialog);
             });
         });
 
@@ -367,6 +379,7 @@
             enable_separator_drag($el);
             attach_hover_handler($el);
             initialise_intro_dialog();
+            initialise_pod_dialog();
         }
 
         function add_map_images($plane) {
@@ -606,6 +619,54 @@
             var dlg_width  = $(window).width()  - 100;
             if(dlg_width > 800) { dlg_width = 800; }
             $('#intro').dialog( "option", {
+                "height" : dlg_height,
+                "width"  : dlg_width
+            }).dialog('open');
+        }
+
+        function initialise_pod_dialog() {
+            var pod_div = $('<div id="pod-dialog" />');
+            $("body").append(pod_div);
+            $('#pod-dialog').dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                draggable: false,
+                resizable: false,
+                show: "slide",
+                modal: true,
+                buttons: { "Close": function() { $(this).dialog("close"); } }
+            });
+        }
+
+        function show_pod_dialog() {
+            $('#pod-dialog').html("Loading...");
+            var distro_name = $("p.dist-name").text();
+            var distro = find_distro_by_name(distro_name);
+            $('#pod-dialog').dialog( "option", {
+                title: "POD for " + distro_name
+            });
+            $.ajax({
+                url: "http://mapofcpan.org/api/pod/" + distro_name,
+                dataType: 'jsonp',
+                success: function (data) {
+                    var main_module = distro.main_module || distro.name;
+                    var pod_html = '<div class="pod-header">' +
+                        '<a href="http://metacpan.org/author/' + distro.maintainer.id + '">' + distro.maintainer.name + '</a> / ' +
+                        '<a href="http://metacpan.org/release/' + distro.dname + '">' + distro.dname + '</a> / ' +
+                        '<a href="http://metacpan.org/module/' + main_module + '">' + main_module + '</a></div>' + data.pod;
+                    $('#pod-dialog').html(pod_html);
+                    $('#pod-dialog ul#index a').click(function(event){
+                        var target = $(this).attr("href");
+                        $(target)[0].scrollIntoView( true );
+                        event.preventDefault();
+                        return false;
+                    });
+                }
+            });
+            var dlg_height = $(window).height() - 100;
+            var dlg_width  = $(window).width()  - 100;
+            if(dlg_width > 800) { dlg_width = 800; }
+            $('#pod-dialog').dialog( "option", {
                 "height" : dlg_height,
                 "width"  : dlg_width
             }).dialog('open');
@@ -1023,6 +1084,26 @@
             });
         }
 
+        function ajax_load_profile_updates(handler) {
+            $.ajax({
+                url: opt.ajax_recent_updates,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var maint_list = [];
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var row = hits[i].fields;
+                        maint_list.push(row);
+                    }
+                    handler({
+                        "maint_list": maint_list
+                    });
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
         function make_query_url(path, query) {
             return 'http://api.metacpan.org' +
                 path + '?source=' +
@@ -1190,7 +1271,7 @@
         $el.addClass('cpan-map');
         $el.append(
             $('<div class="map-controls-wrapper" />').append(
-                $('<h1 />').append(
+                $('<h1 class="app-title" />').append(
                     $('<a href="#/" />').text( opt.app_title )
                 ),
                 $('<div class="map-controls" />')
@@ -1263,6 +1344,7 @@
             var distro = {
                 name: names[0],
                 lname: names[0].toLowerCase(),
+                dname: names[0].replace(/::/g, '-'),
                 maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                 row: row,
                 col: col,

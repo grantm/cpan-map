@@ -145,12 +145,69 @@ div#intro p.note {
   text-indent: -1em;
 }
 
+#pod-dialog a {
+  color:#00A;
+}
+
+#pod-dialog a:hover {
+  text-decoration: underline;
+}
+
+#pod-dialog h1 {
+  padding-top: 15px;
+  font-size: 115%;
+  font-weight: bold;
+}
+
+#pod-dialog h2 {
+  margin: 1em 0 0 0;
+  font-size: 108%;
+  font-weight: bold;
+}
+
+#pod-dialog p {
+  font-size: 95%;
+  margin: 0.8em 0 0 0;
+  line-height: 140%;
+}
+
+#pod-dialog pre {
+  border: 1px solid #E9E9E9;
+  padding: 15px 5px;
+  background-color:#FAFAFA;
+  margin: 5px 0;
+}
+
+#pod-dialog code {
+  font-family: monospace;
+  font-weight: normal;
+  font-style: normal;
+  font-size: .75em
+}
+#pod-dialog ul {
+  padding-left: 1.2em;
+  padding-top: 2px;
+}
+
+#pod-dialog #index {
+  margin: 1em 0;
+}
+
+#pod-dialog ul li {
+  list-style-type: disc;
+}
+
+#pod-dialog #index li {
+  font-size: 92%;
+  list-style: none;
+}
+
 .cpan-map {
   background-color: #333;
   padding: 20px;
 }
 
-.cpan-map h1 {
+.cpan-map h1.app-title {
   position: absolute;
   top: -2px;
   left: 2px;
@@ -554,6 +611,12 @@ div#intro p.note {
 .cpan-map div.map-info-panel .info  p.dist-name {
   white-space: nowrap;
   font-size: 110%;
+  color: #00A;
+  cursor: pointer;
+}
+
+.cpan-map div.map-info-panel .info  p.dist-name:hover {
+  text-decoration: underline;
 }
 
 .cpan-map div.map-info-panel .info div.avatar {
@@ -599,6 +662,7 @@ div#intro p.note {
   font-size: 125%;
   color: #555555;
   margin: 0.8em 0 0.2em;
+  clear: left;
 }
 
 .cpan-map div.map-info-panel .info li {
@@ -732,3 +796,6 @@ table.leaderboard td.score {
   text-align: right;
 }
 
+table.leaderboard td.date {
+  white-space: nowrap;
+}
