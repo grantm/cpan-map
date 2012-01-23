@@ -1257,15 +1257,19 @@
         };
 
         var add_distro = function(rec) {
+            var names = rec[0].split('/');
             var row = parseInt(rec[3], 16);
             var col = parseInt(rec[4], 16);
             var distro = {
-                name: rec[0],
-                lname: rec[0].toLowerCase(),
+                name: names[0],
+                lname: names[0].toLowerCase(),
                 maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                 row: row,
                 col: col,
                 index: cpan.distro.length
+            }
+            if(names.length > 1) {
+                distro.main_module = names[1];
             }
             distro.maintainer.distro_count++;
             if(rec[1] != '') {

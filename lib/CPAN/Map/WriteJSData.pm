@@ -132,6 +132,8 @@ sub write_distribution_list {
     my $i = 0;
     $builder->each_distro(sub {
         my($distro) = @_;
+        my $distro_name = $distro->name;
+        $distro_name .= '/' . $distro->main_module unless $distro->is_eponymous;
         my $ns = $builder->namespace_for_distro( $distro );
         my $ns_number = defined($ns)
                       ? sprintf('%X', $namespace_number->{ lc($ns->name) })
@@ -143,7 +145,7 @@ sub write_distribution_list {
             $score_count = ',' . $distro->rating_score . ','. $distro->rating_count;
         }
         printf $out "%s,%s,%X,%X,%X%s\n",
-            $distro->name,
+            $distro_name,
             $ns_number,
             $maint_index,
             $distro->row,

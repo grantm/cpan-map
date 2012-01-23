@@ -299,8 +299,18 @@ sub list_distros_by_ns {
     my $module_count = 0;
     while(my $line = $z->getline) {
         $module_count++;
-        my($prefix, $dist_name, $maintainer) = _parse_module_line($line) or next;
-        $prefix_dists{$prefix}->{$dist_name} = $maintainer;
+        my($prefix, $distro_name, $maintainer, $module)
+            = _parse_module_line($line) or next;
+        my $distro = $prefix_dists{$prefix}->{$distro_name};
+        if(not defined $distro) {
+            $distro = $prefix_dists{$prefix}->{$distro_name} =
+                CPAN::Map::Distribution->new(
+                    name          => $distro_name,
+                    ns            => $prefix,
+                    maintainer_id => $maintainer,
+                );
+        }
+        $distro->check_for_main_module($module);
     }
     $z->close();
 
@@ -317,12 +327,12 @@ sub list_distros_by_ns {
         );
 
         foreach my $dist_name (sort { lc($a) cmp lc($b) } @dists) {
-            my $maintainer = $dists_for_ns->{$dist_name};
+            my $distro = $dists_for_ns->{$dist_name};
             my($dist_prefix) = $dist_name =~ m{^(\w+)};
             if(lc($dist_prefix) eq $prefix  and  $dist_prefix ne $prefix) {
                 $this_ns->name($dist_prefix);  # prefer this capitalisation
             }
-            $self->add_distro($dist_name, $prefix, $maintainer);
+            $self->add_distro($distro);
         }
     }
 
@@ -333,8 +343,10 @@ sub list_distros_by_ns {
 
 
 sub _parse_module_line{
-    my($maintainer,$dist) = shift =~ m{
-        ^\S+                           # Module name
+    local($_) = shift;
+    return if m{[.]pm(?:[.]gz)?$};
+    my($module, $maintainer, $distro_name) = $_ =~ m{
+        ^(\S+)                         # Module name
         \s+\S+                         # Version number
         \s+
         (?:[^/]+/){2}                  # Path to maintainer's directory
@@ -342,29 +354,23 @@ sub _parse_module_line{
         (?:[^/]+/)*                    # Optional subdirs
         ([^/\s-]+(?:-[^/\s-]+)*)[.-]   # Distribution name
     }x or return;
-    return if m{[.]pm(?:[.]gz)?$};
-    $dist =~  s{-}{::}g;
-    $dist =~  s{::\d.+$}{};
-    $dist =~  s{[.].*$}{};
-    $dist =~  s{::[vV]\d+$}{};
-    my($ns) = split '::', $dist, 2;
+    $distro_name =~  s{-}{::}g;
+    $distro_name =~  s{::\d.+$}{};
+    $distro_name =~  s{[.].*$}{};
+    $distro_name =~  s{::[vV]\d+$}{};
+    my($ns) = split '::', $distro_name, 2;
 
-    return(lc($ns), $dist, $maintainer);
+    return(lc($ns), $distro_name, $maintainer, $module);
 }
 
 
 sub add_distro {
-    my($self, $distro_name, $ns, $maintainer) = @_;
+    my($self, $distro) = @_;
 
     my $distro_list = $self->distro_list;
-    my $distro = CPAN::Map::Distribution->new(
-        name          => $distro_name,
-        index         => scalar(@$distro_list),
-        ns            => $ns,
-        maintainer_id => $maintainer,
-    );
+    $distro->index( scalar(@$distro_list) );
     push @$distro_list, $distro;
-    $self->distro_index->{$distro_name} = $distro->index;
+    $self->distro_index->{ $distro->name } = $distro->index;
 }
 
 
@@ -686,14 +692,65 @@ package CPAN::Map::Distribution;
 use Moose;
 use namespace::autoclean;
 
-has 'name'          => ( is => 'ro', isa => 'Str' );
-has 'index'         => ( is => 'ro', isa => 'Int' );
-has 'ns'            => ( is => 'ro', isa => 'Str' );
-has 'maintainer_id' => ( is => 'ro', isa => 'Str' );
-has 'row'           => ( is => 'rw', isa => 'Int' );
-has 'col'           => ( is => 'rw', isa => 'Int' );
-has 'rating_score'  => ( is => 'rw', isa => 'Num' );
-has 'rating_count'  => ( is => 'rw', isa => 'Int' );
+has 'name'              => ( is => 'ro', isa => 'Str' );
+has 'ns'                => ( is => 'ro', isa => 'Str' );
+has 'maintainer_id'     => ( is => 'rw', isa => 'Str' );
+has 'index'             => ( is => 'rw', isa => 'Int' );
+has 'row'               => ( is => 'rw', isa => 'Int' );
+has 'col'               => ( is => 'rw', isa => 'Int' );
+has 'rating_score'      => ( is => 'rw', isa => 'Num' );
+has 'rating_count'      => ( is => 'rw', isa => 'Int' );
+has 'is_eponymous'      => ( is => 'rw', isa => 'Bool', default => 0 );
+has 'main_module_guess' => ( is => 'rw', isa => 'ArrayRef');
+
+
+sub main_module {
+    my($self) = @_;
+
+    return $self->name if $self->is_eponymous;
+    my $guess = $self->main_module_guess;
+    return $guess->[0];
+}
+
+
+sub check_for_main_module {
+    my($self, $module) = @_;
+
+    return if $self->is_eponymous();    # We already found the main module
+    if($module eq $self->name) {
+        return $self->is_eponymous(1);  # Module name matches distro name
+    }
+    my $score = _score_guess($self->name, $module);
+    if(my $current = $self->main_module_guess) {
+        my($guess, $guess_score) = @$current;
+        return if $score < $guess_score;
+        if($score == $guess_score) {
+            return if length($module) >= length($guess);
+        }
+    }
+    $self->main_module_guess([$module, $score]);
+}
+
+
+sub _score_guess {
+    my($distro_name, $module) = @_;
+
+    return 5 if lc($module) eq lc($distro_name);
+    return 4 if lc($module) eq lc('app::' . $distro_name);
+
+    if(my($prefix) = $distro_name =~ m{^(.+)(?:-|::)perl$}) {
+        return 3 if lc($prefix) eq lc($module);
+    }
+
+    (my $bare_distro = lc($distro_name)) =~ s{(?:'|::|_)}{}g;
+    (my $bare_module = lc($module))      =~ s{(?:'|::|_)}{}g;
+    return 2 if $bare_distro eq $bare_module;
+
+    return 1 if $module =~ m{^\Q$distro_name\E}i;
+    return 1 if $module =~ m{\Q$distro_name\E$}i;
+
+    return 0;
+}
 
 
 __PACKAGE__->meta->make_immutable;
