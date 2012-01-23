@@ -251,6 +251,15 @@ div#intro p.note {
   margin: 0.4em 0;
 }
 
+#pod-dialog dt {
+  font-weight: bold;
+  margin: 1em 0 0 0;
+}
+
+#pod-dialog dd {
+  margin:  0 0 0 1.6em;
+}
+
 .cpan-map {
   background-color: #333;
   padding: 20px;
