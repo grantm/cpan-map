@@ -636,6 +636,14 @@
                 modal: true,
                 buttons: { "Close": function() { $(this).dialog("close"); } }
             });
+            $('#pod-dialog').on('click', 'a', function(event){
+                var target = $(this).attr("href");
+                if(target.substr(0, 1) == '#') {
+                    $(target)[0].scrollIntoView( true );
+                    event.preventDefault();
+                    return false;
+                }
+            });
         }
 
         function show_pod_dialog() {
@@ -655,12 +663,6 @@
                         '<a href="http://metacpan.org/release/' + distro.dname + '">' + distro.dname + '</a> / ' +
                         '<a href="http://metacpan.org/module/' + main_module + '">' + main_module + '</a></div>' + data.pod;
                     $('#pod-dialog').html(pod_html);
-                    $('#pod-dialog ul#index a').click(function(event){
-                        var target = $(this).attr("href");
-                        $(target)[0].scrollIntoView( true );
-                        event.preventDefault();
-                        return false;
-                    });
                 }
             });
             var dlg_height = $(window).height() - 100;
