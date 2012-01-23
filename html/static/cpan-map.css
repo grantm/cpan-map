@@ -194,6 +194,11 @@ div#intro p.note {
   font-weight: bold;
 }
 
+#pod-dialog h3 {
+  margin: 1em 0 0 0;
+  font-weight: bold;
+}
+
 #pod-dialog p {
   font-size: 95%;
   margin: 0.8em 0 0 0;
