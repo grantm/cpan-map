@@ -639,7 +639,7 @@
             $('#pod-dialog').on('click', 'a', function(event){
                 var target = $(this).attr("href");
                 if(target.substr(0, 1) == '#') {
-                    $(target)[0].scrollIntoView( true );
+                    $('#pod-dialog').scrollTo(target, 200);
                     event.preventDefault();
                     return false;
                 }
