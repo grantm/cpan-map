@@ -184,9 +184,13 @@ div#intro p.note {
   font-style: normal;
   font-size: .75em
 }
+
 #pod-dialog ul {
   padding-left: 1.2em;
-  padding-top: 2px;
+}
+
+#pod-dialog ul#index {
+  padding-left: 0;
 }
 
 #pod-dialog #index {
@@ -200,6 +204,7 @@ div#intro p.note {
 #pod-dialog #index li {
   font-size: 92%;
   list-style: none;
+  margin: 0.4em 0;
 }
 
 .cpan-map {
