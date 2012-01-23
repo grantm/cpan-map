@@ -102,6 +102,23 @@ div.greeting a {
   font-weight: bold;
 }
 
+.cpan-map .ui-dialog div.ui-dialog-buttonpane {
+  padding: 0;
+  margin: 0;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane button {
+  padding: 2px;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane button.ui-widget {
+  font-size: 80%;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane span.ui-button-text {
+  padding: 2px 6px;
+}
+
 div#intro {
   color: #666666;
   line-height: 1.4em;
