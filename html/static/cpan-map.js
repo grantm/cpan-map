@@ -74,6 +74,7 @@
         distro_for_module : {}
     };
 
+    var query_cache = {};
     var dim;
 
     var app = $.sammy(opt.app_selector, function() {
@@ -995,7 +996,24 @@
             return maints;
         }
 
+        function load_from_cache(cache_key, handler) {
+            if(query_cache[cache_key]) {
+                handler( query_cache[cache_key] );
+                return true;
+            }
+            return false;
+        }
+
+        function cache_store(cache_key, data) {
+            query_cache[cache_key] = data;
+            return data;
+        }
+
         function ajax_load_favorites_leaderboard(handler) {
+            var cache_key = 'favorites_leaderboard';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
             var query = {
                 "size": 0,
                 "query": { "match_all": {} },
@@ -1029,10 +1047,12 @@
                         }
                     }
                     add_rankings(distro_list, 'score');
-                    handler({
-                        "highlights": highlights,
-                        "distro_list": distro_list
-                    });
+                    handler(
+                        cache_store(cache_key, {
+                            "highlights": highlights,
+                            "distro_list": distro_list
+                        })
+                    );
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
@@ -1040,6 +1060,10 @@
         }
 
         function ajax_load_recent_uploads(handler) {
+            var cache_key = 'recent_uploads';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
             var query_url = make_query_url('/release/_search', {
                 "query": { "match_all": {} },
                 "size": 100,
@@ -1085,10 +1109,12 @@
                             break;
                         }
                     }
-                    handler({
-                        "highlights": highlights,
-                        "distro_list": distro_list
-                    });
+                    handler(
+                        cache_store(cache_key, {
+                            "highlights": highlights,
+                            "distro_list": distro_list
+                        })
+                    );
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
@@ -1096,6 +1122,10 @@
         }
 
         function ajax_load_profile_updates(handler) {
+            var cache_key = 'profile_updates';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
             $.ajax({
                 url: opt.ajax_recent_updates,
                 dataType: 'jsonp',
@@ -1106,9 +1136,11 @@
                         var row = hits[i].fields;
                         maint_list.push(row);
                     }
-                    handler({
-                        "maint_list": maint_list
-                    });
+                    handler(
+                        cache_store(cache_key, {
+                            "maint_list": maint_list
+                        })
+                    );
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
