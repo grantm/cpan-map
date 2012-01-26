@@ -102,6 +102,23 @@ div.greeting a {
   font-weight: bold;
 }
 
+.cpan-map .ui-dialog div.ui-dialog-buttonpane {
+  padding: 0;
+  margin: 0;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane button {
+  padding: 2px;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane button.ui-widget {
+  font-size: 80%;
+}
+
+.cpan-map .ui-dialog div.ui-dialog-buttonpane span.ui-button-text {
+  padding: 2px 6px;
+}
+
 div#intro {
   color: #666666;
   line-height: 1.4em;
@@ -145,12 +162,110 @@ div#intro p.note {
   text-indent: -1em;
 }
 
+#pod-dialog div.pod-header {
+  font-size: 86%;
+  border-bottom: 1px solid #a7a7a7;
+  padding-bottom: 4px;
+  margin-bottom: 1.6em;
+}
+
+#pod-dialog div.pod-header span.sep {
+  color: #a7a7a7;
+  padding: 0 2px;
+}
+
+#pod-dialog a {
+  color:#00A;
+}
+
+#pod-dialog a:hover {
+  text-decoration: underline;
+}
+
+#pod-dialog h1 {
+  padding-top: 15px;
+  font-size: 115%;
+  font-weight: bold;
+}
+
+#pod-dialog h1 a.pod-top {
+  font-size: 82%;
+  padding: 2px;
+  color: #a7a7a7;
+}
+
+#pod-dialog h1:hover a.pod-top {
+  color: #666666;
+}
+
+#pod-dialog h2 {
+  margin: 1em 0 0 0;
+  font-size: 108%;
+  font-weight: bold;
+}
+
+#pod-dialog h3 {
+  margin: 1em 0 0 0;
+  font-weight: bold;
+}
+
+#pod-dialog p {
+  font-size: 95%;
+  margin: 0.8em 0 0 0;
+  line-height: 140%;
+}
+
+#pod-dialog pre {
+  border: 1px solid #E9E9E9;
+  padding: 15px 5px;
+  background-color:#FAFAFA;
+  margin: 5px 0;
+}
+
+#pod-dialog code {
+  font-family: monospace;
+  font-weight: normal;
+  font-style: normal;
+  font-size: .75em
+}
+
+#pod-dialog ul {
+  padding-left: 1.2em;
+}
+
+#pod-dialog ul#index {
+  padding-left: 0;
+}
+
+#pod-dialog #index {
+  margin: 1em 0;
+}
+
+#pod-dialog ul li {
+  list-style-type: disc;
+}
+
+#pod-dialog #index li {
+  font-size: 92%;
+  list-style: none;
+  margin: 0.4em 0;
+}
+
+#pod-dialog dt {
+  font-weight: bold;
+  margin: 1em 0 0 0;
+}
+
+#pod-dialog dd {
+  margin:  0 0 0 1.6em;
+}
+
 .cpan-map {
   background-color: #333;
   padding: 20px;
 }
 
-.cpan-map h1 {
+.cpan-map h1.app-title {
   position: absolute;
   top: -2px;
   left: 2px;
@@ -555,6 +670,12 @@ div#intro p.note {
 .cpan-map div.map-info-panel .info  p.dist-name {
   white-space: nowrap;
   font-size: 110%;
+  color: #00A;
+  cursor: pointer;
+}
+
+.cpan-map div.map-info-panel .info  p.dist-name:hover {
+  text-decoration: underline;
 }
 
 .cpan-map div.map-info-panel .info div.avatar {
@@ -600,6 +721,7 @@ div#intro p.note {
   font-size: 125%;
   color: #555555;
   margin: 0.8em 0 0.2em;
+  clear: left;
 }
 
 .cpan-map div.map-info-panel .info li {
@@ -733,3 +855,6 @@ table.leaderboard td.score {
   text-align: right;
 }
 
+table.leaderboard td.date {
+  white-space: nowrap;
+}

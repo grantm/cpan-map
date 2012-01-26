@@ -13,6 +13,7 @@
   <link rel="stylesheet" type="text/css" href="static/cpan-map.css">
   <script type="text/javascript" src="static/jquery-1.7.min.js"></script>
   <script type="text/javascript" src="static/jquery.mousewheel.min.js"></script>
+  <script type="text/javascript" src="static/jquery.scrollTo.min.js"></script>
   <script type="text/javascript" src="static/sammy/sammy-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/sammy/plugins/sammy.template-0.7.0.min.js"></script>
   <script type="text/javascript" src="static/sammy/plugins/sammy.title-0.7.0.min.js"></script>
@@ -123,6 +124,11 @@
     can run it locally, add cool features and contribute back to the
     project.</p>
 
+    <h2>Contributors</h2>
+
+    <p>Thanks to Victor Wang and Jiaheng Wang &ndash; students at the Catalyst
+    2012 Open Source Academy.</p>
+
     <h2>Acknowledgements</h2>
 
     <p>Mapping to the Hilbert curve was done using Kevin Ryde’s amazingly
@@ -200,6 +206,7 @@
         <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
         <li><a href="#/sights/favorites-leaderboard">++ Top 100 leaderboard</a></li>
         <li><a href="#/sights/recent-uploads">Recent Uploads</a></li>
+        <li><a href="#/sights/profile-updates">Recent Profile Updates</a></li>
       </ul>
     </div>
   </script>
@@ -271,9 +278,30 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-profile-updates">
+    <div class="info">
+      <p>Maintainers who have recently updated their profile:</p>
+      <table class="leaderboard">
+        <tr>
+          <th>Maintainer</th>
+          <th>Updated</th>
+        </tr>
+        <% for(var i = 0; i < maint_list.length; i++) {
+            var maint = maint_list[i];
+            var row_class = (i % 2) ? 'even' : 'odd';
+        %>
+        <tr class="<%= row_class %>">
+          <td><a href="#/maint/<%= maint.pauseid %>"><%= maint.name %></a></td>
+          <td class="date"><%= maint.updated.replace(/T.*$/, '') %></td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+  </script>
+
   <script type="text/template" id="tmpl-distro">
     <div class="info">
-      <p class="dist-name"><a href="https://metacpan.org/release/<%= meta.distribution %>" title="<%= name %>"><%= name %></a></p>
+      <p class="dist-name" title="Display module POD"><%= name %></p>
       <% if(meta.abstract) { %>
           <p class="abstract"><%= meta.abstract %></p>
       <% } else { %>

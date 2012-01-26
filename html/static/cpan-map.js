@@ -28,6 +28,8 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
+        ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
+                                'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
         default_avatar        : 'static/images/no-photo.png'
@@ -72,6 +74,7 @@
         distro_for_module : {}
     };
 
+    var query_cache = {};
     var dim;
 
     var app = $.sammy(opt.app_selector, function() {
@@ -241,12 +244,22 @@
             });
         });
 
+        this.get('#/sights/profile-updates', function(context) {
+            this.loading();
+            ajax_load_profile_updates( function(data) {
+                context.set_highlights([])
+                       .update_info('#tmpl-profile-updates', data)
+                       .title('Recent Profile Updates | ' + opt.app_title);
+            });
+        });
+
         this.get('#/distro/:name', function(context) {
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
                 context.set_highlights([ distro.index ])
                        .update_info('#tmpl-distro', distro)
                        .title(distro.name + ' | ' + opt.app_title);
+                $("p.dist-name").click(show_pod_dialog);
             });
         });
 
@@ -367,6 +380,7 @@
             enable_separator_drag($el);
             attach_hover_handler($el);
             initialise_intro_dialog();
+            initialise_pod_dialog();
         }
 
         function add_map_images($plane) {
@@ -611,6 +625,65 @@
             }).dialog('open');
         }
 
+        function initialise_pod_dialog() {
+            var pod_div = $('<div id="pod-dialog" />');
+            $("body").append(pod_div);
+            $('#pod-dialog').dialog({
+                autoOpen: false,
+                closeOnEscape: true,
+                draggable: false,
+                resizable: false,
+                show: "slide",
+                modal: true,
+                buttons: { "Close": function() { $(this).dialog("close"); } }
+            });
+            $('#pod-dialog').on('click', 'a', function(event){
+                var target = $(this).attr("href");
+                if(target.substr(0, 1) == '#') {
+                    $('#pod-dialog').scrollTo(target, 200);
+                    event.preventDefault();
+                    return false;
+                }
+            });
+        }
+
+        function show_pod_dialog() {
+            $('#pod-dialog').html("Loading...");
+            var distro_name = $("p.dist-name").text();
+            var distro = find_distro_by_name(distro_name);
+            var main_module = distro.main_module || distro.name;
+            $('#pod-dialog').dialog( "option", {
+                title: "POD for " + main_module
+            });
+            $.ajax({
+                url: "http://mapofcpan.org/api/pod/" + main_module,
+                dataType: 'jsonp',
+                success: function (data) {
+                    var pod_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/author/' + distro.maintainer.id +
+                        '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/release/' + distro.dname +
+                        '" title="Distribution">' + distro.dname + '</a> ' +
+                        '<span class="sep">&#9656;</span> ' +
+                        '<a href="http://metacpan.org/module/' + main_module +
+                        '" title="Module">' + main_module + '</a></div>' + data.pod;
+                    $('#pod-dialog').html(pod_html);
+                    $('#pod-dialog').find('h1').append(
+                        '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
+                    );
+                }
+            });
+            var dlg_height = $(window).height() - 100;
+            var dlg_width  = $(window).width()  - 100;
+            if(dlg_width > 800) { dlg_width = 800; }
+            $('#pod-dialog').dialog( "option", {
+                "height" : dlg_height,
+                "width"  : dlg_width
+            }).dialog('open');
+        }
+
         function distro_at_row_col(row, col) {
             if(cpan.distro_at[row]) {
                 var i = cpan.distro_at[row][col];
@@ -846,7 +919,8 @@
 
         function set_avatar_url(maintainer) {
             if(maintainer.avatar_url) { return; }
-            if(maintainer.meta && maintainer.meta.gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
+            var meta_gravatar_url = (maintainer.meta || {}).gravatar_url || '';
+            if(meta_gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
                 maintainer.gravatar_id = RegExp.$1;
             }
             if(maintainer.gravatar_id) {
@@ -923,7 +997,24 @@
             return maints;
         }
 
+        function load_from_cache(cache_key, handler) {
+            if(query_cache[cache_key]) {
+                handler( query_cache[cache_key] );
+                return true;
+            }
+            return false;
+        }
+
+        function cache_store(cache_key, data) {
+            query_cache[cache_key] = data;
+            return data;
+        }
+
         function ajax_load_favorites_leaderboard(handler) {
+            var cache_key = 'favorites_leaderboard';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
             var query = {
                 "size": 0,
                 "query": { "match_all": {} },
@@ -957,10 +1048,12 @@
                         }
                     }
                     add_rankings(distro_list, 'score');
-                    handler({
-                        "highlights": highlights,
-                        "distro_list": distro_list
-                    });
+                    handler(
+                        cache_store(cache_key, {
+                            "highlights": highlights,
+                            "distro_list": distro_list
+                        })
+                    );
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
@@ -968,6 +1061,10 @@
         }
 
         function ajax_load_recent_uploads(handler) {
+            var cache_key = 'recent_uploads';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
             var query_url = make_query_url('/release/_search', {
                 "query": { "match_all": {} },
                 "size": 100,
@@ -1013,10 +1110,40 @@
                             break;
                         }
                     }
-                    handler({
-                        "highlights": highlights,
-                        "distro_list": distro_list
-                    });
+                    handler(
+                        cache_store(cache_key, {
+                            "highlights": highlights,
+                            "distro_list": distro_list
+                        })
+                    );
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function ajax_load_profile_updates(handler) {
+            var cache_key = 'profile_updates';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
+            $.ajax({
+                url: opt.ajax_recent_updates,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var maint_list = [];
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var row = hits[i].fields;
+                        if(find_maint_by_id(row.pauseid)) {
+                            maint_list.push(row);
+                        }
+                    }
+                    handler(
+                        cache_store(cache_key, {
+                            "maint_list": maint_list
+                        })
+                    );
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
@@ -1190,7 +1317,7 @@
         $el.addClass('cpan-map');
         $el.append(
             $('<div class="map-controls-wrapper" />').append(
-                $('<h1 />').append(
+                $('<h1 class="app-title" />').append(
                     $('<a href="#/" />').text( opt.app_title )
                 ),
                 $('<div class="map-controls" />')
@@ -1257,15 +1384,20 @@
         };
 
         var add_distro = function(rec) {
+            var names = rec[0].split('/');
             var row = parseInt(rec[3], 16);
             var col = parseInt(rec[4], 16);
             var distro = {
-                name: rec[0],
-                lname: rec[0].toLowerCase(),
+                name: names[0],
+                lname: names[0].toLowerCase(),
+                dname: names[0].replace(/::/g, '-'),
                 maintainer: cpan.maint[ parseInt(rec[2], 16) ],
                 row: row,
                 col: col,
                 index: cpan.distro.length
+            }
+            if(names.length > 1) {
+                distro.main_module = names[1];
             }
             distro.maintainer.distro_count++;
             if(rec[1] != '') {
