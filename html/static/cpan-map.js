@@ -651,14 +651,14 @@
             $('#pod-dialog').html("Loading...");
             var distro_name = $("p.dist-name").text();
             var distro = find_distro_by_name(distro_name);
+            var main_module = distro.main_module || distro.name;
             $('#pod-dialog').dialog( "option", {
-                title: "POD for " + distro_name
+                title: "POD for " + main_module
             });
             $.ajax({
-                url: "http://mapofcpan.org/api/pod/" + distro_name,
+                url: "http://mapofcpan.org/api/pod/" + main_module,
                 dataType: 'jsonp',
                 success: function (data) {
-                    var main_module = distro.main_module || distro.name;
                     var pod_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
                         '<span class="sep">&#9656;</span> ' +
                         '<a href="http://metacpan.org/author/' + distro.maintainer.id +
