@@ -919,7 +919,8 @@
 
         function set_avatar_url(maintainer) {
             if(maintainer.avatar_url) { return; }
-            if(maintainer.meta && maintainer.meta.gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
+            var meta_gravatar_url = (maintainer.meta || {}).gravatar_url || '';
+            if(meta_gravatar_url.match(/\/avatar\/([0-9a-f]+)/)) {
                 maintainer.gravatar_id = RegExp.$1;
             }
             if(maintainer.gravatar_id) {
