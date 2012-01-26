@@ -1134,7 +1134,9 @@
                     var hits = (data.hits || {}).hits || [];
                     for(var i = 0; i < hits.length; i++) {
                         var row = hits[i].fields;
-                        maint_list.push(row);
+                        if(find_maint_by_id(row.pauseid)) {
+                            maint_list.push(row);
+                        }
                     }
                     handler(
                         cache_store(cache_key, {
