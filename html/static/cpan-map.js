@@ -28,6 +28,7 @@
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
+        ajax_pod_url_base     : 'http://api.metacpan.org/pod/',
         ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
                                 'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
@@ -656,10 +657,10 @@
                 title: "POD for " + main_module
             });
             $.ajax({
-                url: "http://mapofcpan.org/api/pod/" + main_module,
+                url: opt.ajax_pod_url_base + main_module,
                 dataType: 'jsonp',
-                success: function (data) {
-                    var pod_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
+                success: function (pod_html) {
+                    var html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
                         '<span class="sep">&#9656;</span> ' +
                         '<a href="http://metacpan.org/author/' + distro.maintainer.id +
                         '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
@@ -668,8 +669,8 @@
                         '" title="Distribution">' + distro.dname + '</a> ' +
                         '<span class="sep">&#9656;</span> ' +
                         '<a href="http://metacpan.org/module/' + main_module +
-                        '" title="Module">' + main_module + '</a></div>' + data.pod;
-                    $('#pod-dialog').html(pod_html);
+                        '" title="Module">' + main_module + '</a></div>' + pod_html;
+                    $('#pod-dialog').html(html);
                     $('#pod-dialog').find('h1').append(
                         '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
                     );
