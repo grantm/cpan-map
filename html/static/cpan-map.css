@@ -167,6 +167,7 @@ div#intro p.note {
   border-bottom: 1px solid #a7a7a7;
   padding-bottom: 4px;
   margin-bottom: 1.6em;
+  white-space: nowrap;
 }
 
 #pod-dialog div.pod-header span.sep {
