@@ -25,6 +25,7 @@
         zoom_minus_label      : 'Zoom map out',
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
+        ajax_query_url_base   : 'http://api.metacpan.org',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
@@ -1020,7 +1021,7 @@
             if(load_from_cache(cache_key, handler)) {
                 return;
             }
-            var query = {
+            var ajax_leaderboard_url = make_query_url('/favorite/_search', {
                 "size": 0,
                 "query": { "match_all": {} },
                 "facets": {
@@ -1031,9 +1032,7 @@
                         }
                     }
                 }
-            };
-            ajax_leaderboard_url = 'http://api.metacpan.org/favorite/_search?source=' +
-                escape(JSON.stringify(query)) + '&application=cpan-map';
+            });
             $.ajax({
                 url: ajax_leaderboard_url,
                 dataType: 'jsonp',
@@ -1156,9 +1155,9 @@
         }
 
         function make_query_url(path, query) {
-            return 'http://api.metacpan.org' +
-                path + '?source=' +
-                escape(JSON.stringify(query)) + '&application=cpan-map';
+            return opt.ajax_query_url_base + path +
+                '?source=' + escape( JSON.stringify(query) ) +
+                '&application=cpan-map';
         }
 
         function add_rankings(list, field) {
