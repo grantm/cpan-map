@@ -391,7 +391,7 @@
       <% if(maint.avatar_url) { %>
       <div class="avatar"><img src="<%= maint.avatar_url %>"></div>
       <% } %>
-      <p><label>CPAN ID:</label><a href="#/maint/<%= maint.id %>"><%= maint.id %></a></p>
+      <p><label>CPAN ID:</label><%= maint.id %></p>
       <% if(maint.meta.location) { %>
         <p><label>Location:</label><%= maint.meta.location %></a></p>
       <% } %>
