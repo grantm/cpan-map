@@ -946,14 +946,17 @@
         }
 
         function display_maintainer_distro_list(maint, distros) {
-            var table = $('<table class="maint-distro-list" />').append(
-                $('<tr />').append(
-                    $('<th />').text('Distribution'),
-                    $('<th />').text('Released')
+            var table = $('<table class="maint-distro-list tablesorter" />').append(
+                $('<thead />').append(
+                    $('<tr />').append(
+                        $('<th />').text('Distribution'),
+                        $('<th />').text('Released')
+                    )
                 )
             );
+            var tbody = $('<tbody />')
             for(i = 0; i < distros.length; i++) {
-                table.append(
+                tbody.append(
                     $('<tr />').append(
                         $('<td />').append(
                             $('<a />').attr({
@@ -961,11 +964,14 @@
                                 href: '#/distro/' + distros[i].name
                             }).text(distros[i].name)
                         ),
-                        $('<td />').text(distros[i].release_date)
+                        $('<td class="date"/>').text(distros[i].release_date)
                     )
                 )
             }
-            $('#' + maint.distro_list_id).removeClass('loading').html(table)
+            $('#' + maint.distro_list_id).removeClass('loading').html(table.append(tbody));
+            $('#' + maint.distro_list_id + ' table').tablesorter({
+                sortList: [[0,0]]
+            });
         }
 
         function find_maint_by_id(cpanid) {

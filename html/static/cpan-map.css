@@ -847,8 +847,9 @@ table.maint-distro-list th {
   background-color: #888888;
   color: #eeeeee;
   border-left: 1px solid #eeeeee;
+  font-size: 95%;
   font-weight: bold;
-  padding: 1px 2px;
+  padding: 1px 17px 1px 3px;
 }
 
 table.maint-distro-list td {
@@ -856,6 +857,25 @@ table.maint-distro-list td {
   vertical-align: top;
   padding: 3px 3px;
   border-bottom: 1px solid #b7b7b7;
+}
+
+table.maint-distro-list td.date {
+  text-align: center;
+}
+
+table.tablesorter thead tr .header {
+  background-image: url(images/ts-non.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortUp {
+  background-image: url(images/ts-asc.gif);
+}
+
+table.tablesorter thead tr .headerSortDown {
+  background-image: url(images/ts-desc.gif);
 }
 
 table.leaderboard {
