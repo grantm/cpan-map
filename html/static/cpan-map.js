@@ -1178,6 +1178,7 @@
                         distro_list.push({
                             "name":  name,
                             "maint": uploader,
+                            "maint_id": row.author,
                             "version": row.version,
                             "age": age
                         });
