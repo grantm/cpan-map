@@ -888,17 +888,16 @@ table.leaderboard th {
   background-color: #888888;
   color: #eeeeee;
   border-left: 1px solid #eeeeee;
+  font-size: 95%;
   font-weight: bold;
   padding: 1px 2px;
 }
 
-table.leaderboard tr.odd {
-  background-color: #f7f7f7;
-}
-
 table.leaderboard td {
+  font-size: 88%;
   vertical-align: top;
   padding: 3px 3px;
+  border-bottom: 1px solid #b7b7b7;
 }
 
 table.leaderboard td.score {
