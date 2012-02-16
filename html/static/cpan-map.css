@@ -280,7 +280,7 @@ div#intro p.note {
 
 .cpan-map div.map-panel {
   position: relative;
-  padding: 0 0 0 210px;
+  padding: 0 0 0 330px;
   overflow: hidden;
 }
 
@@ -409,7 +409,7 @@ div#intro p.note {
   position: absolute;
   top: 0;
   left: 0px;
-  width: 200px;
+  width: 320px;
   background-color: #666;
   height: 100%;
   font-size: 14px;
@@ -435,7 +435,7 @@ div#intro p.note {
 .cpan-map div.map-separator {
   position: absolute;
   top: 0px;
-  left: 200px;
+  left: 320px;
   width: 10px;
   background-color: #333;
 }
