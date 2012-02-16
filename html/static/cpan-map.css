@@ -730,6 +730,13 @@ div#intro p.note {
   margin: 0.15em 0 0.15em 1em;
 }
 
+.cpan-map div.map-info-panel div.dist-list.loading {
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-image: url(images/throbber.gif);
+}
+
 .cpan-map div.cpanratings {
   position: relative;
   padding-top: 2px;
@@ -827,6 +834,27 @@ ul.social li a {
   width: 20px;
   height: 20px;
   font-size: 1px;
+}
+
+table.maint-distro-list {
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+table.maint-distro-list th {
+  background-color: #888888;
+  color: #eeeeee;
+  border-left: 1px solid #eeeeee;
+  font-weight: bold;
+  padding: 1px 2px;
+}
+
+table.maint-distro-list td {
+  font-size: 88%;
+  vertical-align: top;
+  padding: 3px 3px;
+  border-bottom: 1px solid #b7b7b7;
 }
 
 table.leaderboard {

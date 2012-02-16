@@ -406,11 +406,7 @@
         </ul>
       <% } %>
       <h2>Distributions: (<%= distros.length %>)</h2>
-      <ul>
-      <% for(var i = 0; i < distros.length; i++) { %>
-          <li><a href="#/distro/<%= distros[i].name %>" title="<%= distros[i].name %>"><%= distros[i].name %></a></li>
-      <% } %>
-      </ul>
+      <div id="<%= maint.distro_list_id %>" class="dist-list loading"></div>
   </script>
 
 </body>

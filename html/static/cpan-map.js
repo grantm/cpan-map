@@ -308,6 +308,12 @@
                 };
                 context.update_info('#tmpl-maint', data)
                        .title(maint.name + ' | ' + opt.app_title);
+                if(maint.dates_loaded) {
+                    display_maintainer_distro_list(maint, distros);
+                }
+                else {
+                    ajax_load_maintainer_distro_dates(maint, distros);
+                }
             });
         });
 
@@ -902,6 +908,66 @@
             });
         }
 
+        function ajax_load_maintainer_distro_dates(maint, distros) {
+            var ajax_distro_list_url = make_query_url('/release/_search', {
+                "query" : { "match_all" : {} },
+                "filter" : {
+                    "and" : [
+                        { "term" : { "author" : maint.id } },
+                        { "term" : { "status" : "latest" } }
+                    ]
+                },
+                "fields" : [ "distribution", "date" ],
+                "size" : 1000
+            });
+            $.ajax({
+                url: ajax_distro_list_url,
+                data: { application: 'cpan-map' },
+                dataType: 'jsonp',
+                success: function(data) {
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var fields = hits[i].fields || {};
+                        set_distro_date(fields.distribution, fields.date);
+                    }
+                    maint.dates_loaded = true;
+                    display_maintainer_distro_list(maint, distros);
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function set_distro_date(distro_name, release_date) {
+            var distro = find_distro_by_name(distro_name.replace(/-/g, '::'));
+            if(distro && release_date && release_date.length >= 10) {
+                distro.release_date = release_date.substring(0, 10);
+            }
+        }
+
+        function display_maintainer_distro_list(maint, distros) {
+            var table = $('<table class="maint-distro-list" />').append(
+                $('<tr />').append(
+                    $('<th />').text('Distribution'),
+                    $('<th />').text('Released')
+                )
+            );
+            for(i = 0; i < distros.length; i++) {
+                table.append(
+                    $('<tr />').append(
+                        $('<td />').append(
+                            $('<a />').attr({
+                                title: distros[i].name + ' released ' + distros[i].release_date,
+                                href: '#/distro/' + distros[i].name
+                            }).text(distros[i].name)
+                        ),
+                        $('<td />').text(distros[i].release_date)
+                    )
+                )
+            }
+            $('#' + maint.distro_list_id).removeClass('loading').html(table)
+        }
+
         function find_maint_by_id(cpanid) {
             var i = cpan.maint_num[ cpanid ];
             if(typeof(i) !== 'undefined') {
@@ -1375,6 +1441,7 @@
             var m = { id: rec[0], distro_count: 0 };
             if(rec.length > 1) { m.name        = rec[1]; }
             if(rec.length > 2) { m.gravatar_id = rec[2]; }
+            m.distro_list_id = 'dist-list-' + m.id.toLowerCase();
             cpan.maint_num[m.id] = cpan.maint.length;
             cpan.maint.push(m);
         };
