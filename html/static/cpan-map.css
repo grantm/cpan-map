@@ -915,3 +915,8 @@ table.leaderboard td.score {
 table.leaderboard td.date {
   white-space: nowrap;
 }
+
+body div.ui-widget-overlay {
+  background: url("images/overlay.png") repeat-x scroll 50% 50% #333333;
+  opacity: 0.8;
+}
