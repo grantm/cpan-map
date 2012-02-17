@@ -837,13 +837,13 @@ ul.social li a {
   font-size: 1px;
 }
 
-table.maint-distro-list {
+div.info table {
   border-collapse: collapse;
   margin-top: 10px;
   margin-bottom: 20px;
 }
 
-table.maint-distro-list th {
+div.info table th {
   background-color: #888888;
   color: #eeeeee;
   border-left: 1px solid #eeeeee;
@@ -852,15 +852,23 @@ table.maint-distro-list th {
   padding: 1px 17px 1px 3px;
 }
 
-table.maint-distro-list td {
+div.info table.dependencies th {
+  text-align: left;
+}
+
+div.info table td {
   font-size: 88%;
   vertical-align: top;
   padding: 3px 3px;
   border-bottom: 1px solid #b7b7b7;
 }
 
-table.maint-distro-list td.date {
+div.info table td.date {
   text-align: center;
+}
+
+div.info table td.empty {
+  border-bottom: none;
 }
 
 table.tablesorter thead tr .header {
