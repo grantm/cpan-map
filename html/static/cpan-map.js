@@ -25,6 +25,7 @@
         zoom_minus_label      : 'Zoom map out',
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
+        stats_domain          : 'mapofcpan.org',
         ajax_query_url_base   : 'http://api.metacpan.org',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
@@ -339,6 +340,15 @@
                 this.redirect('#/');
             }
         });
+
+        // Log page view stats - if enabled on this domain
+
+        if(!opt.stats_domain || opt.stats_domain === document.location.host) {
+            this.after(function() {
+                var path = document.location.hash.substring(1, 1000);
+                log_page_view({'path': path});
+            });
+        }
 
 
         // Utility functions used by the app
@@ -694,6 +704,7 @@
                 "height" : dlg_height,
                 "width"  : dlg_width
             }).dialog('open');
+            log_page_view({'pod': distro_name});
         }
 
         function distro_at_row_col(row, col) {
@@ -1364,6 +1375,12 @@
         );
 
         $ticker.animate({ bottom: 0 }, 700, start_ticker);
+    }
+
+
+    function log_page_view(params) {
+        params.time = $.now();
+        $.get('ping.txt', params);
     }
 
 
