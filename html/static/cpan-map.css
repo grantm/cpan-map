@@ -413,9 +413,7 @@ div#intro p.note {
   background-color: #666;
   height: 100%;
   font-size: 14px;
-  overflow: hidden;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
 }
 
 .cpan-map div.map-panel.loading div.map-info-panel {
