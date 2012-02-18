@@ -93,12 +93,28 @@
             return this;
         });
 
-        this.helper('update_info', function(selector, data) {
+        this.helper('update_info', function(selector, heading, data) {
+            var $el = this.$element();
             var context = this;
+            var header = '';
+            if(heading) {
+                var $div = $('<div />').append(
+                    $('<h1 class="info-title" />').append(
+                        $('<span />').attr('title', heading).text(heading)
+                    ),
+                    $('<a class="back-button" />').attr('title', 'Back')
+                );
+                header = $div.html();
+            }
             var html = context.tmpl(template_cache[selector], data);
-            $('.map-info-panel').html(html).removeClass('loading').addClass('loaded');
-            $('.map-info-panel').find('div.avatar img').load(function() {
+            var $panel = $el.find('.map-info-panel');
+            $panel.html(header).append(html).removeClass('loading').addClass('loaded');
+            size_info_pane_content($panel);
+            $panel.find('div.avatar img').load(function() {
                 $(this).addClass('loaded');
+            });
+            $panel.find('a.back-button').click(function() {
+                window.history.go(-1);
             });
             return context;
         });
@@ -160,11 +176,8 @@
         });
 
         this.bind('not_found', function(e, what) {
-            var html = this.tmpl(template_cache['#tmpl-not-found'], { 'what' : what });
-            this.$element().find('.map-info-panel')
-                .html(html)
-                .removeClass('loading');
-            this.title('Not Found | ' + opt.app_title);
+            this.update_info('#tmpl-not-found', '404 Not Found', { 'what' : what })
+                .title('Not Found | ' + opt.app_title);
             return this;
         });
 
@@ -208,7 +221,7 @@
 
         this.get('#/', function(context) {
             var $el = this.$element();
-            this.update_info('#tmpl-home', cpan.meta)
+            this.update_info('#tmpl-home', null, cpan.meta)
                 .set_highlights([])
                 .title(opt.app_title);
             $el.find('.map-info-panel').removeClass('loaded');
@@ -216,14 +229,14 @@
         });
 
         this.get('#/sights', function(context) {
-            context.update_info('#tmpl-sights')
+            context.update_info('#tmpl-sights', 'Sightseeing Tours')
                    .set_highlights([])
                    .title('Sightseeing Tours | ' + opt.app_title);
         });
 
         this.get('#/sights/distro-counts', function(context) {
             var maints = top_maintainters_by_distro();
-            context.update_info('#tmpl-distro-counts', { 'maints' : maints })
+            context.update_info('#tmpl-distro-counts', 'Maintainer Distro Counts', { 'maints' : maints })
                    .set_highlights([])
                    .title('Maintainer distro counts | ' + opt.app_title);
         });
@@ -232,7 +245,7 @@
             this.loading();
             ajax_load_favorites_leaderboard( function(data) {
                 context.set_highlights(data.highlights)
-                       .update_info('#tmpl-favorites-leaderboard', data)
+                       .update_info('#tmpl-favorites-leaderboard', '++ Top 100', data)
                        .title('++ Top 100 Leaderboard | ' + opt.app_title);
             });
         });
@@ -241,7 +254,7 @@
             this.loading();
             ajax_load_recent_uploads( function(data) {
                 context.set_highlights(data.highlights)
-                       .update_info('#tmpl-recent-uploads', data)
+                       .update_info('#tmpl-recent-uploads', 'Recent Uploads', data)
                        .title('Recent Uploads | ' + opt.app_title);
             });
         });
@@ -250,7 +263,7 @@
             this.loading();
             ajax_load_profile_updates( function(data) {
                 context.set_highlights([])
-                       .update_info('#tmpl-profile-updates', data)
+                       .update_info('#tmpl-profile-updates', 'Recent Profile Updates', data)
                        .title('Recent Profile Updates | ' + opt.app_title);
             });
         });
@@ -259,9 +272,9 @@
             this.loading();
             ajax_load_distro_detail( this.params.name, function(distro) {
                 context.set_highlights([ distro.index ])
-                       .update_info('#tmpl-distro', distro)
+                       .update_info('#tmpl-distro', distro.name, distro)
                        .title(distro.name + ' | ' + opt.app_title);
-                $("p.dist-name").click(show_pod_dialog);
+                $("p.pod-link").click(show_pod_dialog);
             });
         });
 
@@ -269,7 +282,7 @@
             this.loading();
             ajax_load_distro_dependencies( this.params.name, function(distro) {
                 context.set_highlights(distro.dep_highlights)
-                       .update_info('#tmpl-deps', distro)
+                       .update_info('#tmpl-deps', 'Dependencies', distro)
                        .title('Dependencies | ' + distro.name + ' | ' + opt.app_title);
             });
         });
@@ -278,7 +291,7 @@
             var context = this.loading();
             ajax_load_distro_reverse_deps( this.params.name, function(distro) {
                 context.set_highlights(distro.rdep_highlights)
-                       .update_info('#tmpl-rdeps', distro)
+                       .update_info('#tmpl-rdeps', 'Reverse Dependencies', distro)
                        .title('Reverse Dependencies | ' + distro.name + ' | ' + opt.app_title);
             });
         });
@@ -306,7 +319,7 @@
                     'maint'   : maint,
                     'distros' : distros
                 };
-                context.update_info('#tmpl-maint', data)
+                context.update_info('#tmpl-maint', maint.name, data)
                        .title(maint.name + ' | ' + opt.app_title);
                 if(maint.dates_loaded) {
                     display_maintainer_distro_list(maint, distros);
@@ -332,7 +345,7 @@
         // Final 'catch all' route - display a 404 page
         this.any(/^/, function(context) {
             if(window.location.hash.length > 0) {
-                this.update_info('#tmpl-404', { 'hash_path' : window.location.hash})
+                this.update_info('#tmpl-404', '404 Not Found', { 'hash_path' : window.location.hash})
                     .$element().find('.map-info-panel').removeClass('loading');
             }
             else {
@@ -436,6 +449,8 @@
             var $panel = $el.find('.map-info-panel');
             var panel_height = app_height - ($panel.offset().top - $controls.offset().top);
             $panel.height( panel_height );
+            size_info_pane_content($panel);
+
             $el.find('.map-separator').height( panel_height );
             var pos = opt.sep_pos
             $el.find('.map-viewport').height( panel_height )
@@ -455,6 +470,12 @@
             }
             $input1.width( Math.floor(inp_width / 2) );
             $input2.width( Math.floor(inp_width / 2) );
+        }
+
+        function size_info_pane_content($panel) {
+            var height = parseInt( $panel.height() );
+            height = height - 34;
+            $panel.find('div.info').height(height);
         }
 
         function set_initial_zoom($el) {
@@ -669,7 +690,7 @@
         }
 
         function show_pod_dialog() {
-            var distro_name = $("p.dist-name").text();
+            var distro_name = $("h1.info-title").text();
             var distro = find_distro_by_name(distro_name);
             var main_module = distro.main_module || distro.name;
             $('#pod-dialog').dialog( "option", {

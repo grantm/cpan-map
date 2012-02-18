@@ -185,7 +185,6 @@
 
   <script type="text/template" id="tmpl-not-found">
     <div class="not-found">
-      <h2>Not Found</h2>
       <% if(what) { %>
       <p>Unable to find <%= what %></p>
       <% } %>
@@ -194,7 +193,6 @@
 
   <script type="text/template" id="tmpl-404">
     <div class="not-found">
-      <h2>404 Not Found</h2>
       <p>The URL target '<%= hash_path %>' is not valid.</p>
     </div>
   </script>
@@ -283,7 +281,7 @@
 
   <script type="text/template" id="tmpl-profile-updates">
     <div class="info">
-      <p>Maintainers who have recently updated their profile:</p>
+      <p>Maintainers who have recently updated their profile*:</p>
       <table class="leaderboard">
         <tr>
           <th>Maintainer</th>
@@ -299,17 +297,28 @@
         </tr>
         <% } %>
       </table>
+      <div class="note">
+        <p>* You can update your profile using the
+        <a href="https://metacpan.org/">metacpan.org</a> web site. This will 
+        allow you to:</p>
+        <ul>
+          <li>indicate your geographic location</li>
+          <li>add an avatar image</li>
+          <li>link to your web site/blog</li>
+          <li>add links to social networking sites</li>
+        </ul>
+      </div>
     </div>
   </script>
 
   <script type="text/template" id="tmpl-distro">
     <div class="info">
-      <p class="dist-name" title="Display module POD"><%= name %></p>
       <% if(meta.abstract) { %>
           <p class="abstract"><%= meta.abstract %></p>
       <% } else { %>
           <p class="abstract"><i>No abstract.</i></p>
       <% } %>
+      <p class="pod-link" title="Display module POD">Module documentation</p>
       <% if(maintainer.avatar_url) { %>
       <div class="avatar"><a href="#/maint/<%= maintainer.id %>"><img src="<%= maintainer.avatar_url %>"></a></div>
       <% } %>
@@ -392,11 +401,10 @@
 
   <script type="text/template" id="tmpl-maint">
     <div class="info">
-      <p class="dist-name"><a href="https://metacpan.org/author/<%= maint.id %>" title="<%= (maint.name || maint.id) %>"><%= (maint.name || maint.id) %></a></p>
       <% if(maint.avatar_url) { %>
       <div class="avatar"><img src="<%= maint.avatar_url %>"></div>
       <% } %>
-      <p><label>CPAN ID:</label><%= maint.id %></p>
+      <p><label>CPAN ID:</label><a href="https://metacpan.org/author/<%= maint.id %>" title="<%= (maint.name || maint.id) %> - metacpan.org"><%= maint.id %></a></p>
       <% if(maint.meta.location) { %>
         <p><label>Location:</label><%= maint.meta.location %></a></p>
       <% } %>

@@ -419,7 +419,7 @@ div#intro p.note {
   background-color: #666;
   height: 100%;
   font-size: 14px;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .cpan-map div.map-panel.loading div.map-info-panel {
@@ -664,23 +664,41 @@ div#intro p.note {
   color: #333333;
 }
 
+.cpan-map div.map-info-panel a.back-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+  background: #666666 0 -48px no-repeat url(images/title-sprite.png);
+  cursor: pointer;
+}
+
+.cpan-map div.map-info-panel h1.info-title {
+  background: #666666 left top no-repeat url(images/title-sprite.png);
+  border-bottom: 8px solid #333;
+  padding: 0 0 0 38px;
+}
+
+.cpan-map div.map-info-panel h1.info-title span {
+  display: block;
+  white-space: nowrap;
+  padding: 3px 10px 5px 0px;
+  height: 14px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #272727;
+  background: #666666 right center no-repeat url(images/title-sprite.png);
+}
+
 .cpan-map div.map-info-panel .info  {
   padding: 2px 6px;
+  overflow: auto;
 }
 
 .cpan-map div.map-info-panel .info  p {
   margin: 4px 0 10px 0;
-}
-
-.cpan-map div.map-info-panel .info  p.dist-name {
-  white-space: nowrap;
-  font-size: 110%;
-  color: #00A;
-  cursor: pointer;
-}
-
-.cpan-map div.map-info-panel .info  p.dist-name:hover {
-  text-decoration: underline;
 }
 
 .cpan-map div.map-info-panel .info div.avatar {
@@ -711,7 +729,18 @@ div#intro p.note {
 
 .cpan-map div.map-info-panel .info p.abstract {
   font-style: italic;
-  margin-bottom: 6px;
+  margin-bottom: 0;
+}
+
+.cpan-map div.map-info-panel .info  p.pod-link {
+  font-size: 80%;
+  color: #00A;
+  cursor: pointer;
+  margin: 1px 0 16px 0;
+}
+
+.cpan-map div.map-info-panel .info  p.pod-link:hover {
+  text-decoration: underline;
 }
 
 .cpan-map div.map-info-panel .info a {
@@ -732,6 +761,16 @@ div#intro p.note {
 .cpan-map div.map-info-panel .info li {
   list-style: disc;
   margin: 0.15em 0 0.15em 1em;
+}
+
+.cpan-map div.map-info-panel .info  div.note {
+  padding: 10px 0 20px 0;
+  font-style: italic;
+  font-size: 90%;
+}
+
+.cpan-map div.map-info-panel .info  div.note ul {
+  margin-left: 2em;
 }
 
 .cpan-map div.map-info-panel div.dist-list.loading {
