@@ -185,7 +185,6 @@
             var $el = this.$element();
             $el.find('.map-info-panel').width(pos);
             $el.find('.map-panel').css({'padding-left': (pos + 10) + 'px'});
-            dim.info_width = pos;
             this.trigger('resize');
         });
 
@@ -391,6 +390,8 @@
                 $(this).parent().find("input").val('').focus();
             });
 
+            opt.sep_pos = parseInt( $el.find('.map-separator').css('left') );
+
             size_controls($el);
             set_initial_zoom($el);
             center_map($el);
@@ -436,7 +437,9 @@
             var panel_height = app_height - ($panel.offset().top - $controls.offset().top);
             $panel.height( panel_height );
             $el.find('.map-separator').height( panel_height );
-            $el.find('.map-viewport').height( panel_height );
+            var pos = opt.sep_pos
+            $el.find('.map-viewport').height( panel_height )
+                                     .width(app_width - pos - 10);
 
             var $input1 = $controls.find('.map-hover-distro');
             var $input2 = $controls.find('.map-hover-maint');
