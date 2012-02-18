@@ -162,6 +162,11 @@ div#intro p.note {
   text-indent: -1em;
 }
 
+.ui-dialog-titlebar .ui-dialog-title {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 #pod-dialog div.pod-header {
   font-size: 86%;
   border-bottom: 1px solid #a7a7a7;
