@@ -1331,7 +1331,8 @@
         var $ul = $('<ul />').css({
             'left': parseInt($viewport.width()) - 150
         });
-        var paused = false;
+        var hovering = false;
+        var paused   = false;
         for(var i = 0; i < items.length; i++) {
             if(i > 30) { continue; }
             var distro = items[i];
@@ -1357,7 +1358,7 @@
         $viewport.append( $ticker );
 
         function start_ticker () {
-            if(paused) { return; }
+            if(hovering || paused) { return; }
             var w = parseInt($ul.find('li').outerWidth());
             var x = parseInt($ul.css('left'));
             var target = x > 0 ? 0 : (0 - w);
@@ -1373,8 +1374,8 @@
         }
 
         $ul.hover(
-            function() { $(this).stop(true); },
-            function() { start_ticker(); }
+            function() { hovering = true;  $(this).stop(true); },
+            function() { hovering = false; start_ticker(); }
         );
 
         $ticker.animate({ bottom: 0 }, 700, start_ticker);
