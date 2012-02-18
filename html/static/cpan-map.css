@@ -725,7 +725,7 @@ div#intro p.note {
   font-size: 125%;
   color: #555555;
   margin: 0.8em 0 0.2em;
-  clear: left;
+  clear: both;
 }
 
 .cpan-map div.map-info-panel .info li {
@@ -844,6 +844,7 @@ div.info table {
   border-collapse: collapse;
   margin-top: 10px;
   margin-bottom: 20px;
+  clear: both;
 }
 
 div.info table th {
