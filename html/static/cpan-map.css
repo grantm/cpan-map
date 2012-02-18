@@ -269,6 +269,7 @@ div#intro p.note {
 .cpan-map {
   background-color: #333;
   padding: 20px;
+  overflow: hidden;
 }
 
 .cpan-map h1.app-title {
