@@ -113,9 +113,12 @@
             $panel.find('div.avatar img').load(function() {
                 $(this).addClass('loaded');
             });
-            $panel.find('a.back-button').click(function() {
-                window.history.go(-1);
-            });
+            if(typeof(history.length) !== 'undefined' && history.length > 1) {
+                $panel.find('a.back-button').click(function() { window.history.go(-1); });
+            }
+            else {
+                $panel.find('a.back-button').attr('href', '#/');
+            }
             return context;
         });
 
