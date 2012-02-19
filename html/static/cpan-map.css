@@ -278,6 +278,10 @@ div#intro p.note {
   left: 2px;
 }
 
+.cpan-map h1.app-title a {
+  outline: none;
+}
+
 .cpan-map h1 a {
   font-size: 25px;
   font-weight: bold;
