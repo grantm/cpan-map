@@ -300,7 +300,7 @@
             context.title('Distribution lookup for ' + mod_name + ' | ' + opt.app_title);
             ajax_map_module_to_distro(mod_name, function(distro_name) {
                 if(distro_name) {
-                    context.redirect('#/distro/' + distro_name);
+                    location.replace('#/distro/' + distro_name);
                 }
                 else {
                     context.trigger('not_found', 'a distribution containing the module "' + mod_name + '"');
