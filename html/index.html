@@ -197,13 +197,23 @@
     </div>
   </script>
 
+  <script type="text/template" id="tmpl-ajax-error">
+    <div class="info">
+      <p>An AJAX operation timed out.</p>
+      <p>It's possible that the error was due to a slow response from the
+      server - in which case reloading the page might help.</p>
+      <p>However it's more likely that the error is due to a bug in the Map
+      of CPAN code or data file.</p>
+    </div>
+  </script>
+
   <script type="text/template" id="tmpl-sights">
     <div class="info">
       <p>This page links to leader-boards and other
       sights of interest (more to come).</p>
       <ul>
         <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
-        <li><a href="#/sights/favorites-leaderboard">++ Top 100 leaderboard</a></li>
+        <li><a href="#/sights/favorites-leaderboard">++ Top 100 leader-board</a></li>
         <li><a href="#/sights/recent-uploads">Recent Uploads</a></li>
         <li><a href="#/sights/profile-updates">Recent Profile Updates</a></li>
       </ul>

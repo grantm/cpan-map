@@ -169,9 +169,7 @@
         });
 
         this.bind('ajax_load_failed', function(e) {
-            this.$element().find('.map-info-panel')
-                .html('Ajax load failed')
-                .removeClass('loading');
+            this.update_info('#tmpl-ajax-error', 'AJAX Load Failed')
             return this;
         });
 
