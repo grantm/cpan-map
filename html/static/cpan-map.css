@@ -360,20 +360,17 @@ div#intro p.note {
 
 .cpan-map div.map-controls form a.clearbutton {
   position: absolute;
-  padding: 2px;
+  border: 1px solid #A7A7A7;
+  padding: 1px;
   right: 3px;
   top: 6px;
   width: 10px;
   height: 10px;
-  background-color: #A7A7A7;
-  background-image: url(images/cross.png);
-  background-repeat: no-repeat;
-  background-position: center center;
+  background: #A7A7A7 0 -130px no-repeat url(images/site-sprite.gif);
 }
 
 .cpan-map div.map-controls form a.clearbutton:hover {
   border: 1px solid #666666;
-  padding: 1px;
   cursor: pointer;
 }
 
@@ -676,12 +673,16 @@ div#intro p.note {
   display: block;
   width: 22px;
   height: 22px;
-  background: #666666 0 -48px no-repeat url(images/title-sprite.png);
+  background: #666666 0 -48px no-repeat url(images/site-sprite.gif);
   cursor: pointer;
 }
 
+.cpan-map div.map-info-panel a.back-button:hover {
+  background: #666666 -22px -48px no-repeat url(images/site-sprite.gif);
+}
+
 .cpan-map div.map-info-panel h1.info-title {
-  background: #666666 left top no-repeat url(images/title-sprite.png);
+  background: #666666 left top no-repeat url(images/site-sprite.gif);
   border-bottom: 8px solid #333;
   padding: 0 0 0 38px;
 }
@@ -694,7 +695,7 @@ div#intro p.note {
   font-size: 14px;
   font-weight: bold;
   color: #272727;
-  background: #666666 right center no-repeat url(images/title-sprite.png);
+  background: #666666 right -24px no-repeat url(images/site-sprite.gif);
 }
 
 .cpan-map div.map-info-panel .info  {
@@ -921,18 +922,16 @@ div.info table td.empty {
 }
 
 table.tablesorter thead tr .header {
-  background-image: url(images/ts-non.gif);
-  background-repeat: no-repeat;
-  background-position: center right;
+  background: #888888 right -93px no-repeat url(images/site-sprite.gif);
   cursor: pointer;
 }
 
 table.tablesorter thead tr .headerSortUp {
-  background-image: url(images/ts-asc.gif);
+  background: #888888 right -112px no-repeat url(images/site-sprite.gif);
 }
 
 table.tablesorter thead tr .headerSortDown {
-  background-image: url(images/ts-desc.gif);
+  background: #888888 right -72px no-repeat url(images/site-sprite.gif);
 }
 
 table.leaderboard {
