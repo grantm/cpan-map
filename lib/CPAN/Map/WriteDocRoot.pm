@@ -260,7 +260,7 @@ sub write_html {
 sub copy_other_files {
     my($self) = @_;
     chdir($self->src_dir) or die "chdir(" . $self->src_dir . "): $!";
-    my @files = grep { $_ ne 'index.html' } glob('*.html');
+    my @files = grep { $_ ne 'index.html' } glob('*.html'), glob('*.txt');
     foreach my $path ( @files ) {
         $self->copy_file($path);
     }
@@ -291,13 +291,14 @@ sub read_file {
 
 sub write_file {
     my($self, $path, $data) = @_;
+    $data //= '';
     my $dst_path = File::Spec->catfile($self->dst_dir, $path);
     my $dir_path = File::Basename::dirname($dst_path);
     File::Path::make_path($dir_path) unless -d $dir_path;
     open my $fh, '>', $dst_path or die "open(>$dst_path): $!";
     print $fh $data;
     close($fh);
-    if(-T $dst_path) {
+    if(-s $dst_path && -T $dst_path) {
         gzip $dst_path => $dst_path . '.gz', -Level => 9
             or die "gzip failed: $GzipError\n";
     }
