@@ -710,6 +710,7 @@
             $('#pod-dialog').html(header_html + '<p>Loading...</p>');
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
+                data: { 'application': 'cpan-map' },
                 dataType: 'jsonp',
                 success: function (pod_html) {
                     $('#pod-dialog').html(header_html + pod_html);
@@ -768,11 +769,45 @@
                     }
                     distro.meta = data;
                     set_avatar_url(distro.maintainer);
+                    if(!data.abstract) {
+                        distro.dist_id = distro.dname.toLowerCase();
+                        generate_distro_abstract(distro);
+                    }
                     handler(distro);
                 },
                 error: function() { app.trigger('ajax_load_failed') },
                 timeout: 10000
             });
+        }
+
+        function generate_distro_abstract(distro) {
+            var main_module = distro.main_module || distro.name;
+            $.ajax({
+                url: opt.ajax_pod_url_base + main_module,
+                data: { 'application': 'cpan-map', 'content-type': 'text/x-pod' },
+                dataType: 'jsonp',
+                success: function (pod_text) {
+                    distro.meta.abstract = extract_abstract_from_pod(pod_text);
+                    $('#abstract-' + distro.dist_id).text(distro.meta.abstract);
+                },
+                error: function() {
+                    $('#abstract-' + distro.dist_id).text('No abstract');
+                },
+                timeout: 10000
+            });
+        }
+
+        function extract_abstract_from_pod(pod_text) {
+            if(pod_text.match(/(?:^|\n)=head1\s+NAME\s+\S+ +(?:-+ +)?((?:.|\n)*?)\r?\n\r?\n/)) {
+                var text = RegExp.$1
+                return text.replace(/[LCF]<(.*?)>/g, '$1');
+            }
+            if(pod_text.match(/(?:^|\n)=head1\s+DESCRIPTION\s+(\S(?:.|\n)*?\r?\n\r?\n)/)) {
+                var text = RegExp.$1
+                text = text.replace(/[.]\s(?:.|\n)*$/, '.')
+                return text.replace(/[LCF]<(.*?)>/g, '$1');
+            }
+            return 'No abstract';
         }
 
         function find_distro_by_name(name) {
