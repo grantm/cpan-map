@@ -356,7 +356,7 @@
 
         // Log page view stats - if enabled on this domain
 
-        if(!opt.stats_domain || opt.stats_domain === document.location.host) {
+        if(!opt.stats_domain || (opt.stats_domain === document.location.host)) {
             this.after(function() {
                 var path = document.location.hash.substring(1, 1000);
                 log_page_view({'path': path});
@@ -1440,8 +1440,10 @@
 
 
     function log_page_view(params) {
-        params.time = $.now();
-        $.get('ping.txt', params);
+        if(!opt.stats_domain || (opt.stats_domain === document.location.host)) {
+            params.time = $.now();
+            $.get('ping.txt', params);
+        }
     }
 
 
