@@ -251,6 +251,15 @@
             });
         });
 
+        this.get('#/sights/recent-favorites', function(context) {
+            this.loading();
+            ajax_load_recent_favorites( function(data) {
+                context.set_highlights(data.highlights)
+                       .update_info('#tmpl-recent-favorites', 'Recent Favorites', data)
+                       .title('Recent Favorites | ' + opt.app_title);
+            });
+        });
+
         this.get('#/sights/recent-uploads', function(context) {
             this.loading();
             ajax_load_recent_uploads( function(data) {
@@ -1207,6 +1216,77 @@
             });
         }
 
+        function ajax_load_recent_favorites(handler) {
+            var cache_key = 'recent_favorites';
+            if(load_from_cache(cache_key, handler)) {
+                return;
+            }
+            var query_url = make_query_url('/favorite/_search', {
+                "query": { "match_all": {} },
+                "size": 100,
+                "fields": [ "distribution", "author", "date" ],
+                "sort": [ { "date": "desc" } ]
+            });
+            $.ajax({
+                url: query_url,
+                dataType: 'jsonp',
+                success: function(data) {
+                    var highlights  = [];
+                    var distro_list = [];
+                    var now = new Date().getTime();
+                    var hits = (data.hits || {}).hits || [];
+                    for(var i = 0; i < hits.length; i++) {
+                        var row = hits[i].fields;
+                        var name = row.distribution.replace(/-/g, '::');
+                        var distro = find_distro_by_name(name);
+                        if(!distro) {
+                            continue;
+                        }
+                        var uploader = row.author || '';
+                        var maint = find_maint_by_id(row.author);
+                        if(maint) {
+                            uploader = maint.name + " (" + maint.id + ")";
+                        }
+                        distro_list.push({
+                            "name": name,
+                            "maint": uploader,
+                            "maint_id": row.author,
+                            "age": relative_time(row.date, now)
+                        });
+                        highlights.push(distro.index);
+                        if(distro_list.length >= 60) {
+                            break;
+                        }
+                    }
+                    handler(
+                        cache_store(cache_key, {
+                            "highlights": highlights,
+                            "distro_list": distro_list
+                        })
+                    );
+                },
+                error: function() { app.trigger('ajax_load_failed') },
+                timeout: 10000
+            });
+        }
+
+        function relative_time(date_string, cached_now) {
+            var now = cached_now || new Date().getTime();
+            var age = Math.floor((now - Date.parse(date_string)) / 60000);
+            if(age < 60) {
+                return age + ' minutes';
+            }
+            age = Math.floor(age / 60);
+            if(age < 2) {
+                return '1 hour';
+            }
+            if(age < 48) {
+                return age + ' hours';
+            }
+            age = Math.floor(age / 24)
+            return age + ' days';
+        }
+
         function ajax_load_recent_uploads(handler) {
             var cache_key = 'recent_uploads';
             if(load_from_cache(cache_key, handler)) {
@@ -1239,19 +1319,12 @@
                         if(maint) {
                             uploader = maint.name + " (" + maint.id + ")";
                         }
-                        var age = Math.floor((now - Date.parse(row.date)) / 3600000);
-                        if(age > 1) {
-                            age = age + ' hours';
-                        }
-                        else {
-                            age = '1 hour';
-                        }
                         distro_list.push({
                             "name":  name,
                             "maint": uploader,
                             "maint_id": row.author,
                             "version": row.version,
-                            "age": age
+                            "age": relative_time(row.date, now)
                         });
                         highlights.push(distro.index);
                         if(distro_list.length >= 60) {

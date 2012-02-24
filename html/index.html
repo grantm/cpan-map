@@ -211,11 +211,12 @@
     <div class="info">
       <p>This page links to leader-boards and other
       sights of interest (more to come).</p>
-      <ul>
+      <ul class="leaderboard-list">
         <li><a href="#/sights/distro-counts">Maintainer distro counts</a></li>
         <li><a href="#/sights/favorites-leaderboard">++ Top 100 leader-board</a></li>
-        <li><a href="#/sights/recent-uploads">Recent Uploads</a></li>
-        <li><a href="#/sights/profile-updates">Recent Profile Updates</a></li>
+        <li><a href="#/sights/recent-favorites">Recently ++’d distros</a></li>
+        <li><a href="#/sights/recent-uploads">Recent uploads</a></li>
+        <li><a href="#/sights/profile-updates">Recent profile updates</a></li>
       </ul>
     </div>
   </script>
@@ -262,6 +263,31 @@
           <td class="rank"><%= distro.rank %></td>
           <td><a href="#/distro/<%= distro.name %>"><%= distro.name %></a></td>
           <td class="score"><%= distro.score %></td>
+        </tr>
+        <% } %>
+      </table>
+    </div>
+  </script>
+
+  <script type="text/template" id="tmpl-recent-favorites">
+    <div class="info">
+      <p>Someone, somewhere has recently used
+      <a href="https://metacpan.org/">metacpan.org</a> to award a ‘++’ to the
+      following distributions:</p>
+      <table class="leaderboard">
+        <tr>
+          <th>Distribution</th>
+          <th>Maintainer</th>
+          <th>When</th>
+        </tr>
+        <% for(var i = 0; i < distro_list.length; i++) {
+            var distro = distro_list[i];
+            var row_class = (i % 2) ? 'even' : 'odd';
+        %>
+        <tr class="<%= row_class %>">
+          <td><a href="#/distro/<%= distro.name %>"><%= distro.name %></a></td>
+          <td><a href="#/maint/<%= distro.maint_id %>" title="<%= distro.maint %>"><%= distro.maint_id %></a></td>
+          <td class="when"><%= distro.age %> ago</td>
         </tr>
         <% } %>
       </table>

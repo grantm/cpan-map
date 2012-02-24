@@ -769,6 +769,10 @@ div#intro p.note {
   margin: 0.15em 0 0.15em 1em;
 }
 
+.cpan-map div.map-info-panel .info li {
+  margin: 0.6em 0 0.6em 1.2em;
+}
+
 .cpan-map div.map-info-panel .info  div.note {
   padding: 10px 0 20px 0;
   font-style: italic;
@@ -960,7 +964,8 @@ table.leaderboard td.score {
   text-align: right;
 }
 
-table.leaderboard td.date {
+table.leaderboard td.date,
+table.leaderboard td.when {
   white-space: nowrap;
 }
 
