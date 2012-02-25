@@ -1275,6 +1275,9 @@
         function relative_time(date_string, cached_now) {
             var now = cached_now || new Date().getTime();
             var age = Math.floor((now - Date.parse(date_string)) / 60000);
+            if(age < 2) {
+                return '1 minute';
+            }
             if(age < 60) {
                 return age + ' minutes';
             }
