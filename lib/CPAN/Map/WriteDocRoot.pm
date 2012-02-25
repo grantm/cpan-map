@@ -60,6 +60,8 @@ has 'js_digest' => (
     default  => sub { Digest::MD5-> new; },
 );
 
+my %hash_cache;
+
 
 sub write {
     my($class, $builder, $src_dir) = @_;
@@ -197,7 +199,8 @@ sub slurp_css_file {
     $css =~ s{url\((.*?)\)}
              {
                  my $ref_url = URI->new_abs(_path_from_css_url($1), $url);
-                 'url(' . $ref_url->rel( $css_url ) . ')';
+                 $ref_url = $ref_url->rel( $css_url )->as_string;
+                 'url(' . $self->_hashify_css_url($ref_url) . ')';
              }eg;
     return $imports . $css;
 }
@@ -218,6 +221,25 @@ sub _trim {
     $str =~ s{^\s+}{};
     $str =~ s{\s+$}{};
     return $str;
+}
+
+
+sub _hashify_css_url {
+    my($self, $url_path) = @_;
+
+    return $hash_cache{$url_path} if $hash_cache{$url_path};
+
+    my $abs_path = File::Spec->catfile($self->src_dir, 'static', $url_path);
+    return $url_path unless -e $abs_path;
+
+    my $data = $self->read_file( 'static/' . $url_path );
+    my $hash = substr( Digest::MD5::md5_hex($data), 0, 6 );
+    my $new_path = $url_path;
+    $new_path =~ s{(?=[.]\w+$)}{-$hash};
+
+    $self->write_file('static/' . $new_path, $data);
+
+    return $hash_cache{$url_path} = $new_path;
 }
 
 
