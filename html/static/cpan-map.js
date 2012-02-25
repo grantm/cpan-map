@@ -26,6 +26,7 @@
         zoom_plus_label       : 'Zoom map in',
         map_data_url          : 'cpan-map-data.txt',
         stats_domain          : 'mapofcpan.org',
+        start_ticker          : true,
         ajax_query_url_base   : 'http://api.metacpan.org',
         ajax_release_url_base : 'http://api.metacpan.org/release/',
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
@@ -166,9 +167,11 @@
             $('script[type="text/template"]').each(function(i, el) {
                 template_cache['#' + el.id] = $(el).html();
             });
-            ajax_load_recent_uploads( function(data) {
-                build_ticker($el, data.distro_list);
-            });
+            if(opt.start_ticker) {
+                ajax_load_recent_uploads( function(data) {
+                    build_ticker($el, data.distro_list);
+                });
+            }
         });
 
         this.bind('ajax_load_failed', function(e) {
