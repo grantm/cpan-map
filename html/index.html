@@ -304,6 +304,7 @@
         <tr>
           <th>Distribution</th>
           <th>Maintainer</th>
+          <th>Uploaded</th>
         </tr>
         <% for(var i = 0; i < distro_list.length; i++) {
             var distro = distro_list[i];
@@ -312,6 +313,7 @@
         <tr class="<%= row_class %>">
           <td><a href="#/distro/<%= distro.name %>" title="Version <%= distro.version %> uploaded by <%= distro.maint %> <%= distro.age %> ago"><%= distro.name %></a></td>
           <td><a href="#/maint/<%= distro.maint_id %>" title="<%= distro.maint %>"><%= distro.maint_id %></a></td>
+          <td class="when"><%= distro.age %> ago</td>
         </tr>
         <% } %>
       </table>
