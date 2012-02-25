@@ -640,8 +640,10 @@ div#intro p.note {
 }
 
 .cpan-map div.greeting p.logo  {
-  text-align: center;
-  margin: 1.6em 0;
+  width: 148px;
+  height: 107px;
+  margin: 1.6em auto;
+  background-image: url(images/logo.png);
 }
 
 .cpan-map div.greeting p  {
