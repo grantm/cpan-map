@@ -362,34 +362,36 @@
       <% } %>
       <p class="pod-link" title="Display module POD">Module documentation</p>
       <% if(maintainer.avatar_url) { %>
-      <div class="avatar"><a href="#/maint/<%= maintainer.id %>"><img src="<%= maintainer.avatar_url %>"></a></div>
+      <div class="avatar"><a href="#/maint/<%= maintainer.id %>" title="View other distributions maintained by: <%= maintainer.id %> - <%= maintainer.name %>"><img src="<%= maintainer.avatar_url %>"></a></div>
       <% } %>
       <% if(maintainer.name) { %>
-      <p><label>Maintainer:</label><%= maintainer.name %></p>
-      <% } %>
+      <p><label>Maintainer:</label><a href="#/maint/<%= maintainer.id %>" title="View other distributions maintained by: <%= maintainer.id %> - <%= maintainer.name %>"><%= maintainer.name %></a></p>
+      <% } else { %>
       <p><label>CPAN ID:</label><a href="#/maint/<%= maintainer.id %>"><%= maintainer.id %></a></p>
+      <% } %>
       <p><label>Version:</label><%= meta.version %></p>
       <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
       <% if(rating_stars) { %>
-        <div class="cpanratings"><div class="stars s<%= rating_stars %>"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>"><%= rating_count %> review<%= rating_count > 1 ? 's' : '' %></a>)</div>
+        <div class="cpanratings"><div class="stars s<%= rating_stars %>"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>" title="Read reviews and rate this module on cpanratings.perl.org"><%= rating_count %>&nbsp;review<%= rating_count > 1 ? 's' : '' %></a>)</div>
       <% } else { %>
-        <div class="cpanratings"><div class="stars s0"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>">not rated</a>)</div>
+        <div class="cpanratings"><div class="stars s0"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>" title="Rate this module on cpanratings.perl.org">not&nbsp;rated</a>)</div>
       <% } %>
-      <p><a href="https://metacpan.org/source/<%= meta.author %>/<%= meta.name %>">Browse</a></p>
+      <p><a href="https://metacpan.org/release/<%= meta.name %>" title="View this distribution on metacpan.org">Distribution contents</a>
+      (<a href="https://metacpan.org/source/<%= meta.author %>/<%= meta.name %>" title="Browse the raw files on metacpan.org">raw</a>)</p>
       <% if(meta.download_url) { %>
-      <p><a href="<%= meta.download_url %>">Download</a></p>
+      <p><a href="<%= meta.download_url %>" title="Direct link to download this release from CPAN">Download</a></p>
       <% } %>
       <% if(meta.resources.homepage) { %>
-          <p><a href="<%= meta.resources.homepage %>">Homepage</a></p>
+          <p><a href="<%= meta.resources.homepage %>" title="Web site for this distribution">Homepage</a></p>
       <% } %>
       <% if(meta.resources.repository && meta.resources.repository.web) { %>
-          <p><a href="<%= meta.resources.repository.web %>">Repository</a></p>
+          <p><a href="<%= meta.resources.repository.web %>" title="Source code repository">Repository</a></p>
       <% } %>
       <% if(meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
-          <p><a href="<%= meta.resources.bugtracker.web %>">Bug Tracker</a></p>
+          <p><a href="<%= meta.resources.bugtracker.web %>" title="Find or create bug reports">Bug Tracker</a></p>
       <% } %>
-      <p><a href="#/distro/<%= name %>/deps">Dependencies</a></p>
-      <p><a href="#/distro/<%= name %>/rdeps">Reverse dependencies</a></p>
+      <p><a href="#/distro/<%= name %>/deps" title="Other distributions which this release depends on">Dependencies</a></p>
+      <p><a href="#/distro/<%= name %>/rdeps" title="Other distributions which depend on this release">Reverse dependencies</a></p>
     </div>
   </script>
 
@@ -451,7 +453,7 @@
         <p><label>Location:</label><%= maint.meta.location %></a></p>
       <% } %>
       <% if(maint.meta.website && maint.meta.website[0]) { %>
-          <p><a href="<%= maint.meta.website[0] %>">Web site</a></p>
+          <p><a href="<%= maint.meta.website[0] %>" title="Maintainer's web site">Web site</a></p>
       <% } %>
       <% if(maint.social_links) { %>
         <ul class="social">
