@@ -100,9 +100,7 @@
             var header = '';
             if(heading) {
                 var $div = $('<div />').append(
-                    $('<h1 class="info-title" />').append(
-                        $('<span />').attr('title', heading).text(heading)
-                    ),
+                    $('<h1 class="info-title" />').text(heading),
                     $('<a class="back-button" />').attr('title', 'Back')
                 );
                 header = $div.html();
