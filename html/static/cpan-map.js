@@ -803,6 +803,7 @@
                     $('#abstract-' + distro.dist_id).text(distro.meta.abstract);
                 },
                 error: function() {
+                    distro.meta.abstract = 'No abstract';
                     $('#abstract-' + distro.dist_id).text('No abstract');
                 },
                 timeout: 10000
