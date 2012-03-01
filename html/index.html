@@ -429,15 +429,31 @@
         <% } else { %>
           <p><%= rdeps.length %> distributions depend on <a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>
         <% } %>
-        <table class="reverse-dependencies">
-          <tr><th>Dependent Distribution<% if(rdeps.length > 1) { %>s<% } %></td></tr>
-        <% for(var i = 0; i < rdeps.length; i++) { var dist = rdeps[i]; %>
-          <% if(dist.distro) { %>
-          <tr><td><a href="#/distro/<%= dist.distro %>"><%= dist.distro %></a></td></tr>
-          <% } else { %>
-          <tr><td><a href="#/module/<%= dist.module %>"><%= dist.module %></a></td></tr>
+        <table class="reverse-dependencies  tablesorter">
+          <thead>
+            <tr>
+              <th>Dependent Distribution<% if(rdeps.length > 1) { %>s<% } %></td>
+              <th>Maintainer</th>
+              <th>Uploaded</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% for(var i = 0; i < rdeps.length; i++) { var dist = rdeps[i]; %>
+            <% if(dist.distro) { %>
+            <tr>
+              <td><a href="#/distro/<%= dist.distro %>"><%= dist.distro %></a></td>
+              <td><a href="#/maint/<%= dist.maint_id %>" title="<%= dist.maint_name %>"><%= dist.maint_id %></a></td>
+              <td class="when"><%= dist.release_date %></td>
+            </tr>
+            <% } else { %>
+            <tr>
+              <td><a href="#/module/<%= dist.module %>"><%= dist.module %></a></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            <% } %>
           <% } %>
-        <% } %>
+          </tbody>
         </table>
       <% } else {%>
         <p>No distributions depend on <a href="#/distro/<%= name %>" title="<%= name %>"><%= name %></a></p>

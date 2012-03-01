@@ -299,11 +299,15 @@
         });
 
         this.get('#/distro/:name/rdeps', function(context) {
-            var context = this.loading();
+            var $el = this.$element();
+            this.loading();
             ajax_load_distro_reverse_deps( this.params.name, function(distro) {
                 context.set_highlights(distro.rdep_highlights)
                        .update_info('#tmpl-rdeps', 'Reverse Dependencies', distro)
                        .title('Reverse Dependencies | ' + distro.name + ' | ' + opt.app_title);
+                $el.find('table.reverse-dependencies').tablesorter({
+                    sortList: [[0,0]]
+                });
             });
         });
 
@@ -915,7 +919,7 @@
                         { "term": { "release.status":            "latest"    } }
                     ]
                 },
-                "fields": [ "distribution" ],
+                "fields": [ "distribution", "author", "date" ],
                 "sort":   [ "distribution" ],
                 "size":   5000
             });
@@ -935,18 +939,23 @@
         function format_reverse_dependencies(distro, hits) {
             distro.rdeps = [];
             distro.rdep_highlights = [];
-            var seen = {}
             for(var i = 0; i < hits.length; i++) {
-                var name = (hits[i].fields || {}).distribution;
+                var rec = hits[i].fields || {};
+                var name = rec.distribution;
                 if(name) {
                     name = name.replace(/-/g, '::');
                     var d = cpan.distro_num[ name ];
                     if(typeof(d) !== 'undefined') {
-                        distro.rdeps.push( { 'distro' : name, 'index' : d } );
+                        set_distro_date(distro, rec.date);
+                        var maint = find_maint_by_id(rec.author) || {};
+                        distro.rdeps.push( {
+                            'distro': name,
+                            'maint_id': rec.author,
+                            'maint_name': maint.name || rec.author,
+                            'release_date' : distro.release_date,
+                            'index': d
+                        } );
                         distro.rdep_highlights.push(d);
-                    }
-                    else {
-                        distro.rdeps.push( { 'module' : name } );
                     }
                 }
             }
@@ -1020,8 +1029,10 @@
             });
         }
 
-        function set_distro_date(distro_name, release_date) {
-            var distro = find_distro_by_name(distro_name.replace(/-/g, '::'));
+        function set_distro_date(distro, release_date) {
+            if(typeof(distro) === "string") {
+                distro = find_distro_by_name(distro.replace(/-/g, '::'));
+            }
             if(distro && release_date && release_date.length >= 10) {
                 distro.release_date = release_date.substring(0, 10);
             }
