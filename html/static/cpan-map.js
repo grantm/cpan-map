@@ -32,6 +32,7 @@
         ajax_author_url_base  : 'http://api.metacpan.org/author/',
         ajax_module_url_base  : 'http://api.metacpan.org/module/',
         ajax_pod_url_base     : 'http://api.metacpan.org/pod/',
+        ajax_source_url_base  : 'http://api.metacpan.org/source/',
         ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
                                 'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
@@ -285,7 +286,8 @@
                 context.set_highlights([ distro.index ])
                        .update_info('#tmpl-distro', distro.name, distro)
                        .title(distro.name + ' | ' + opt.app_title);
-                $("p.pod-link").click(show_pod_dialog);
+                $("p.pod-link").click(function() { show_pod_dialog(distro); });
+                $("p.changes-link").click(function() { show_changes_dialog(distro); });
             });
         });
 
@@ -704,9 +706,7 @@
             });
         }
 
-        function show_pod_dialog() {
-            var distro_name = $("h1.info-title").text();
-            var distro = find_distro_by_name(distro_name);
+        function show_pod_dialog(distro) {
             var main_module = distro.main_module || distro.name;
             $('#misc-dialog').dialog( "option", {
                 title: "POD for " + main_module
@@ -737,6 +737,38 @@
                 },
                 timeout: 10000
             });
+            open_misc_dialog();
+            log_page_view({'pod': distro_name});
+        }
+
+        function show_changes_dialog(distro) {
+            $('#misc-dialog').dialog( "option", {
+                title: "Change log for " + distro.name
+            });
+            $('#misc-dialog').html(
+                changes_header(distro) +
+                '<div class="changes-body"><p>Loading...</p></div>'
+            );
+            get_distro_file(distro, 'MANIFEST', function(file_content) {
+                $('#misc-dialog .changes-body').html(file_content);
+            });
+            open_misc_dialog();
+            log_page_view({'changelog': distro.name});
+        }
+
+        function changes_header(distro) {
+            var header_html = '<div class="pod-header">metacpan.org ' +
+                '<span class="sep">&#9656;</span> ' +
+                '<a href="http://metacpan.org/author/' + distro.maintainer.id +
+                '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
+                '<span class="sep">&#9656;</span> ' +
+                '<a href="http://metacpan.org/release/' + distro.dname +
+                '" title="Distribution">' + distro.dname + '</a> ';
+            header_html += '<span class="sep">&#9656;</span> Changes';
+            return header_html + '</div>';
+        }
+
+        function open_misc_dialog() {
             var dlg_height = $(window).height() - 100;
             var dlg_width  = $(window).width()  - 100;
             if(dlg_width > 800) { dlg_width = 800; }
@@ -744,7 +776,32 @@
                 "height" : dlg_height,
                 "width"  : dlg_width
             }).dialog('open');
-            log_page_view({'pod': distro_name});
+        }
+
+        function get_distro_file(distro, filename, handler) {
+            if(!distro.file) {
+                distro.file = {};
+            }
+            // https://api.metacpan.org/source/GRANTM/XML-Simple-2.18/MANIFEST
+            var file_source_url = opt.ajax_source_url_base +
+                distro.meta.author + '/' + distro.meta.name + '/' + filename;
+            handler(file_source_url); return;
+            $.ajax({
+                url: file_source_url,
+                data: { 'application': 'cpan-map' },
+                dataType: 'jsonp',
+                success: function (pod_html) {
+                    $('#misc-dialog').html(header_html + pod_html);
+                    $('#misc-dialog').find('h1,h2,h3,dt').append(
+                        '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
+                    );
+                },
+                error: function() {
+                    $('#misc-dialog').html(header_html + '<p>Failed to load POD.</p>');
+                },
+                timeout: 10000
+            });
+            handler(file_content);
         }
 
         function distro_at_row_col(row, col) {
