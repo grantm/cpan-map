@@ -427,7 +427,7 @@
             enable_separator_drag($el);
             attach_hover_handler($el);
             initialise_intro_dialog();
-            initialise_pod_dialog();
+            initialise_misc_dialog();
         }
 
         function add_map_images($plane) {
@@ -682,10 +682,10 @@
             }).dialog('open');
         }
 
-        function initialise_pod_dialog() {
-            var pod_div = $('<div id="pod-dialog" />');
+        function initialise_misc_dialog() {
+            var pod_div = $('<div id="misc-dialog" />');
             $("body").append(pod_div);
-            $('#pod-dialog').dialog({
+            $('#misc-dialog').dialog({
                 autoOpen: false,
                 closeOnEscape: true,
                 draggable: false,
@@ -694,10 +694,10 @@
                 modal: true,
                 buttons: { "Close": function() { $(this).dialog("close"); } }
             });
-            $('#pod-dialog').on('click', 'a', function(event){
+            $('#misc-dialog').on('click', 'a', function(event){
                 var target = $(this).attr("href");
                 if(target.substr(0, 1) == '#') {
-                    $('#pod-dialog').scrollTo(target, 200);
+                    $('#misc-dialog').scrollTo(target, 200);
                     event.preventDefault();
                     return false;
                 }
@@ -708,7 +708,7 @@
             var distro_name = $("h1.info-title").text();
             var distro = find_distro_by_name(distro_name);
             var main_module = distro.main_module || distro.name;
-            $('#pod-dialog').dialog( "option", {
+            $('#misc-dialog').dialog( "option", {
                 title: "POD for " + main_module
             });
             var header_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
@@ -721,26 +721,26 @@
                 '<span class="sep">&#9656;</span> ' +
                 '<a href="http://metacpan.org/module/' + main_module +
                 '" title="Module">' + main_module + '</a></div>'
-            $('#pod-dialog').html(header_html + '<p>Loading...</p>');
+            $('#misc-dialog').html(header_html + '<p>Loading...</p>');
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
                 data: { 'application': 'cpan-map' },
                 dataType: 'jsonp',
                 success: function (pod_html) {
-                    $('#pod-dialog').html(header_html + pod_html);
-                    $('#pod-dialog').find('h1').append(
+                    $('#misc-dialog').html(header_html + pod_html);
+                    $('#misc-dialog').find('h1,h2,h3,dt').append(
                         '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
                     );
                 },
                 error: function() {
-                    $('#pod-dialog').html(header_html + '<p>Failed to load POD.</p>');
+                    $('#misc-dialog').html(header_html + '<p>Failed to load POD.</p>');
                 },
                 timeout: 10000
             });
             var dlg_height = $(window).height() - 100;
             var dlg_width  = $(window).width()  - 100;
             if(dlg_width > 800) { dlg_width = 800; }
-            $('#pod-dialog').dialog( "option", {
+            $('#misc-dialog').dialog( "option", {
                 "height" : dlg_height,
                 "width"  : dlg_width
             }).dialog('open');
