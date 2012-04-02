@@ -762,6 +762,11 @@
                             $('<pre class="change-log" />').text(file_content)
                         );
                         log_page_view({'changelog': distro.name});
+                    }, function() {
+                        $('#misc-dialog .changes-body').html(
+                            '<p class="not-found">Unable to retrieve ' + changes_file +
+                            ' for this distribution.</p>'
+                        );
                     });
                 }
                 else {
@@ -769,6 +774,10 @@
                         '<p class="not-found">Unable to find the change-log file in this distribution.</p>'
                     );
                 }
+            }, function() {
+                $('#misc-dialog .changes-body').html(
+                    '<p class="not-found">Unable to retrieve the MANIFEST for this distribution.</p>'
+                );
             });
             open_misc_dialog();
         }
@@ -834,7 +843,7 @@
             }).dialog('open');
         }
 
-        function get_distro_file(distro, filename, handler) {
+        function get_distro_file(distro, filename, handler, error_handler) {
             var file_source_url = opt.ajax_source_url_base +
                 distro.meta.author + '/' + distro.meta.name + '/' + filename;
             if(distro.file) {
@@ -845,6 +854,9 @@
             else {
                 distro.file = {};
             }
+            if(!error_handler) {
+                error_handler = function() { app.trigger('ajax_load_failed: ' + file_source_url) };
+            }
             $.ajax({
                 url: file_source_url,
                 data: { 'application': 'cpan-map' },
@@ -853,7 +865,7 @@
                     distro.file[filename] = file_content;
                     handler(file_content);
                 },
-                error: function() { app.trigger('ajax_load_failed: ' + file_source_url) },
+                error: error_handler,
                 timeout: 10000
             });
         }
