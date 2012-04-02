@@ -713,13 +713,13 @@
             });
             var header_html = '<div class="pod-header"><a id="_POD_TOP_"></a>metacpan.org ' +
                 '<span class="sep">&#9656;</span> ' +
-                '<a href="http://metacpan.org/author/' + distro.maintainer.id +
+                '<a href="https://metacpan.org/author/' + distro.maintainer.id +
                 '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
                 '<span class="sep">&#9656;</span> ' +
-                '<a href="http://metacpan.org/release/' + distro.dname +
+                '<a href="https://metacpan.org/release/' + distro.dname +
                 '" title="Distribution">' + distro.dname + '</a> ' +
                 '<span class="sep">&#9656;</span> ' +
-                '<a href="http://metacpan.org/module/' + main_module +
+                '<a href="https://metacpan.org/module/' + main_module +
                 '" title="Module">' + main_module + '</a></div>'
             $('#misc-dialog').html(header_html + '<p>Loading...</p>');
             $.ajax({
