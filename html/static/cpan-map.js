@@ -752,7 +752,12 @@
             get_distro_file(distro, 'MANIFEST', function(file_content) {
                 var changes_file = guess_changes_file(file_content);
                 if(changes_file) {
+                    distro.changes_file_name = changes_file;
                     get_distro_file(distro, changes_file, function(file_content) {
+                        $('#misc-dialog').html(
+                            changes_header(distro) +
+                            '<div class="changes-body"><p>Loading...</p></div>'
+                        );
                         $('#misc-dialog .changes-body').html(
                             $('<pre class="change-log" />').text(file_content)
                         );
@@ -802,12 +807,20 @@
         function changes_header(distro) {
             var header_html = '<div class="pod-header">metacpan.org ' +
                 '<span class="sep">&#9656;</span> ' +
-                '<a href="http://metacpan.org/author/' + distro.maintainer.id +
+                '<a href="https://metacpan.org/author/' + distro.maintainer.id +
                 '" title="Maintainer">' + distro.maintainer.name + '</a> ' +
                 '<span class="sep">&#9656;</span> ' +
-                '<a href="http://metacpan.org/release/' + distro.dname +
+                '<a href="https://metacpan.org/release/' + distro.dname +
                 '" title="Distribution">' + distro.dname + '</a> ';
-            header_html += '<span class="sep">&#9656;</span> Changes';
+            if(distro.changes_file_name) {
+                header_html += '<span class="sep">&#9656;</span> ' +
+                '<a href="https://metacpan.org/source/' + distro.maintainer.id +
+                '/' + distro.meta.name + '/' + distro.changes_file_name +
+                '" title="Change log">' + distro.changes_file_name + '</a> ';
+            }
+            else {
+                header_html += '<span class="sep">&#9656;</span> Changes';
+            }
             return header_html + '</div>';
         }
 
