@@ -750,10 +750,53 @@
                 '<div class="changes-body"><p>Loading...</p></div>'
             );
             get_distro_file(distro, 'MANIFEST', function(file_content) {
-                $('#misc-dialog .changes-body').html(file_content);
+                var changes_file = guess_changes_file(file_content);
+                if(changes_file) {
+                    get_distro_file(distro, changes_file, function(file_content) {
+                        $('#misc-dialog .changes-body').html(
+                            $('<pre class="change-log" />').text(file_content)
+                        );
+                        log_page_view({'changelog': distro.name});
+                    });
+                }
+                else {
+                    $('#misc-dialog .changes-body').html(
+                        '<p class="not-found">Unable to find the change-log file in this distribution.</p>'
+                    );
+                }
             });
             open_misc_dialog();
-            log_page_view({'changelog': distro.name});
+        }
+
+        function guess_changes_file(manifest) {
+            // List every potential candidate file
+            var lines = manifest.split('\n');
+            var match = {};
+            var i, file;
+            for(i = 0; i < lines.length; i++) {
+                if(lines[i].match(/^chang[^\/]+$/i)) {
+                    file = lines[i].replace(/\r/, '').replace(/\s.*$/, '');
+                    match[file] = true;
+                }
+            }
+
+            // Look for the most common filenames in preferred order
+            var preferred = [ 'Changes', 'CHANGES', 'ChangeLog', 'CHANGELOG', 'Changelog' ];
+            for(i = 0; i < preferred.length; i++) {
+                file = preferred[i];
+                if(match[file]) {
+                    return file;
+                }
+            }
+
+            // Choose the one with the shortest filename
+            var shortest = null;
+            for(file in match) {
+                if(shortest === null || file.length < shortest.length) {
+                    shortest = file;
+                }
+            }
+            return shortest;
         }
 
         function changes_header(distro) {
@@ -779,29 +822,27 @@
         }
 
         function get_distro_file(distro, filename, handler) {
-            if(!distro.file) {
-                distro.file = {};
-            }
-            // https://api.metacpan.org/source/GRANTM/XML-Simple-2.18/MANIFEST
             var file_source_url = opt.ajax_source_url_base +
                 distro.meta.author + '/' + distro.meta.name + '/' + filename;
-            handler(file_source_url); return;
+            if(distro.file) {
+                if(distro.file[filename]) {
+                    return handler(distro.file[filename]);
+                }
+            }
+            else {
+                distro.file = {};
+            }
             $.ajax({
                 url: file_source_url,
                 data: { 'application': 'cpan-map' },
                 dataType: 'jsonp',
-                success: function (pod_html) {
-                    $('#misc-dialog').html(header_html + pod_html);
-                    $('#misc-dialog').find('h1,h2,h3,dt').append(
-                        '&nbsp;<a href="#_POD_TOP_" class="pod-top" title="Scroll to top">&#9652;</a>'
-                    );
+                success: function (file_content) {
+                    distro.file[filename] = file_content;
+                    handler(file_content);
                 },
-                error: function() {
-                    $('#misc-dialog').html(header_html + '<p>Failed to load POD.</p>');
-                },
+                error: function() { app.trigger('ajax_load_failed: ' + file_source_url) },
                 timeout: 10000
             });
-            handler(file_content);
         }
 
         function distro_at_row_col(row, col) {
@@ -1747,3 +1788,4 @@
     }
 
 })(jQuery);
+
