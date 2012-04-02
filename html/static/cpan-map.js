@@ -738,7 +738,7 @@
                 timeout: 10000
             });
             open_misc_dialog();
-            log_page_view({'pod': distro_name});
+            log_page_view({'pod': distro.name});
         }
 
         function show_changes_dialog(distro) {
