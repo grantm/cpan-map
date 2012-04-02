@@ -1,5 +1,4 @@
 Broken POD TOC links (e.g.: File::Fetch)
-Link directly to distribution changes file (possible?)
 When hovering, display dist/main/ns details in floating overlay
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
 Get ++ counts: http://api.metacpan.org/v0/favorite/_search?q=distribution:Moose&fields=user,distribution&size=1
