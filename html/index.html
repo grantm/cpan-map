@@ -390,8 +390,12 @@
       <% if(meta.resources.repository && meta.resources.repository.web) { %>
           <p><a href="<%= meta.resources.repository.web %>" title="Source code repository">Repository</a></p>
       <% } %>
-      <% if(meta.resources.bugtracker && meta.resources.bugtracker.web) { %>
+      <% if(meta.resources.bugtracker) { %>
+        <% if(meta.resources.bugtracker.web) { %>
           <p><a href="<%= meta.resources.bugtracker.web %>" title="Find or create bug reports">Bug Tracker</a></p>
+        <% } else if(meta.resources.bugtracker.mailto) { %>
+          <p><a href="mailto:<%= meta.resources.bugtracker.mailto %>?subject=<%= escape('Bug report for ' + meta.name) %>" title="Report bugs">Bug Reports</a></p>
+        <% } %>
       <% } %>
       <p><a href="#/distro/<%= name %>/deps" title="Other distributions which this release depends on">Dependencies</a></p>
       <p><a href="#/distro/<%= name %>/rdeps" title="Other distributions which depend on this release">Reverse dependencies</a></p>
