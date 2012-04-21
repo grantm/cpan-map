@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, strict:true, undef:true, curly:true, browser:true, indent:4, eqnull:true, maxerr:100, white:false */
+/*global jQuery:true, Sammy:true */
+
+
 (function($) {
+    'use strict';
 
     var opt = {
         app_selector          : 'body',
@@ -124,8 +129,8 @@
 
         this.helper('not_implemented', function() {   // TODO: unimplement
             var context = this;
-            var html = '<div class="not-impl"><h2>Sorry &#9785;</h2>'
-                     + '<p>This feature is not yet implemented.</p></div>';
+            var html = '<div class="not-impl"><h2>Sorry &#9785;</h2>' +
+                       '<p>This feature is not yet implemented.</p></div>';
             $('.map-info-panel').html(html).removeClass('loading');
             return context;
         });
@@ -174,7 +179,7 @@
         });
 
         this.bind('ajax_load_failed', function(e) {
-            this.update_info('#tmpl-ajax-error', 'AJAX Load Failed')
+            this.update_info('#tmpl-ajax-error', 'AJAX Load Failed');
             return this;
         });
 
@@ -197,7 +202,7 @@
         });
 
         this.bind('separator_moved', function(e) {
-            var pos = opt.sep_pos
+            var pos = opt.sep_pos;
             var $el = this.$element();
             $el.find('.map-info-panel').width(pos);
             $el.find('.map-panel').css({'padding-left': (pos + 10) + 'px'});
@@ -209,7 +214,7 @@
             $el.find('input.map-hover-distro').val(distro.name);
             var maint = distro.maintainer.id;
             if(distro.maintainer.name) {
-                maint = maint + ' - ' + distro.maintainer.name
+                maint = maint + ' - ' + distro.maintainer.name;
             }
             $el.find('input.map-hover-maint').val(maint);
         });
@@ -420,7 +425,7 @@
                 $(this).parent().find("input").val('').focus();
             });
 
-            opt.sep_pos = parseInt( $el.find('.map-separator').css('left') );
+            opt.sep_pos = parseInt( $el.find('.map-separator').css('left'), 10 );
 
             size_controls($el);
             set_initial_zoom($el);
@@ -448,7 +453,7 @@
         }
 
         function size_controls($el) {
-            var padding = parseInt( $el.css('paddingLeft') );
+            var padding = parseInt( $el.css('paddingLeft'), 10 );
 
             var app_height = $(window).height() - padding * 2;
             if(app_height < 300) {
@@ -469,7 +474,7 @@
             size_info_pane_content($panel);
 
             $el.find('.map-separator').height( panel_height );
-            var pos = opt.sep_pos
+            var pos = opt.sep_pos;
             $el.find('.map-viewport').height( panel_height )
                                      .width(app_width - pos - 10);
 
@@ -490,7 +495,7 @@
         }
 
         function size_info_pane_content($panel) {
-            var height = parseInt( $panel.height() );
+            var height = parseInt( $panel.height(), 10 );
             height = height - 34;
             $panel.find('div.info').height(height);
         }
@@ -502,8 +507,8 @@
             var zoom_scales = cpan.meta.zoom_scales;
             for(var i = zoom_scales.length - 1; i > 0; i--) {
                 if(
-                    zoom_scales[i] * cpan.meta.plane_cols < width
-                 && zoom_scales[i] * cpan.meta.plane_rows < height
+                    zoom_scales[i] * cpan.meta.plane_cols < width &&
+                    zoom_scales[i] * cpan.meta.plane_rows < height
                 ) {
                     return set_zoom($el, i);
                 }
@@ -554,7 +559,7 @@
             }
             $plane.addClass('zoom' + new_zoom);
 
-            var i = parseInt(new_zoom);
+            var i = parseInt(new_zoom, 10);
             var width  = opt.scale * cpan.meta.plane_cols;
             var height = opt.scale * cpan.meta.plane_rows;
             $plane.width(width).height(height);
@@ -572,10 +577,10 @@
             var $plane = $el.find('.map-plane');
             var $sight = $el.find('.map-plane-sight');
             var half_scale = Math.floor( opt.scale / 2 );
-            var plane_x = parseInt( $plane.css('left') );
-            var plane_y = parseInt( $plane.css('top') );
-            var sight_x = parseInt( $sight.css('left') );
-            var sight_y = parseInt( $sight.css('top') );
+            var plane_x = parseInt( $plane.css('left'), 10 );
+            var plane_y = parseInt( $plane.css('top'), 10 );
+            var sight_x = parseInt( $sight.css('left'), 10 );
+            var sight_y = parseInt( $sight.css('top'), 10 );
             return {
                 row: Math.floor( sight_y / opt.scale ),
                 col: Math.floor( sight_x / opt.scale ),
@@ -621,7 +626,7 @@
                 containment: [left_margin, 0, 500, 0],
                 drag: function(e, ui) {
                     var new_pos = ui.offset.left - left_margin;
-                    if(opt.sep_pos != new_pos) {
+                    if(opt.sep_pos !== new_pos) {
                         opt.sep_pos = new_pos;
                         app.trigger('separator_moved');
                     }
@@ -638,9 +643,9 @@
                 if(opt.dragging) { return; }
                 var offset  = $plane.offset();
                 var voffset = $el.find('.map-viewport').offset();
-                col = Math.floor((e.pageX - offset.left) / opt.scale);
-                row = Math.floor((e.pageY - offset.top) / opt.scale);
-                if(row == cur_row && col == cur_col) { return; }
+                var col = Math.floor((e.pageX - offset.left) / opt.scale);
+                var row = Math.floor((e.pageY - offset.top) / opt.scale);
+                if(row === cur_row && col === cur_col) { return; }
                 cur_row = row;
                 cur_col = col;
                 $plane_sight.css({
@@ -654,7 +659,7 @@
             });
             $plane.click(function() {
                 if(cur_row < 0 || cur_col < 0) { return; }
-                var distro = distro_at_row_col(row, col);
+                var distro = distro_at_row_col(cur_row, cur_col);
                 if(distro) {
                     app.trigger('distro_select', distro);
                 }
@@ -698,7 +703,7 @@
             });
             $('#misc-dialog').on('click', 'a', function(event){
                 var target = $(this).attr("href");
-                if(target.substr(0, 1) == '#') {
+                if(target.substr(0, 1) === '#') {
                     $('#misc-dialog').scrollTo(target, 200);
                     event.preventDefault();
                     return false;
@@ -720,7 +725,7 @@
                 '" title="Distribution">' + distro.dname + '</a> ' +
                 '<span class="sep">&#9656;</span> ' +
                 '<a href="https://metacpan.org/module/' + main_module +
-                '" title="Module">' + main_module + '</a></div>'
+                '" title="Module">' + main_module + '</a></div>';
             $('#misc-dialog').html(header_html + '<p>Loading...</p>');
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
@@ -855,7 +860,7 @@
                 distro.file = {};
             }
             if(!error_handler) {
-                error_handler = function() { app.trigger('ajax_load_failed: ' + file_source_url) };
+                error_handler = function() { app.trigger('ajax_load_failed: ' + file_source_url); };
             }
             $.ajax({
                 url: file_source_url,
@@ -912,7 +917,7 @@
                     }
                     handler(distro);
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -936,13 +941,14 @@
         }
 
         function extract_abstract_from_pod(pod_text) {
+            var text;
             if(pod_text.match(/(?:^|\n)=head1\s+NAME\s+\S+ +(?:-+ +)?((?:.|\n)*?)\r?\n\r?\n/)) {
-                var text = RegExp.$1
+                text = RegExp.$1;
                 return text.replace(/[LCF]<(.*?)>/g, '$1');
             }
             if(pod_text.match(/(?:^|\n)=head1\s+DESCRIPTION\s+(\S(?:.|\n)*?\r?\n\r?\n)/)) {
-                var text = RegExp.$1
-                text = text.replace(/[.]\s(?:.|\n)*$/, '.')
+                text = RegExp.$1;
+                text = text.replace(/[.]\s(?:.|\n)*$/, '.');
                 return text.replace(/[LCF]<(.*?)>/g, '$1');
             }
             return 'No abstract';
@@ -976,6 +982,7 @@
         function format_dependencies(dep_list) {
             var by_phase = {};
             var highlights = [];
+            var phase;
             for(var i = 0; i < dep_list.length; i++) {
                 var dep = dep_list[i];
                 phase = dep.phase || 'runtime';
@@ -1051,10 +1058,10 @@
                 data: { application: 'cpan-map' },
                 dataType: 'jsonp',
                 success: function(data) {
-                    format_reverse_dependencies( distro, (data.hits || {}).hits || [] )
+                    format_reverse_dependencies( distro, (data.hits || {}).hits || [] );
                     handler(distro);
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1117,7 +1124,7 @@
                     format_social_links(maint);
                     handler(maint);
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1147,7 +1154,7 @@
                     maint.dates_loaded = true;
                     display_maintainer_distro_list(maint, distros);
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1170,8 +1177,8 @@
                     )
                 )
             );
-            var tbody = $('<tbody />')
-            for(i = 0; i < distros.length; i++) {
+            var tbody = $('<tbody />');
+            for(var i = 0; i < distros.length; i++) {
                 tbody.append(
                     $('<tr />').append(
                         $('<td />').append(
@@ -1182,7 +1189,7 @@
                         ),
                         $('<td class="date"/>').text(distros[i].release_date)
                     )
-                )
+                );
             }
             $('#' + maint.distro_list_id).removeClass('loading').html(table.append(tbody));
             $('#' + maint.distro_list_id + ' table').tablesorter({
@@ -1202,7 +1209,7 @@
             var highlights = [];
             var distros = [];
             for(var i = 0; i < cpan.distro.length; i++) {
-                if(cpan.distro[i].maintainer.id == cpanid) {
+                if(cpan.distro[i].maintainer.id === cpanid) {
                     highlights.push(i);
                     distros.push(cpan.distro[i]);
                 }
@@ -1269,7 +1276,7 @@
                     cpan.distro_for_module[mod_name] = distro_name;
                     handler(distro_name);
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1285,7 +1292,7 @@
                     maints.push(maint);
                 }
             }
-            maints.sort(function(a, b) { return b.distro_count - a.distro_count } );
+            maints.sort(function(a, b) { return b.distro_count - a.distro_count; } );
             add_rankings(maints, 'distro_count');
             cpan.top_maintainters_by_distro = maints;
             return maints;
@@ -1347,7 +1354,7 @@
                         })
                     );
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1401,7 +1408,7 @@
                         })
                     );
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1422,7 +1429,7 @@
             if(age < 48) {
                 return age + ' hours';
             }
-            age = Math.floor(age / 24)
+            age = Math.floor(age / 24);
             return age + ' days';
         }
 
@@ -1477,7 +1484,7 @@
                         })
                     );
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
@@ -1505,14 +1512,14 @@
                         })
                     );
                 },
-                error: function() { app.trigger('ajax_load_failed') },
+                error: function() { app.trigger('ajax_load_failed'); },
                 timeout: 10000
             });
         }
 
         function make_query_url(path, query) {
             return opt.ajax_query_url_base + path +
-                '?source=' + escape( JSON.stringify(query) ) +
+                '?source=' + encodeURI( JSON.stringify(query) ) +
                 '&application=cpan-map';
         }
 
@@ -1539,9 +1546,9 @@
                 var distro = cpan.distro[d];
                 $layer.append(
                     $(
-                        '<div class="marker" style="top: '
-                        + (distro.row * scale) + 'px; left: '
-                        + (distro.col * scale) + 'px;" />'
+                        '<div class="marker" style="top: ' +
+                        (distro.row * scale) + 'px; left: ' +
+                        (distro.col * scale) + 'px;" />'
                     )
                 );
             }
@@ -1598,7 +1605,7 @@
     function build_ticker($el, items) {
         var $viewport = $el.find('.map-viewport');
         var $ul = $('<ul />').css({
-            'left': parseInt($viewport.width()) - 150
+            'left': parseInt($viewport.width(), 10) - 150
         });
         var hovering = false;
         var paused   = false;
@@ -1628,8 +1635,8 @@
 
         function start_ticker () {
             if(hovering || paused) { return; }
-            var w = parseInt($ul.find('li').outerWidth());
-            var x = parseInt($ul.css('left'));
+            var w = parseInt($ul.find('li').outerWidth(), 10);
+            var x = parseInt($ul.css('left'), 10);
             var target = x > 0 ? 0 : (0 - w);
             var delta  = x - target;
             $ul.animate({ left: target }, delta * 20, 'linear', function() {
@@ -1638,7 +1645,7 @@
                     $ul.css({'left': 0});
                 }
                 paused = true;
-                setTimeout(function() { paused = false; start_ticker() }, 2000);
+                setTimeout(function() { paused = false; start_ticker(); }, 2000);
             });
         }
 
@@ -1675,12 +1682,12 @@
 
     function build_app($el, run_app) {
         var loc = window.location;
-        opt.app_base_url = loc.protocol + '//' + loc.host
-                         + loc.pathname.replace(/index[.]html$/, '');
+        opt.app_base_url = loc.protocol + '//' + loc.host +
+                           loc.pathname.replace(/index[.]html$/, '');
         if(!opt.default_avatar.match(/^\w+:/)) {
             opt.default_avatar = opt.app_base_url + opt.default_avatar;
         }
-        opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, escape(opt.default_avatar));
+        opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, encodeURI(opt.default_avatar));
 
         var $viewport = $('<div class="map-viewport" />');
         $el.addClass('cpan-map');
@@ -1720,14 +1727,14 @@
             var line = data.substring(i, j).split(",");
             i = j + 1;
             return line;
-        }
+        };
     }
 
     function parse_data(next_record) {
         var rec, handler;
 
         var add_meta = function(rec) {
-            if(rec.length == 2) {
+            if(rec.length === 2) {
                 cpan.meta[ rec[0] ] = rec[1];
             }
             else {
@@ -1757,6 +1764,7 @@
             var names = rec[0].split('/');
             var row = parseInt(rec[3], 16);
             var col = parseInt(rec[4], 16);
+            var ns;
             var distro = {
                 name: names[0],
                 lname: names[0].toLowerCase(),
@@ -1765,12 +1773,12 @@
                 row: row,
                 col: col,
                 index: cpan.distro.length
-            }
+            };
             if(names.length > 1) {
                 distro.main_module = names[1];
             }
             distro.maintainer.distro_count++;
-            if(rec[1] != '') {
+            if(rec[1] !== '') {
                 ns = cpan.namespace[ parseInt(rec[1], 16) ];
                 if(ns) {
                     distro.ns = ns.name;
@@ -1787,16 +1795,16 @@
             if(!cpan.distro_at[row]) {
                 cpan.distro_at[row] = [];
             }
-            cpan.distro_at[row][col] = distro.index
-            cpan.distro_num[distro.name] = distro.index
+            cpan.distro_at[row][col] = distro.index;
+            cpan.distro_num[distro.name] = distro.index;
             cpan.distro.push( distro );
         };
 
-        while(rec = next_record()) {
-            if(rec[0] == '[META]')          { handler = add_meta;   continue; }
-            if(rec[0] == '[MAINTAINERS]')   { handler = add_maint;  continue; }
-            if(rec[0] == '[NAMESPACES]')    { handler = add_ns;     continue; }
-            if(rec[0] == '[DISTRIBUTIONS]') { handler = add_distro; continue; }
+        while((rec = next_record())) {
+            if(rec[0] === '[META]')          { handler = add_meta;   continue; }
+            if(rec[0] === '[MAINTAINERS]')   { handler = add_maint;  continue; }
+            if(rec[0] === '[NAMESPACES]')    { handler = add_ns;     continue; }
+            if(rec[0] === '[DISTRIBUTIONS]') { handler = add_distro; continue; }
             if(handler) {
                 handler(rec);
             }
@@ -1810,7 +1818,7 @@
             $(opt.app_selector),
             function() { app.run('#/'); }
         );
-    }
+    };
 
 })(jQuery);
 
