@@ -69,7 +69,8 @@
         'digg'               : 'http://digg.com/%ID%',
         'sourceforge'        : 'http://sourceforge.net/users/%ID%',
         'vimeo'              : 'http://vimeo.com/%ID%',
-        'pinboard'           : 'http://pinboard.in/u:%ID%'
+        'pinboard'           : 'http://pinboard.in/u:%ID%',
+        'speakerdeck'        : 'https://speakerdeck.com/u/%ID%'
     };
 
     var cpan = {  // Populated via build_app() call before Sammy.run is called
