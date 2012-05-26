@@ -372,7 +372,7 @@
                     .$element().find('.map-info-panel').removeClass('loading');
             }
             else {
-                this.redirect('#/');
+                location.replace('#/');
             }
         });
 
