@@ -5,6 +5,11 @@
 
 class cpan-map::nginx {
 
+    $server_name = $ipaddress ? {
+        /^192.168/   => "uat-mapofcpan.org",
+        default      => "mapofcpan.org",
+    }
+
     package {
         "nginx-full": ensure => installed;
     }
@@ -27,7 +32,7 @@ class cpan-map::nginx {
 
         '/etc/nginx/sites-available/cpan-map':
             require => Package['nginx-full'],
-            source  => "puppet:///modules/cpan-map/etc/nginx/cpan-map.conf",
+            content => template('cpan-map/cpan-map-nginx.erb'),
             owner   => root,
             group   => root,
             mode    => 640,

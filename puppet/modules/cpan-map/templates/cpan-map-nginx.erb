@@ -1,10 +1,11 @@
 server {
 
-    server_name mapofcpan.org;
+    listen        80 default_server;
+    server_name   <%= server_name %>;
 
-    root /home/grant/projects/cpan-map/docroot;
-    index index.html;
-    error_page 404 /404.html;
+    root          /home/grant/projects/cpan-map/docroot;
+    index         index.html;
+    error_page    404 /404.html;
 
     location / {
         # First attempt to serve request as file, then
