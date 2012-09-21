@@ -8,8 +8,12 @@ use strict;
 use warnings;
 
 use FindBin;
+use Getopt::Long qw(GetOptions);
 
 die "apply-config must be run as root\n" unless $> == 0;
+
+my(%opt);
+GetOptions(\%opt, 'test|t') || exit 1;
 
 if(!-e '/usr/bin/puppet') {
     die "You must first install puppet:\n\n  apt-get install puppet\n\n";
@@ -17,4 +21,6 @@ if(!-e '/usr/bin/puppet') {
 my $conf_root = $FindBin::Bin;
 $ENV{FACTER_conf_root} = $conf_root;
 
-system "puppet --confdir $conf_root --verbose $conf_root/manifests/site.pp";
+my $test_mode = $opt{test} ? '--noop' : '';
+
+system "puppet --confdir $conf_root $test_mode --verbose $conf_root/manifests/site.pp";
