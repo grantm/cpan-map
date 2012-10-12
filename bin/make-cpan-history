@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+#
+# This script generates a series of CPAN map images and assembles them into an
+# animation, depicting the expansion of CPAN over a period of time.
+#
+
+use strict;
+use warnings;
+
+use CPAN::Map::HistBuilder;
+
+CPAN::Map::HistBuilder->generate(
+    verbose           => 1,
+    output_dir        => './history/frames',
+    zoom_scales       =>  [ 4 ],
+    upload_dates_file => './history/new-dists-2012.dated',
+);
+
+exit;
+
+
+__END__
+
+=head1 NAME
+
+make-cpan-history - wrapper script for generating 'Map of CPAN - The Movie!'
+
+=head1 DESCRIPTION
+
+This script generates a series of images mapping the growth of namespaces on
+CPAN over time.
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2012 Grant McLean C<< <grantm@cpan.org> >>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License, Version 3 or later by the
+Free Software Foundation.  You should have received a copy of the GNU Affero
+General Public License along with this program.  If not, see
+L<http://www.gnu.org/licenses/>.
+
+=cut
+
