@@ -646,22 +646,27 @@ has 'colour'   => ( is => 'rw', isa => 'Int' );
 
 has 'label_x'  => ( is => 'rw', isa => 'Num' );
 has 'label_y'  => ( is => 'rw', isa => 'Num' );
-has 'label_h'  => ( is => 'rw', isa => 'Num' );
-has 'label_w'  => ( is => 'rw', isa => 'Num' );
 
 has 'row_stat' => (
-    is      => 'ro',
+    is      => 'rw',
     isa     => 'Statistics::Descriptive::Full',
     lazy    => 1,
     default => sub { Statistics::Descriptive::Full->new(); },
 );
 
 has 'col_stat' => (
-    is      => 'ro',
+    is      => 'rw',
     isa     => 'Statistics::Descriptive::Full',
     lazy    => 1,
     default => sub { Statistics::Descriptive::Full->new(); },
 );
+
+sub reset_stats {
+    my($self) = @_;
+
+    $self->row_stat( Statistics::Descriptive::Full->new() );
+    $self->col_stat( Statistics::Descriptive::Full->new() );
+}
 
 sub update_stats {
     my($self, $distro) = @_;
@@ -675,11 +680,9 @@ sub finalise_stats {
 
     my $stat_x = $self->col_stat;
     $self->label_x( $stat_x->mean );
-    $self->label_w( $stat_x->standard_deviation * 1.5 );
 
     my $stat_y = $self->row_stat;
     $self->label_y( $stat_y->mean );
-    $self->label_h( $stat_y->standard_deviation * 1.5 );
 }
 
 
