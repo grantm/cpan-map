@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use 5.010;
+use strict;
+use warnings;
+use autodie;
+
+use Parse::CPAN::Packages;
+
+my $old_packages      = '02packages.details.txt-2012-01-17';
+my $current_packages  = '../source_data/02packages.details.txt.gz';
+
+my $p1 = Parse::CPAN::Packages->new($old_packages);
+my %old = map { $_->dist => 1 } $p1->latest_distributions;
+
+my $p2 = Parse::CPAN::Packages->new($current_packages);
+foreach my $d ( $p2->latest_distributions ) {
+    my $name = $d->dist;
+    next if $old{$name};
+    say $name;
+}
+
