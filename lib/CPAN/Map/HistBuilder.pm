@@ -18,6 +18,13 @@ coerce 'CPAN::Map::Date' => from 'Str' => via {
     DateTime->new(year => $y, month => $m, day => $d);
 };
 
+has 'uploads_per_frame' => (
+    is      => 'ro',
+    isa     => 'Int',
+    lazy    => 1,
+    default => 2,
+);
+
 has 'upload_dates_file' => (
     is      => 'ro',
     isa     => 'Str',
@@ -40,9 +47,14 @@ has 'history_end_date' => (
     coerce  => 1,
 );
 
+has 'frames' => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+);
+
 has 'saved_plane_map' => (
     is      => 'rw',
-    isa     => 'Ref',
+    isa     => 'ArrayRef',
 );
 
 sub generate {
@@ -50,6 +62,7 @@ sub generate {
     my $self  = $class->new(@_);
 
     $self->load_upload_dates;
+    $self->make_frame_set;
     $self->list_distros_by_ns;
     $self->map_distros_to_plane;
     $self->save_plane_mapping;
@@ -112,45 +125,57 @@ sub load_upload_dates {
 }
 
 
-sub each_frame {
-    my($self, $code) = @_;
+sub make_frame_set {
+    my($self) = @_;
 
-    my $frame = $self->frame_count;
-    my $first = $self->history_start_date;
-    my $date = $self->history_end_date;
+    my $uploads_per_frame = $self->uploads_per_frame;
+    my $uploads_by_date = $self->uploads_by_date;
+    my $last_date = $self->history_end_date;
+    my $date = $self->history_start_date;
+    my @frames;
+    while($date <= $last_date) {
+        my $dists = $uploads_by_date->{ $date->ymd } || [];
+        while(@$dists > $uploads_per_frame) {
+            push @frames, [ $date->ymd, splice @$dists, -1 * $uploads_per_frame ];
+        }
+        push @frames, [ $date->ymd, @$dists ];
+        $date->add(days => 1);
+    }
+    $self->frames( \@frames );
+}
+
+
+sub each_frame {
+    my($self, $handler) = @_;
+
+    my $frames = $self->frames;
     #my $max = 30;
-    my $max = 3;
-    while($date >= $first) {
-        $code->($frame, $date);
-        $frame--;
-        $self->forget_distributions_for_date($date);
-        $date->subtract(days => 1);
+    my $max = 1;
+    for(my $i = $#{$frames}; $i >= 0; $i--) {
+        my($date, @distros) = @{ $frames->[$i] };
+        $handler->($i, $date);
+        if(@distros) {
+            $self->remove_distro($_) foreach @distros;
+            $self->remap_distros_to_plane;
+        }
         last if --$max == 0;
     }
 }
 
 
-sub frame_count {
-    my($self) = @_;
+sub remove_distro {
+    my($self, $distro_name) = @_;
 
-    my $delta = $self->history_start_date->delta_days($self->history_end_date);
-    return $delta->in_units('days');
-}
-
-
-sub forget_distributions_for_date {
-    my($self, $date) = @_;
-
-    my $dists = $self->uploads_by_date->{ $date->ymd } or return;
-    my %unwanted = map { $_ => 1 } @$dists;
-    my $old_distro_list = $self->distro_list;
-    $self->distro_list( [] );
-    $self->distro_index( {} );
-    foreach my $distro ( @$old_distro_list ) {
-        next if $unwanted{ $distro->name };
-        $self->add_distro( $distro );
+    my $distro_index = $self->distro_index;
+    my $i = delete $distro_index->{$distro_name} or return;
+    my $distro_list = $self->distro_list;
+    splice @$distro_list, $i, 1;
+    while($i < @$distro_list) {
+        my $distro = $distro_list->[$i];
+        $distro->index( $i );
+        $distro_index->{ $distro->name } = $i;
+        $i++;
     }
-    $self->remap_distros_to_plane;
 }
 
 
