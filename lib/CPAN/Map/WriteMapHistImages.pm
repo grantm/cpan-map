@@ -13,7 +13,7 @@ has 'frame' => (
 
 has 'date' => (
     is      => 'rw',
-    isa     => 'DateTime',
+    isa     => 'Str',
 );
 
 has 'date_font_size' => (
@@ -64,12 +64,21 @@ sub image_file_path {
 }
 
 
+sub font_size_from_mass {
+    my($self, $ns) = @_;
+
+    my $font_size = $self->SUPER::font_size_from_mass($ns);
+    return $font_size if $font_size >= $self->minimum_font_size;
+    return $self->minimum_font_size;
+}
+
+
 sub add_date_label {
     my($self, $im) = @_;
 
     my $font   = $self->builder->label_font_path;
     my $colour = $self->colour;
-    my $text   = $self->date->ymd;
+    my $text   = $self->date;
     my $size   = $self->date_font_size;
 
     my @bounds = GD::Image->stringFT(
@@ -79,7 +88,6 @@ sub add_date_label {
     my $text_x = ($self->image_width - $width) / 2;
     my $text_y = $self->image_height - 15;
 
-    # Don't anti-alias small font sizes (negative colour index)
     $im->stringFT(
         $colour->{shadow},
         $font,

@@ -32,6 +32,13 @@ has 'scale' => (
     isa      => 'Int',
 );
 
+has 'minimum_font_size' => (
+    is       => 'rw',
+    isa      => 'Int',
+    lazy     => 1,
+    default  => 7,
+);
+
 has 'image_width' => (
     is       => 'rw',
     isa      => 'Int',
@@ -280,7 +287,7 @@ sub add_mass_label {
 
     my $name = $ns->name or return;
     my $size = $self->font_size_from_mass($ns);
-    return if $size < 7; # Don't bother if it's unreadably small
+    return if $size < $self->minimum_font_size; # Skip label if it's too small
 
     my @bounds = GD::Image->stringFT(
         $colour->{label}, $font, $size, 0, 0, 0, $name
