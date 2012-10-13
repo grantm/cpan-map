@@ -32,8 +32,10 @@ class cpan-map::apt-packages {
         "libgravatar-url-perl":           ensure => installed;
         "liburi-perl":                    ensure => installed;
         "libfile-find-rule-perl":         ensure => installed;
+        "libfile-slurp-perl":             ensure => installed;
         "libjavascript-minifier-xs-perl": ensure => installed;
         "libcss-minifier-xs-perl":        ensure => installed;
+        "ack-grep":                       ensure => installed;
         "dh-make-perl":                   ensure => installed;
         "libmath-libm-perl":              ensure => installed;
         "libconstant-defer-perl":         ensure => installed;
