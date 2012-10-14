@@ -274,21 +274,12 @@ sub list_distros_by_ns {
 
     # Process the header
 
-    my %month_num = qw(
-        jan 01 feb 02 mar 03 apr 04 may 05 jun 06
-        jul 07 aug 08 sep 09 oct 10 nov 11 dec 12
-    );
     while($_ = $z->getline) {
         last unless /\S/;
-        if(
-            my($d, $m, $y, $t) = m{
-                ^Last-Updated:\s+\S+,\s+
-                (\d+)\s+(\S\S\S)\s+(\d\d\d\d)\s+(\d\d:\d\d:\d\d)
-            }x
-        ) {
-            $m = $month_num{lc($m)};
-            $self->mod_list_date("$y-$m-$d $t UTC");
-            my $hex = md5_hex( $self->mod_list_date );
+        if( m{^Last-Updated:\s+(\S.*)$} ) {
+            my $timestamp = $self->parse_packages_timestamp( $1 );
+            $self->mod_list_date($timestamp);
+            my $hex = md5_hex( $timestamp );
             $self->slug_of_the_day(substr($hex, 0, 8));
         }
     }
@@ -339,6 +330,23 @@ sub list_distros_by_ns {
     $self->module_count($module_count);
     $self->progress_message(" - found " . $self->module_count . " modules");
     $self->progress_message(" - found " . $self->distro_count . " distributions");
+}
+
+
+sub parse_packages_timestamp {
+    my($self, $date_string) = @_;
+
+    my %month_num = qw(
+        jan 01 feb 02 mar 03 apr 04 may 05 jun 06
+        jul 07 aug 08 sep 09 oct 10 nov 11 dec 12
+    );
+
+    my($d, $m, $y, $t) = $date_string =~ m{
+        ^\S+,\s+(\d+)\s+(\S\S\S)\s+(\d\d\d\d)\s+(\d\d:\d\d:\d\d)
+    }x or die "Unable to parse date from packages file: '$date_string'";
+
+    $m = $month_num{lc($m)};
+    return "$y-$m-$d $t UTC";
 }
 
 
