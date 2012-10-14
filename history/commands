@@ -1,0 +1,19 @@
+
+Encoding (lossless)
+========
+
+ffmpeg -i ../frame_%04d.png -vcodec huffyuv test.avi
+
+
+Transcoding
+===========
+
+vlc -I dummy cpan-18mths-hy.avi vlc://quit --sout "#transcode{ vcodec = theo }:duplicate{ dst = std{ access = file, mux=ogg, dst = \"cpan-18mths-q3.ogv\" }}" --sout-theora-quality=3 
+
+vlc -I dummy cpan-18mths-hy.avi vlc://quit --sout "#transcode{ vcodec = theo }:duplicate{ dst = std{ access = file, mux=ogg, dst = \"cpan-18mths-q9.ogv\" }}" --sout-theora-quality=9
+
+
+Playback
+========
+
+vlc --no-osd --no-autoscale --key-quit q cpan-18mths-q9.ogv
