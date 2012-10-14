@@ -279,6 +279,8 @@ sub draw_distro {
 sub add_mass_label {
     my($self, $im, $font, $ns) = @_;
 
+    return if not defined $ns->label_x;
+
     my $colour = $self->colour;
     my $scale  = $self->scale;
 

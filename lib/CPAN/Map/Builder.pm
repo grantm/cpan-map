@@ -687,6 +687,7 @@ sub finalise_stats {
     my($self) = @_;
 
     my $stat_x = $self->col_stat;
+    return if $stat_x->count == 0;
     $self->label_x( $stat_x->mean );
 
     my $stat_y = $self->row_stat;
