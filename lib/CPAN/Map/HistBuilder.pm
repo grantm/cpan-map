@@ -9,6 +9,10 @@ extends "CPAN::Map::Builder";
 
 require CPAN::Map::WriteMapHistImages;
 require DateTime;
+require Parse::CPAN::Packages;
+
+use File::Slurp   qw( read_file write_file );
+use JSON::XS      qw( decode_json );
 use Data::Dumper;
 
 subtype 'CPAN::Map::Date' => as class_type('DateTime');
@@ -23,6 +27,23 @@ has 'uploads_per_frame' => (
     isa     => 'Int',
     lazy    => 1,
     default => 2,
+);
+
+has 'old_packages_file' => (
+    is      => 'ro',
+    isa     => 'Str',
+);
+
+has 'animation_start_date' => (
+    is      => 'ro',
+    isa     => 'CPAN::Map::Date',
+    coerce  => 1,
+);
+
+has 'animation_end_date' => (
+    is      => 'ro',
+    isa     => 'CPAN::Map::Date',
+    coerce  => 1,
 );
 
 has 'upload_dates_file' => (
@@ -103,22 +124,49 @@ sub write_output_frames {
 sub load_upload_dates {
     my($self) = @_;
 
-    open my $fh, '<', $self->upload_dates_file;
-    my(%upload_date, %uploads_by_date);
+    $self->progress_message("Loading historical upload dates");
+
+    # Get a list of distros that existed in old packages file
+
+    my $packages = Parse::CPAN::Packages->new($self->old_packages_file);
+    my %prehistoric = map {
+        my $name = $_->dist;
+        $name =~ s/-/::/g;
+        $name => 1
+    } $packages->latest_distributions;
+
+    # Extract  effective date
+
+    my $package_epoch = $packages->last_updated();
+    $package_epoch = $self->parse_packages_timestamp( $package_epoch );
+    $package_epoch = substr($package_epoch, 0, 10);
+
+
+    # Build a mapping of distros uploaded since then, by date
+
+    my $json = read_file( $self->upload_dates_file );
+    my $state = decode_json( $json );
+    my $distro_dates = $state->{upload_date} || {};
+
+    my(%uploads_by_date);
     my $history_start = '9999-99-99';
     my $history_end   = '0000-00-00';
-    while(<$fh>) {
-        chomp;
-        my($dist_name, $date) = split /,/;
-        next unless $date;
+    my $animation_start = $self->animation_start_date->ymd;
+    my $animation_end   = $self->animation_end_date->ymd;
+
+    while(my($distro_name, $date) = each %$distro_dates) {
+        $distro_name =~ s/-/::/g;
+        next if $prehistoric{$distro_name};
         $date = substr($date, 0, 10);
+        next if $date lt $package_epoch;
         $history_start = $date if $date lt $history_start;
         $history_end   = $date if $date gt $history_end;
-        $dist_name =~ s/-/::/g;
-        $upload_date{$dist_name} = $date;
+        next if $date lt $animation_start;
+        next if $date gt $animation_end;
         $uploads_by_date{$date} ||= [];
-        push @{$uploads_by_date{$date}}, $dist_name;
+        push @{$uploads_by_date{$date}}, $distro_name;
     }
+
     $self->history_start_date($history_start);
     $self->history_end_date($history_end);
     $self->uploads_by_date(\%uploads_by_date);
@@ -130,8 +178,8 @@ sub make_frame_set {
 
     my $uploads_per_frame = $self->uploads_per_frame;
     my $uploads_by_date = $self->uploads_by_date;
-    my $last_date = $self->history_end_date;
-    my $date = $self->history_start_date;
+    my $last_date = $self->animation_end_date;
+    my $date = $self->animation_start_date;
     my @frames;
     while($date <= $last_date) {
         my $dists = $uploads_by_date->{ $date->ymd } || [];
@@ -150,7 +198,7 @@ sub each_frame {
 
     my $frames = $self->frames;
     #my $max = 30;
-    my $max = 1;
+    my $max = 99999;
     for(my $i = $#{$frames}; $i >= 0; $i--) {
         my($date, @distros) = @{ $frames->[$i] };
         $handler->($i, $date);

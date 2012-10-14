@@ -35,6 +35,7 @@ class cpan-map::apt-packages {
         "libfile-slurp-perl":             ensure => installed;
         "libjavascript-minifier-xs-perl": ensure => installed;
         "libcss-minifier-xs-perl":        ensure => installed;
+        "libparse-cpan-packages-perl":    ensure => installed;
         "ack-grep":                       ensure => installed;
         "dh-make-perl":                   ensure => installed;
         "libmath-libm-perl":              ensure => installed;

@@ -10,10 +10,13 @@ use warnings;
 use CPAN::Map::HistBuilder;
 
 CPAN::Map::HistBuilder->generate(
-    verbose           => 1,
-    output_dir        => './history/frames',
-    zoom_scales       =>  [ 4 ],
-    upload_dates_file => './history/new-dists-2012.dated',
+    verbose               => 1,
+    output_dir            => './history/frames',
+    zoom_scales           =>  [ 4 ],
+    old_packages_file     => './history/02packages.details.txt-2009-01-21',
+    upload_dates_file     => './history/earliest-uploads.json',
+    animation_start_date  => '2011-04-01',
+    animation_end_date    => '2012-09-30',
 );
 
 exit;
