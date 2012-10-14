@@ -1,0 +1,241 @@
+#!/usr/bin/perl
+#
+# This is a quick and dirty script to build up a hash of CPAN distro name =>
+# earliest upload date.  The data is collected by running a series of metacpan
+# API queries to retrieve a list of all uploads for a calendar month.  The
+# earliest upload date for each distro is tracked and all the data is
+# serialised out to a JSON file - so we never have to ask again :-)
+#
+# The script works backwards, one month at a time and saves state at each step
+# of the way so that it can be re-run for different date ranges without having
+# to re-fetch data.
+#
+# Note, the fact that the JSON file contains a date for a distro does not mean
+# that was the first upload date.  It just means that we haven't seen an
+# earlier upload in the months we've polled so far.  However, if an old
+# 02packages file can tell us the distro did not exist before that date, then
+# it must have been the first.
+#
+
+use 5.010;
+use strict;
+use warnings;
+use autodie;
+
+use LWP::UserAgent;
+use HTTP::Request::Common qw( POST );
+use DateTime              qw( );
+use File::Slurp           qw( read_file write_file );
+use JSON::XS              qw( decode_json );
+use Data::Dumper;
+
+my $output_file     = 'history/earliest-uploads.json';
+my $metacpan_base   = 'http://api.metacpan.org';
+my $release_api_url = "$metacpan_base/v0/release";
+
+my(%month_loaded, %upload_date);
+
+load_saved_state();
+
+process_months(@ARGV);
+
+
+exit;
+
+sub load_saved_state {
+    return unless -e $output_file;
+    my $json = read_file( $output_file );
+    my $state = decode_json( $json );
+    my $months = $state->{loaded} || [];
+    $month_loaded{$_} = 1 foreach @$months;
+    my $dist_dates = $state->{upload_date} || {};
+    %upload_date = %$dist_dates;
+}
+
+
+sub save_state {
+    write_file(
+        $output_file,
+        JSON::XS->new->ascii->pretty->canonical->encode({
+            loaded      => [ sort keys %month_loaded ],
+            upload_date => \%upload_date,
+        }) . "\n"
+    );
+}
+
+
+sub process_months {
+    my($first_month, $last_month) = map { parse_month($_) } @_;
+    $first_month ||= this_month();
+    $last_month  ||= $first_month->clone;
+    if($first_month > $last_month) {
+        ($first_month, $last_month) = ($last_month, $first_month);
+    }
+    my $month = $last_month;
+    while($month >= $first_month) {
+        retrieve_uploads_for_month($month);
+        $month->subtract(months => 1);
+    }
+}
+
+
+sub parse_month {
+    my($year, $month) = shift =~ /^(\d\d\d\d)-(\d\d)$/ or return;
+    return DateTime->new(year => $year, month => $month, day => 1);
+}
+
+
+sub this_month {
+    return DateTime->today->truncate(to => 'month');
+}
+
+
+sub retrieve_uploads_for_month {
+    my($start) = @_;
+    my $end = $start->clone->add(months => 1);
+    my $month_ym = $start->strftime('%Y-%m');
+
+    if($month_loaded{ $month_ym }) {
+        print "Already retrieved $month_ym - skipping\n";
+        return;
+    }
+
+    print "Retrieving uploads for $month_ym\n";
+
+    my $from_date = $start->strftime('%Y-%m-01T00:00:00.000Z');
+    my $to_date   = $end->strftime('%Y-%m-01T00:00:00.000Z');
+    my $query = qq{{
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "range": {
+                            "release.date": {
+                                "from" : "$from_date",
+                                "to" : "$to_date"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "fields": ["release.distribution", "release.date"],
+        "size": 5000
+    }};
+
+    my $test = decode_json( $query );   # dies on error;
+
+    my $ua = LWP::UserAgent->new;
+    my $req = POST($release_api_url, Content => $query);
+    my $resp = $ua->request($req);
+    die $resp->status_line unless $resp->is_success;
+
+    my $resultset = decode_json($resp->content);
+
+    my $hits = $resultset->{hits}->{hits};
+    print "  Total uploads: " . scalar(@$hits) . "\n";
+    foreach (@$hits) {
+        $_ = $_->{fields};
+        my $name = $_->{distribution};
+        my $date = $_->{date};
+        if($upload_date{$name}) {
+            $upload_date{$name} = $date if $date lt $upload_date{$name};
+        }
+        else {
+            $upload_date{$name} = $date;
+        }
+    }
+
+    # Keep track of complete months downloaded
+    $month_loaded{ $month_ym } = 1 unless $start == this_month;
+
+    save_state();
+    sleep(4);
+}
+
+
+__END__
+
+my $new_dist = load_new_dist_list();
+
+foreach my $month (1 .. 12) {
+    find_uploads_for_month($month, $new_dist);
+    save_dist_list($new_dist);
+}
+
+exit;
+
+sub save_dist_list {
+    my($new_dist) = @_;
+    open my $fh, '>', "${new_dists_file}.dated";
+    foreach my $name (sort keys %$new_dist) {
+        print $fh "$name," . ($new_dist->{$name} || '') . "\n";
+    }
+    close($fh);
+}
+
+
+sub find_uploads_for_month {
+    my($from_month, $new_dist) = @_;
+
+    my $from_year = 2012;
+    my $to_year   = $from_month > 11 ? $from_year + 1 : $from_year;
+    my $to_month  = $from_month > 11
+                    ? ($from_month % 12 + 1)
+                    : $from_month + 1;
+    my $from_date = sprintf("%04u-%02u-01T00:00:00.000Z", $from_year, $from_month);
+    my $to_date   = sprintf("%04u-%02u-01T00:00:00.000Z", $to_year,   $to_month);
+    query_date_range($from_date, $to_date, $new_dist);
+}
+
+
+sub query_date_range {
+    my($from_date, $to_date, $new_dist) = @_;
+
+    print "Querying uploads for month: $from_date\n";
+
+    my $query = qq{{
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "range": {
+                            "release.date": {
+                                "from" : "$from_date",
+                                "to" : "$to_date"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "fields": ["release.name", "release.distribution", "release.date", "release.author"],
+        "size": 5000
+    }};
+
+    my $test = decode_json( $query );   # dies on error;
+
+    my $ua = LWP::UserAgent->new;
+    my $req = POST($release_api_url, Content => $query);
+    my $resp = $ua->request($req);
+    die $resp->status_line unless $resp->is_success;
+
+    my $resultset = decode_json($resp->content);
+
+    my $hits = $resultset->{hits}->{hits};
+print "  Hits: " . scalar(@$hits) . "\n";
+    foreach (@$hits) {
+        $_ = $_->{fields};
+        my $name = $_->{distribution};
+        my $date = $_->{date};
+        next unless exists $new_dist->{$name};
+warn "  Wanted: $name\n";
+        if($new_dist->{$name}) {
+            $new_dist->{$name} = $date if $date lt $new_dist->{$name};
+        }
+        else {
+            $new_dist->{$name} = $date;
+        }
+    }
+
+}
