@@ -140,17 +140,7 @@ sub render_image {
 
     my $im = new GD::Image($self->image_width, $self->image_height);
 
-    my $colour = $self->colour;
-    $colour->{background} = $im->colorAllocate(0x66, 0x66, 0x66);
-    $colour->{label}      = $im->colorAllocate(0x44, 0x44, 0x44);
-    $colour->{thin_label} = $im->colorAllocate(0x66, 0x66, 0x66);
-    $colour->{shadow}     = $im->colorAllocate(0xEE, 0xEE, 0xEE);
-    $colour->{border}     = $im->colorAllocate(0x55, 0x55, 0x55);
-    $colour->{map_0}      = $im->colorAllocate(0xBB, 0xDD, 0xFF);
-    $colour->{map_1}      = $im->colorAllocate(0x7A, 0xFF, 0x67);
-    $colour->{map_2}      = $im->colorAllocate(0xFF, 0xE9, 0x3D);
-    $colour->{map_3}      = $im->colorAllocate(0xFF, 0x97, 0xA6);
-    $colour->{map_4}      = $im->colorAllocate(0xFF, 0x87, 0x49);
+    my $colour = $self->allocate_colours($im);
 
     $im->fill(0, 0, $colour->{background});
 
@@ -190,6 +180,25 @@ sub render_image {
     }
 
     return $im;
+}
+
+
+sub allocate_colours {
+    my($self, $im) = @_;
+
+    my $colour = $self->colour;
+    $colour->{background} = $im->colorAllocate(0x66, 0x66, 0x66);
+    $colour->{label}      = $im->colorAllocate(0x44, 0x44, 0x44);
+    $colour->{thin_label} = $im->colorAllocate(0x66, 0x66, 0x66);
+    $colour->{shadow}     = $im->colorAllocate(0xEE, 0xEE, 0xEE);
+    $colour->{border}     = $im->colorAllocate(0x55, 0x55, 0x55);
+    $colour->{map_0}      = $im->colorAllocate(0xBB, 0xDD, 0xFF);
+    $colour->{map_1}      = $im->colorAllocate(0x7A, 0xFF, 0x67);
+    $colour->{map_2}      = $im->colorAllocate(0xFF, 0xE9, 0x3D);
+    $colour->{map_3}      = $im->colorAllocate(0xFF, 0x97, 0xA6);
+    $colour->{map_4}      = $im->colorAllocate(0xFF, 0x87, 0x49);
+
+    return $colour;
 }
 
 

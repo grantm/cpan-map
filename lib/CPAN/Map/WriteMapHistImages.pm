@@ -20,7 +20,7 @@ has 'date_font_size' => (
     is      => 'rw',
     isa     => 'Int',
     lazy    => 1,
-    default => 13,
+    default => 15,
 );
 
 
@@ -57,6 +57,15 @@ sub render_image {
 }
 
 
+sub allocate_colours {
+    my($self, $im) = @_;
+
+    my $colour = $self->SUPER::allocate_colours($im);
+    $colour->{date_label} = $im->colorAllocate(0x99, 0x99, 0x99);
+    return $colour;
+}
+
+
 sub image_file_path {
     my($self, $builder, $scale) = @_;
 
@@ -76,20 +85,20 @@ sub font_size_from_mass {
 sub add_date_label {
     my($self, $im) = @_;
 
-    my $font   = $self->builder->label_font_path;
+    my $font   = $self->builder->date_label_font_path;
     my $colour = $self->colour;
     my $text   = $self->date;
     my $size   = $self->date_font_size;
 
     my @bounds = GD::Image->stringFT(
-        $colour->{label}, $font, $size, 0, 0, 0, $text
+        $colour->{date_label}, $font, $size, 0, 0, 0, $text
     );
     my $width  = abs($bounds[2] - $bounds[0]);
     my $text_x = ($self->image_width - $width) / 2;
     my $text_y = $self->image_height - 15;
 
     $im->stringFT(
-        $colour->{shadow},
+        $colour->{date_label},
         $font,
         $size,
         0,

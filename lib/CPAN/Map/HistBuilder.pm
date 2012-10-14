@@ -51,6 +51,14 @@ has 'upload_dates_file' => (
     isa     => 'Str',
 );
 
+has 'date_label_font_path' => (
+    is      => 'rw',
+    isa     => 'Str',
+    lazy    => 1,
+    default => sub { shift->label_font_path },
+);
+
+
 has 'uploads_by_date' => (
     is      => 'rw',
     isa     => 'HashRef',
@@ -197,8 +205,8 @@ sub each_frame {
     my($self, $handler) = @_;
 
     my $frames = $self->frames;
-    #my $max = 30;
     my $max = 99999;
+    $max = 1;
     for(my $i = $#{$frames}; $i >= 0; $i--) {
         my($date, @distros) = @{ $frames->[$i] };
         $handler->($i, $date);
