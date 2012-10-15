@@ -268,7 +268,42 @@ sub update_source_data {
 sub list_distros_by_ns {
     my $self = shift;
 
-    $self->progress_message('Listing all CPAN distros');
+    # Parse packages file into a hash of hashes
+
+    my $distros_by_ns = $self->parse_packages_to_ns_hash();
+
+
+    # Reorganise hash by namespace into a big alphabetical list of distros.
+    # Save counts ('mass') of distros per namespace
+
+    my $mass_map = $self->mass_map;
+    foreach my $prefix ( sort keys %$distros_by_ns ) {
+        my $dists_for_ns = delete $distros_by_ns->{$prefix};
+        my @dists = keys %$dists_for_ns;
+        my $this_ns = $mass_map->{$prefix} = CPAN::Map::Namespace->new(
+            name => $prefix,
+            mass => scalar(@dists),
+        );
+
+        foreach my $dist_name (sort { lc($a) cmp lc($b) } @dists) {
+            my $distro = $dists_for_ns->{$dist_name};
+            my($dist_prefix) = $dist_name =~ m{^(\w+)};
+            if(lc($dist_prefix) eq $prefix  and  $dist_prefix ne $prefix) {
+                $this_ns->name($dist_prefix);  # prefer this capitalisation
+            }
+            $self->add_distro($distro);
+        }
+    }
+
+    $self->progress_message(" - found " . $self->module_count . " modules");
+    $self->progress_message(" - found " . $self->distro_count . " distributions");
+}
+
+
+sub parse_packages_to_ns_hash {
+    my $self = shift;
+
+    $self->progress_message('Listing all CPAN distros from 02packages file');
 
     my $z = gunzip_open($self->mod_list_source);
 
@@ -305,31 +340,9 @@ sub list_distros_by_ns {
     }
     $z->close();
 
-    # Create an alphabetical list of distros and save counts ('mass') of
-    # distros per namespace
-
-    my $mass_map = $self->mass_map;
-    foreach my $prefix ( sort keys %prefix_dists ) {
-        my $dists_for_ns = delete $prefix_dists{$prefix};
-        my @dists = keys %$dists_for_ns;
-        my $this_ns = $mass_map->{$prefix} = CPAN::Map::Namespace->new(
-            name => $prefix,
-            mass => scalar(@dists),
-        );
-
-        foreach my $dist_name (sort { lc($a) cmp lc($b) } @dists) {
-            my $distro = $dists_for_ns->{$dist_name};
-            my($dist_prefix) = $dist_name =~ m{^(\w+)};
-            if(lc($dist_prefix) eq $prefix  and  $dist_prefix ne $prefix) {
-                $this_ns->name($dist_prefix);  # prefer this capitalisation
-            }
-            $self->add_distro($distro);
-        }
-    }
-
     $self->module_count($module_count);
-    $self->progress_message(" - found " . $self->module_count . " modules");
-    $self->progress_message(" - found " . $self->distro_count . " distributions");
+
+    return \%prefix_dists;
 }
 
 
