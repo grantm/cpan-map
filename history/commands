@@ -2,7 +2,7 @@
 Encoding (lossless)
 ========
 
-ffmpeg -i ../frame_%04d.png -vcodec huffyuv test.avi
+avconv -i ../frame_%04d.png -vcodec huffyuv cpan-18mths-hy.avi
 
 
 Transcoding
@@ -12,8 +12,12 @@ vlc -I dummy cpan-18mths-hy.avi vlc://quit --sout "#transcode{ vcodec = theo }:d
 
 vlc -I dummy cpan-18mths-hy.avi vlc://quit --sout "#transcode{ vcodec = theo }:duplicate{ dst = std{ access = file, mux=ogg, dst = \"cpan-18mths-q9.ogv\" }}" --sout-theora-quality=9
 
+Also investigate:
+ * Arista
+ * Transmageddon
 
 Playback
 ========
 
 vlc --no-osd --no-autoscale --key-quit q cpan-18mths-q9.ogv
+
