@@ -165,7 +165,7 @@ sub render_image {
         my($distro) = @_;
         my $colour = $colour->{'map_' . $dist_colour->($distro)};
         my $borders = $self->border_flags($distro, $builder, $dist_ns);
-        $self->draw_distro($im, $distro->col, $distro->row, $colour, $borders);
+        $self->draw_distro($im, $distro, $colour, $borders);
     });
 
 
@@ -249,8 +249,10 @@ sub border_flags {
 
 
 sub draw_distro {
-    my($self, $im, $col, $row, $dist_colour, $borders) = @_;
+    my($self, $im, $distro, $dist_colour, $borders) = @_;
 
+    my $col    = $distro->col;
+    my $row    = $distro->row;
     my $colour = $self->colour;
     my $scale  = $self->scale;
 

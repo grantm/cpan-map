@@ -62,7 +62,30 @@ sub allocate_colours {
 
     my $colour = $self->SUPER::allocate_colours($im);
     $colour->{date_label} = $im->colorAllocate(0x99, 0x99, 0x99);
+    $colour->{new_distro} = $im->colorAllocate(0x00, 0x00, 0xFF);
     return $colour;
+}
+
+
+sub draw_distro {
+    my($self, $im, $distro, $dist_colour, $borders) = @_;
+
+    if($self->builder->is_recent_new_upload( $distro->name )) {
+        my $col    = $distro->col;
+        my $row    = $distro->row;
+        my $colour = $self->colour;
+        my $scale  = $self->scale;
+
+        my $x1 = $self->x_offset + $col * $scale;
+        my $y1 = $self->y_offset + $row * $scale;
+        my $x2 = $x1 + $scale - 1;
+        my $y2 = $y1 + $scale - 1;
+        $im->filledRectangle($x1, $y1, $x2, $y2, $colour->{new_distro});
+
+    }
+    else {
+        $self->SUPER::draw_distro($im, $distro, $dist_colour, $borders);
+    }
 }
 
 

@@ -86,6 +86,19 @@ has 'saved_plane_map' => (
     isa     => 'ArrayRef',
 );
 
+has 'recent_new_uploads' => (
+    is      => 'rw',
+    isa     => 'HashRef',
+);
+
+has 'new_upload_persistence' => (
+    is      => 'rw',
+    isa     => 'Int',
+    lazy    => 1,
+    default => 3,
+);
+
+
 sub generate {
     my $class = shift;
     my $self  = $class->new(@_);
@@ -206,9 +219,10 @@ sub each_frame {
 
     my $frames = $self->frames;
     my $max = 99999;
-    $max = 1;
+    $max = 120;
     for(my $i = $#{$frames}; $i >= 0; $i--) {
         my($date, @distros) = @{ $frames->[$i] };
+        $self->flag_recent_new_uploads($frames, $i);
         $handler->($i, $date);
         if(@distros) {
             $self->remove_distro($_) foreach @distros;
@@ -216,6 +230,27 @@ sub each_frame {
         }
         last if --$max == 0;
     }
+}
+
+
+sub flag_recent_new_uploads {
+    my($self, $frames, $j) = @_;
+
+    my $is_recent = {};
+    my $i = $j - $self->new_upload_persistence + 1;
+    $i = 0 if $i < 0;
+    foreach my $f ($i .. $j) {
+        $is_recent->{$_} = 1 foreach @{ $frames->[$f] };
+    }
+    $self->recent_new_uploads($is_recent);
+}
+
+
+sub is_recent_new_upload {
+    my($self, $distro_name) = @_;
+
+    my $is_recent = $self->recent_new_uploads;
+    return $is_recent->{$distro_name};
 }
 
 
