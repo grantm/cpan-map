@@ -665,8 +665,8 @@ has 'name'     => ( is => 'rw', isa => 'Str' );
 has 'mass'     => ( is => 'ro', isa => 'Int' );
 has 'colour'   => ( is => 'rw', isa => 'Int' );
 
-has 'label_x'  => ( is => 'rw', isa => 'Num' );
-has 'label_y'  => ( is => 'rw', isa => 'Num' );
+has 'label_x'  => ( is => 'rw', isa => 'Num', clearer => 'clear_label_x' );
+has 'label_y'  => ( is => 'rw', isa => 'Num', clearer => 'clear_label_y' );
 
 has 'row_stat' => (
     is      => 'rw',
@@ -685,6 +685,8 @@ has 'col_stat' => (
 sub reset_stats {
     my($self) = @_;
 
+    $self->clear_label_x;
+    $self->clear_label_y;
     $self->row_stat( Statistics::Descriptive::Full->new() );
     $self->col_stat( Statistics::Descriptive::Full->new() );
 }
