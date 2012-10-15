@@ -76,6 +76,11 @@ has 'history_end_date' => (
     coerce  => 1,
 );
 
+has 'post_historic_distros' => (
+    is      => 'rw',
+    isa     => 'HashRef',
+);
+
 has 'frames' => (
     is      => 'rw',
     isa     => 'ArrayRef',
@@ -169,7 +174,7 @@ sub load_upload_dates {
     my $state = decode_json( $json );
     my $distro_dates = $state->{upload_date} || {};
 
-    my(%uploads_by_date);
+    my(%uploads_by_date, %post_historic);
     my $history_start = '9999-99-99';
     my $history_end   = '0000-00-00';
     my $animation_start = $self->animation_start_date->ymd;
@@ -183,14 +188,38 @@ sub load_upload_dates {
         $history_start = $date if $date lt $history_start;
         $history_end   = $date if $date gt $history_end;
         next if $date lt $animation_start;
-        next if $date gt $animation_end;
+        if($date gt $animation_end) {
+            $post_historic{$distro_name}++;
+            next;
+        }
         $uploads_by_date{$date} ||= [];
         push @{$uploads_by_date{$date}}, $distro_name;
     }
 
     $self->history_start_date($history_start);
     $self->history_end_date($history_end);
+    $self->post_historic_distros(\%post_historic);
     $self->uploads_by_date(\%uploads_by_date);
+}
+
+
+sub parse_packages_to_ns_hash {
+    my $self = shift;
+
+    my $distros_by_ns = $self->SUPER::parse_packages_to_ns_hash();
+
+    # Discard distros first uploaded after animation end date
+    my $post_historic = $self->post_historic_distros();
+    my $end_date = $self->animation_end_date->ymd;
+    foreach my $distros ( values %$distros_by_ns ) {
+        foreach my $name ( keys %$distros ) {
+            if($post_historic->{$name}) {
+                delete $distros->{$name};
+            };
+        }
+    }
+
+    return $distros_by_ns;
 }
 
 
