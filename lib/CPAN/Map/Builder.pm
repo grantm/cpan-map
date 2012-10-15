@@ -125,7 +125,14 @@ has 'label_font_path' => (
     is      => 'rw',
     isa     => 'Str',
     lazy    => 1,
-    default => '/usr/share/fonts/truetype/ttf-liberation/LiberationSans-Regular.ttf',
+    default => sub {
+        foreach (
+            '/usr/share/fonts/truetype/ttf-liberation/LiberationSans-Regular.ttf',
+            '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
+        ) {
+            return $_ if -e $_;
+        }
+    },
 );
 
 has 'output_writers' => (
