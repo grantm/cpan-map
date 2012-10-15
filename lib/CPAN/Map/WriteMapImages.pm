@@ -218,7 +218,7 @@ sub image_file_path {
 sub border_flags {
     my($self, $distro, $builder, $dist_ns) = @_;
 
-    my $colour  = $dist_ns->($distro);
+    my $this_ns = $dist_ns->($distro);
     my $row     = $distro->row;
     my $col     = $distro->col;
 
@@ -226,22 +226,22 @@ sub border_flags {
 
     if($row > 0) {
         if(my $that = $builder->dist_at($row - 1, $col)) {
-            $flags &= (15 ^ NORTH) if $colour eq $dist_ns->($that);
+            $flags &= (15 ^ NORTH) if $this_ns eq $dist_ns->($that);
         }
     }
 
     if($col > 0) {
         if(my $that = $builder->dist_at($row, $col - 1)) {
-            $flags &= (15 ^ WEST) if $colour eq $dist_ns->($that);
+            $flags &= (15 ^ WEST) if $this_ns eq $dist_ns->($that);
         }
     }
 
     if(my $that = $builder->dist_at($row + 1, $col)) {
-        $flags &= (15 ^ SOUTH) if $colour eq $dist_ns->($that);
+        $flags &= (15 ^ SOUTH) if $this_ns eq $dist_ns->($that);
     }
 
     if(my $that = $builder->dist_at($row, $col + 1)) {
-        $flags &= (15 ^ EAST) if $colour eq $dist_ns->($that);
+        $flags &= (15 ^ EAST) if $this_ns eq $dist_ns->($that);
     }
 
     return $flags;
