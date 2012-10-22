@@ -4,6 +4,9 @@ Encoding (lossless)
 
 avconv -i ../frame_%04d.png -vcodec huffyuv cpan-18mths-hy.avi
 
+avconv -i ../frame_%04d.png -vcodec libx264 -preset veryslow -qp 0 cpan-18mths-orig.mp4
+
+
 
 Transcoding
 ===========
