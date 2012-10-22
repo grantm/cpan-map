@@ -97,6 +97,12 @@ div.greeting a {
   cursor: pointer;
 }
 
+span.new:before {
+  content: '◀ New!';
+  color: #d70000;
+  padding-left: 4px;
+}
+
 #ui-dialog-title-intro {
   color: #555555;
   font-weight: bold;
