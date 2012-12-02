@@ -97,6 +97,10 @@ div.greeting a {
   cursor: pointer;
 }
 
+div.greeting a:hover {
+  color: #ffff00;
+}
+
 span.new:before {
   content: '◀ New!';
   color: #d70000;
