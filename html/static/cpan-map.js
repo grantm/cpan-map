@@ -1685,10 +1685,14 @@
         var loc = window.location;
         opt.app_base_url = loc.protocol + '//' + loc.host +
                            loc.pathname.replace(/index[.]html$/, '');
-        if(!opt.default_avatar.match(/^\w+:/)) {
-            opt.default_avatar = opt.app_base_url + opt.default_avatar;
+        var default_avatar = opt.default_avatar;
+        if(!window.location.hostname.match(/[.]/)) {
+            default_avatar = 'mm';
         }
-        opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, encodeURI(opt.default_avatar));
+        else if(!default_avatar.match(/^\w+:/)) {
+            default_avatar = opt.app_base_url + default_avatar;
+        }
+        opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, encodeURI(default_avatar));
 
         var $viewport = $('<div class="map-viewport" />');
         $el.addClass('cpan-map');
