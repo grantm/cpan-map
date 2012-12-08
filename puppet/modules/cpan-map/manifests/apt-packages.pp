@@ -44,6 +44,8 @@ class cpan-map::apt-packages {
         "libplack-perl":                  ensure => installed;
         "libfcgi-perl":                   ensure => installed;
         "libfcgi-procmanager-perl":       ensure => installed;
+        "optipng":                        ensure => installed;
+        "advancecomp":                    ensure => installed;
     }
 }
 
