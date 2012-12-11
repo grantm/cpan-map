@@ -248,7 +248,7 @@ sub each_frame {
 
     my $frames = $self->frames;
     my $max = 99999;
-    $max = 120;
+    #$max = 120;
     for(my $i = $#{$frames}; $i >= 0; $i--) {
         my($date, @distros) = @{ $frames->[$i] };
         $self->flag_recent_new_uploads($frames, $i);
