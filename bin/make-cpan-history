@@ -9,13 +9,18 @@ use warnings;
 
 use CPAN::Map::HistBuilder;
 
+my($date_label_font_path) = grep { -e $_ } qw(
+    /usr/share/fonts/truetype/ttf-liberation/LiberationSans-Bold.ttf
+    /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf
+);
+
 CPAN::Map::HistBuilder->generate(
     verbose               => 1,
     output_dir            => './history/frames',
     zoom_scales           =>  [ 4 ],
     old_packages_file     => './history/02packages.details.txt-2009-01-21',
     upload_dates_file     => './history/earliest-uploads.json',
-    date_label_font_path  => '/usr/share/fonts/truetype/ttf-liberation/LiberationSans-Bold.ttf',
+    date_label_font_path  => $date_label_font_path,
     animation_start_date  => '2011-04-01',
     animation_end_date    => '2012-09-30',
 );
