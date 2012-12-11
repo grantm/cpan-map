@@ -3,6 +3,8 @@ Switch to using /changes endpoint: http://api.metacpan.org/v0/changes/Moose
 List Distros this maintainer has ++d
 Add speakerdeck to profile icons http://explorer.metacpan.org/?url=%2Fauthor%2F_search%3Fpretty%3Dtrue%26q%3Dauthor.profile.name%3Aspeakerdeck%26size%3D100&content=
 http://stackoverflow.com/questions/4015613/good-tutorial-for-using-html5-history-api-pushstate
+Do reverse dependencies by dist rather than by module ?
+  https://github.com/CPAN-API/metacpan-web/commit/e19c9565274b44a9fde68e9e5998e12ae92a2305
 Broken POD TOC links (e.g.: File::Fetch)
 When hovering, display dist/main/ns details in floating overlay
 Get top uploaders this year/month/week from http://cpan.catalyst.net.nz/CPAN/RECENT-1Y.json, RECENT-1M.json, RECENT-1W.json
