@@ -125,6 +125,9 @@ sub write_image_file {
     binmode($out);
     print $out $im->png;
     close($out);
+
+    system('/usr/bin/optipng', '-o9', '-quiet', $output_path);
+    system('/usr/bin/advpng', '-z', '-4', '-q', $output_path);
 }
 
 
