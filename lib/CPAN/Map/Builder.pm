@@ -833,14 +833,8 @@ has 'path' => (
 sub row_col_from_index {
     my($self, $i) = @_;
 
-    if($i < 16384) {
-        my($x, $y) = $self->path->n_to_xy($i);
-        return($x, $y);
-    }
-    else {
-        my($x, $y) = $self->path->n_to_xy($i - 16384);
-        return($x, $y + 128);
-    }
+    my($x, $y) = $self->path->n_to_xy($i);
+    return($x, $y);
 }
 
 
