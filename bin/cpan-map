@@ -16,6 +16,7 @@ my(%opt);
 if(!GetOptions(\%opt,
     'config_file|config-file|c',
     'refresh_data|refresh-data|d',
+    'quick|q',
     'verbose|v',
     'help|?'
 )) {
@@ -43,6 +44,7 @@ cpan-map - wrapper script for generating the 'Map of CPAN' web app
 
    --config-file <file>   override default config file path
    --refresh-data         update files in source_data directory
+   --quick                skip slow operations (such as image compression)
    --verbose              display progress messages
    --help                 detailed help message
 

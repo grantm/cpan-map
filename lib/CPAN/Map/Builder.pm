@@ -24,6 +24,13 @@ has 'refresh_data' => (
     default => 0
 );
 
+has 'quick' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    lazy    => 1,
+    default => 0
+);
+
 has 'verbose' => (
     is      => 'rw',
     isa     => 'Bool',
