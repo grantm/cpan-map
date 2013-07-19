@@ -23,4 +23,4 @@ $ENV{FACTER_conf_root} = $conf_root;
 
 my $test_mode = $opt{test} ? '--noop' : '';
 
-system "puppet --confdir $conf_root $test_mode --verbose $conf_root/manifests/site.pp";
+system "puppet apply --confdir $conf_root $test_mode --verbose $conf_root/manifests/site.pp";
