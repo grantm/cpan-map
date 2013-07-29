@@ -24,6 +24,13 @@ has 'refresh_data' => (
     default => 0
 );
 
+has 'quick' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    lazy    => 1,
+    default => 0
+);
+
 has 'verbose' => (
     is      => 'rw',
     isa     => 'Bool',
@@ -833,14 +840,8 @@ has 'path' => (
 sub row_col_from_index {
     my($self, $i) = @_;
 
-    if($i < 16384) {
-        my($x, $y) = $self->path->n_to_xy($i);
-        return($x, $y);
-    }
-    else {
-        my($x, $y) = $self->path->n_to_xy($i - 16384);
-        return($x, $y + 128);
-    }
+    my($x, $y) = $self->path->n_to_xy($i);
+    return($x, $y);
 }
 
 
