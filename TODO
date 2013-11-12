@@ -23,3 +23,32 @@ Sightseeing ...
   * Busiest maintainers
   * Most depended-on modules
 Implement map using canvas rather than image?
+
+
+Who ++'d this module? (distro?)  (where "who" is only available for metacpan users who are also CPAN authors)
+
+    /favorite/_search
+    {
+        "query": { "match_all": {} },
+        "filter": {
+            "term": {
+               "favorite.distribution": "XML-Simple"
+            }
+        },
+        "fields": ["user"]
+    }
+
+    /author/_search
+    {
+        "query": { "match_all": {} },
+        "filter": {
+            "term": {
+                "author.user": [
+                    "X0Nh9s_hThKMFjvWwailsg",   // Results from query above
+                    "XLHD8mboQeeSEwRc3sAlPw",
+                    "zFfBHlPCTOGILpo0Pe8G-w"
+                ]
+            }
+        }
+    }
+
