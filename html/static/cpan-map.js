@@ -1,6 +1,6 @@
 /*
  * Map of CPAN
- * Copyright (c) 2011-2012 Grant McLean <grantm@cpan.org>
+ * Copyright (c) 2011-2014 Grant McLean <grantm@cpan.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -841,6 +841,9 @@
         }
 
         function show_dependency_graph(distro) {
+            $('#misc-dialog').dialog( "option", {
+                title: "Dependency graph for " + distro.name
+            });
             open_misc_dialog(1200);
             $('#misc-dialog').html(
                 '<iframe src="//widgets.stratopan.com/wheel?q=' + distro.name +
