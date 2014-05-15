@@ -1708,8 +1708,15 @@
                 $viewport.html('<div class="init">Loading map data</div>'),
                 $('<div class="map-separator" />')
             ),
-            $('<p class="copyright">Copyright &copy; 2011-2012 <a href="#/maint/GRANTM">Grant McLean</a></p>')
+            $('<p class="copyright">Copyright &copy; 2011-2014 <a href="#/maint/GRANTM">Grant McLean</a></p>')
         );
+        if(opt.sponsor_text) {
+            $el.append(
+                $('<p class="sponsor" />').append(
+                    $('<a />').attr('href',opt.sponsor_link).text(opt.sponsor_text)
+                )
+            );
+        }
         $.ajax({
             url: opt.map_data_url,
             dataType: 'text',

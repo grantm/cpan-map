@@ -71,23 +71,34 @@ div.noscript {
   font-weight: bold;
 }
 
+p.sponsor {
+  position: absolute;
+  left: 20px;
+  bottom: 3px;
+  color: #555555;
+  font-size: 12px;
+}
+
 p.copyright {
   position: absolute;
   right: 20px;
   bottom: 3px;
-  color: #444444;
+  color: #555555;
   font-size: 12px;
 }
 
+p.sponsor:hover,
 p.copyright:hover {
   color: #888888;
 }
 
+p.sponsor a,
 p.copyright a {
-  color: #444444;
+  color: #555555;
   outline: none;
 }
 
+p.sponsor:hover a,
 p.copyright:hover a {
   color: #FF9B08;
 }

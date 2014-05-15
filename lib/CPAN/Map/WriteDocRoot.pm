@@ -11,6 +11,7 @@ require Digest::MD5;
 require URI;
 require JavaScript::Minifier::XS;
 require CSS::Minifier::XS;
+require JSON::XS;
 
 use IO::Compress::Gzip qw(gzip $GzipError);
 
@@ -46,6 +47,18 @@ has 'html' => (
     isa      => 'Str',
 );
 
+has 'config_keys' => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    lazy     => 1,
+    default  => sub {
+        return [
+            'sponsor_link',
+            'sponsor_text',
+        ];
+    },
+);
+
 has 'aggregated_js' => (
     is       => 'rw',
     isa      => 'Str',
@@ -79,6 +92,7 @@ sub write {
     $self->process_css();
     $self->copy_js_data_file();
     $self->copy_images();
+    $self->insert_config();
     $self->write_html();
     $self->copy_other_files();
     $self->purge_old_files();
@@ -266,6 +280,23 @@ sub copy_images {
         $path =~ s{\Q$src_dir\E}{};
         $self->copy_file($path);
     }
+}
+
+
+sub insert_config {
+    my($self) = @_;
+
+    my $builder = $self->builder;
+    my $config = { };
+    foreach my $key ( @{ $self->config_keys } ) {
+        my $value = $builder->config_item($key);
+        next unless defined $value;
+        $config->{$key} = $value;
+    }
+    my $json = JSON::XS->new->ascii->pretty->encode($config);
+    my $html = $self->html;
+    $html =~ s{CpanMap\(.*?\)}{CpanMap($json)}s;
+    $self->html($html);
 }
 
 
