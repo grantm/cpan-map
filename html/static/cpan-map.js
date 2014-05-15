@@ -294,6 +294,7 @@
                        .title(distro.name + ' | ' + opt.app_title);
                 $("p.pod-link").click(function() { show_pod_dialog(distro); });
                 $("p.changes-link").click(function() { show_changes_dialog(distro); });
+                $(".dep-graph-link").click(function() { show_dependency_graph(distro); });
             });
         });
 
@@ -839,10 +840,21 @@
             return header_html + '</div>';
         }
 
-        function open_misc_dialog() {
+        function show_dependency_graph(distro) {
+            open_misc_dialog(1200);
+            $('#misc-dialog').html(
+                '<iframe src="//widgets.stratopan.com/wheel?q=' + distro.name +
+                '" width="100%" height="100%" frameborder="0">'
+            );
+        }
+
+        function open_misc_dialog(max_width) {
+            if(!max_width) {
+                max_width = 800;
+            }
             var dlg_height = $(window).height() - 100;
             var dlg_width  = $(window).width()  - 100;
-            if(dlg_width > 800) { dlg_width = 800; }
+            if(dlg_width > max_width) { dlg_width = max_width; }
             $('#misc-dialog').dialog( "option", {
                 "height" : dlg_height,
                 "width"  : dlg_width

@@ -758,7 +758,8 @@ div#intro p.note {
 }
 
 .cpan-map div.map-info-panel .info  p.pod-link,
-.cpan-map div.map-info-panel .info  p.changes-link {
+.cpan-map div.map-info-panel .info  p.changes-link,
+.cpan-map div.map-info-panel .info  .dep-graph-link {
   color: #00A;
   cursor: pointer;
 }
@@ -769,7 +770,8 @@ div#intro p.note {
 }
 
 .cpan-map div.map-info-panel .info  p.pod-link:hover,
-.cpan-map div.map-info-panel .info  p.changes-link:hover {
+.cpan-map div.map-info-panel .info  p.changes-link:hover,
+.cpan-map div.map-info-panel .info  .dep-graph-link:hover {
   text-decoration: underline;
 }
 
