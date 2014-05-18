@@ -849,6 +849,7 @@
                 '<iframe src="//widgets.stratopan.com/wheel?q=' + distro.name +
                 '" width="100%" height="100%" frameborder="0">'
             );
+            log_page_view({'graph': distro.name});
         }
 
         function open_misc_dialog(max_width) {
