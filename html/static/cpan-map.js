@@ -23,6 +23,7 @@
 (function($) {
     'use strict';
 
+    var api_server_base_url = 'http://api.metacpan.org/v0';
     var opt = {
         app_selector          : 'body',
         app_title             : 'Map of CPAN',
@@ -32,13 +33,13 @@
         map_data_url          : 'cpan-map-data.txt',
         stats_domain          : 'mapofcpan.org',
         start_ticker          : true,
-        ajax_query_url_base   : 'http://api.metacpan.org',
-        ajax_release_url_base : 'http://api.metacpan.org/release/',
-        ajax_author_url_base  : 'http://api.metacpan.org/author/',
-        ajax_module_url_base  : 'http://api.metacpan.org/module/',
-        ajax_pod_url_base     : 'http://api.metacpan.org/pod/',
-        ajax_source_url_base  : 'http://api.metacpan.org/source/',
-        ajax_recent_updates   : 'http://api.metacpan.org/author/_search?' +
+        ajax_query_url_base   : api_server_base_url,
+        ajax_release_url_base : api_server_base_url + '/release/',
+        ajax_author_url_base  : api_server_base_url + '/author/',
+        ajax_module_url_base  : api_server_base_url + '/module/',
+        ajax_pod_url_base     : api_server_base_url + '/pod/',
+        ajax_source_url_base  : api_server_base_url + '/source/',
+        ajax_recent_updates   : api_server_base_url + '/author/_search?' +
                                 'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
