@@ -910,6 +910,7 @@ ul.social li.soc-sourceforge       { background-position: 0 -440px; }
 ul.social li.soc-vimeo             { background-position: 0 -460px; }
 ul.social li.soc-pinboard          { background-position: 0 -480px; }
 ul.social li.soc-speakerdeck       { background-position: 0 -500px; }
+ul.social li.soc-gittip            { background-position: 0 -520px; }
 
 ul.social li a {
   display: block;

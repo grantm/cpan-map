@@ -47,31 +47,32 @@
     };
 
     var social_links = {
-        'github'             : 'https://github.com/%ID%',
-        'twitter'            : 'http://twitter.com/%ID%',
-        'perlmonks'          : 'http://www.perlmonks.org/?node=%ID%',
-        'ohloh'              : 'https://www.ohloh.net/accounts/%ID%',
-        'stackoverflow'      : 'http://stackoverflow.com/users/%ID%/',
-        'coderwall'          : 'http://www.coderwall.com/%ID%',
-        'geeklist'           : 'http://geekli.st/%ID%',
-        'github-meets-cpan'  : 'http://github-meets-cpan.com/user/%ID%',
-        'googleplus'         : 'http://plus.google.com/%ID%',
-        'lastfm'             : 'http://www.last.fm/user/%ID%',
-        'linkedin'           : 'http://www.linkedin.com/in/%ID%',
-        'prepan'             : 'http://prepan.org/user/%ID%',
-        'slideshare'         : 'http://www.slideshare.net/%ID%',
-        'facebook'           : 'https://facebook.com/%ID%',
-        'flickr'             : 'http://www.flickr.com/people/%ID%/',
-        'youtube'            : 'http://www.youtube.com/user/%ID%',
-        'gitorious'          : 'https://gitorious.org/~%ID%',
-        'tumblr'             : 'http://%ID%.tumblr.com/',
-        'bitbucket'          : 'http://bitbucket.org/%ID%',
-        'reddit'             : 'http://www.reddit.com/user/%ID%',
-        'digg'               : 'http://digg.com/%ID%',
-        'sourceforge'        : 'http://sourceforge.net/users/%ID%',
-        'vimeo'              : 'http://vimeo.com/%ID%',
-        'pinboard'           : 'http://pinboard.in/u:%ID%',
-        'speakerdeck'        : 'https://speakerdeck.com/u/%ID%'
+        'github'             : { name: 'GitHub',            url: 'https://github.com/%ID%' },
+        'twitter'            : { name: 'Twitter',           url: 'https://twitter.com/%ID%' },
+        'perlmonks'          : { name: 'Perl Monks',        url: 'http://www.perlmonks.org/?node=%ID%' },
+        'ohloh'              : { name: 'Open Hub',          url: 'https://www.ohloh.net/accounts/%ID%' },
+        'stackoverflow'      : { name: 'Stack Overflow',    url: 'http://stackoverflow.com/users/%ID%/' },
+        'coderwall'          : { name: 'Coderwall',         url: 'http://www.coderwall.com/%ID%' },
+        'geeklist'           : { name: 'geeklist',          url: 'http://geekli.st/%ID%' },
+        'github-meets-cpan'  : { name: 'GitHub meets CPAN', url: 'http://github-meets-cpan.com/user/%ID%' },
+        'googleplus'         : { name: 'Google+',           url: 'http://plus.google.com/%ID%' },
+        'lastfm'             : { name: 'Last.fm',           url: 'http://www.last.fm/user/%ID%' },
+        'linkedin'           : { name: 'LinkedIn',          url: 'http://www.linkedin.com/in/%ID%' },
+        'prepan'             : { name: 'PrePAN',            url: 'http://prepan.org/user/%ID%' },
+        'slideshare'         : { name: 'SlideShare',        url: 'http://www.slideshare.net/%ID%' },
+        'facebook'           : { name: 'Facebook',          url: 'https://facebook.com/%ID%' },
+        'flickr'             : { name: 'Flickr',            url: 'http://www.flickr.com/people/%ID%/' },
+        'youtube'            : { name: 'YouTube',           url: 'https://www.youtube.com/user/%ID%' },
+        'gitorious'          : { name: 'gitorious',         url: 'https://gitorious.org/~%ID%' },
+        'tumblr'             : { name: 'Tumblr',            url: 'http://%ID%.tumblr.com/' },
+        'bitbucket'          : { name: 'Bitbucket',         url: 'https://bitbucket.org/%ID%' },
+        'reddit'             : { name: 'reddit',            url: 'https://www.reddit.com/user/%ID%' },
+        'digg'               : { name: 'digg',              url: 'http://digg.com/%ID%' },
+        'sourceforge'        : { name: 'SourceForge',       url: 'https://sourceforge.net/users/%ID%' },
+        'vimeo'              : { name: 'Vimeo',             url: 'https://vimeo.com/%ID%' },
+        'pinboard'           : { name: 'Pinboard',          url: 'http://pinboard.in/u:%ID%' },
+        'speakerdeck'        : { name: 'Speaker Deck',      url: 'https://speakerdeck.com/u/%ID%' },
+        'gittip'             : { name: 'Gratipay',          url: 'https://gratipay.com/~%ID%/' }
     };
 
     var cpan = {  // Populated via build_app() call before Sammy.run is called
@@ -1254,11 +1255,14 @@
             var links = [];
             for(var i = 0; i < sites.length; i++) {
                 var site = sites[i];
-                var url = social_links[ site.name ];
+                var site_link = social_links[ site.name ] || {};
+                var title = site_link.name || site.name;
+                var url = site_link.url;
                 if(url && site.id) {
                     if(site.id.match(/^https?:/)) {
                         links.push({
                             'name'  : site.name,
+                            'title' : title,
                             'url'   : site.id,
                             'id'    : site.id.replace(/^.*\/([^\/]+)\/?/, '$1')
                         });
@@ -1266,6 +1270,7 @@
                     else {
                         links.push({
                             'name'  : site.name,
+                            'title' : title,
                             'url'   : url.replace(/%ID%/, site.id),
                             'id'    : site.id
                         });

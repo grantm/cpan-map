@@ -481,7 +481,7 @@
       <% if(maint.social_links) { %>
         <ul class="social">
         <% for(var i = 0; i < maint.social_links.length; i++) { var site = maint.social_links[i]; %>
-            <li class="soc-<%= site.name %>"><a href="<%= site.url %>" title="<%= site.name + ' - ' + site.id %>"></a></li>
+            <li class="soc-<%= site.name %>"><a href="<%= site.url %>" title="<%= site.title + ' - ' + site.id %>"></a></li>
         <% } %>
         </ul>
       <% } %>
