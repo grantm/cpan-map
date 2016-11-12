@@ -732,7 +732,7 @@
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
                 data: { 'application': 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'html',
                 success: function (pod_html) {
                     $('#misc-dialog').html(header_html + pod_html);
                     $('#misc-dialog').find('h1,h2,h3,dt').append(
@@ -882,7 +882,6 @@
             $.ajax({
                 url: file_source_url,
                 data: { 'application': 'cpan-map' },
-                dataType: 'jsonp',
                 success: function (file_content) {
                     distro.file[filename] = file_content;
                     handler(file_content);
@@ -916,7 +915,7 @@
             $.ajax({
                 url: opt.ajax_release_url_base + release_name,
                 data: { application: 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     if(!data.resources) {
                         data.resources = { };
@@ -944,7 +943,7 @@
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
                 data: { 'application': 'cpan-map', 'content-type': 'text/x-pod' },
-                dataType: 'jsonp',
+                dataType: 'text',
                 success: function (pod_text) {
                     distro.meta.abstract = extract_abstract_from_pod(pod_text);
                     $('#abstract-' + distro.dist_id).text(distro.meta.abstract);
@@ -1073,7 +1072,7 @@
             $.ajax({
                 url: query_url,
                 data: { application: 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     format_reverse_dependencies( distro, (data.hits || {}).hits || [] );
                     handler(distro);
@@ -1121,7 +1120,7 @@
             $.ajax({
                 url: opt.ajax_author_url_base + maint_id,
                 data: { application: 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     maint.meta = data;
                     maint.name = data.name;
@@ -1161,7 +1160,7 @@
             $.ajax({
                 url: ajax_distro_list_url,
                 data: { application: 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var hits = (data.hits || {}).hits || [];
                     for(var i = 0; i < hits.length; i++) {
@@ -1286,7 +1285,7 @@
             $.ajax({
                 url: search_url,
                 data: { application: 'cpan-map' },
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var distro_name = (data || {}).distribution;
                     distro_name = distro_name.replace(/-/g, '::');
@@ -1347,7 +1346,7 @@
             });
             $.ajax({
                 url: ajax_leaderboard_url,
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var highlights  = [];
                     var distro_list = [];
@@ -1389,7 +1388,7 @@
             });
             $.ajax({
                 url: query_url,
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var highlights  = [];
                     var distro_list = [];
@@ -1464,7 +1463,7 @@
             });
             $.ajax({
                 url: query_url,
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var highlights  = [];
                     var distro_list = [];
@@ -1513,7 +1512,7 @@
             }
             $.ajax({
                 url: opt.ajax_recent_updates,
-                dataType: 'jsonp',
+                dataType: 'json',
                 success: function(data) {
                     var maint_list = [];
                     var hits = (data.hits || {}).hits || [];
