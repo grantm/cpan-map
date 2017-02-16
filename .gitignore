@@ -15,3 +15,4 @@ html/test
 source_data
 docroot
 /history/frames
+/v1-tmp/*.json

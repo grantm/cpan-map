@@ -1,3 +1,6 @@
+Switch to /v1 API
+ - api_server_base_url
+ - https://github.com/metacpan/metacpan-api/wiki/fastapi-Consumers
 Consider: Intro.js - http://usablica.github.io/intro.js
 http://diveintohtml5.info/history.html pushState + popState with data?
 Switch to using /changes endpoint: http://api.metacpan.org/v0/changes/Moose
