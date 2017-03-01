@@ -181,6 +181,16 @@
             }
         });
 
+        this.bind('error', function(message, exception) {
+            var html = $('<div class="info" />').append(
+                $('<p />').text(message)
+            );
+            if(exception) {
+                html.append( $('<p />').text( exception.toString() ) );
+            }
+            this.$element().find('.map-info-panel').html(html).removeClass('loading');
+        });
+
         this.bind('ajax_load_failed', function(e) {
             this.update_info('#tmpl-ajax-error', 'AJAX Load Failed');
             return this;
