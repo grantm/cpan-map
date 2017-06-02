@@ -1,6 +1,6 @@
 /*
  * Map of CPAN
- * Copyright (c) 2011-2014 Grant McLean <grantm@cpan.org>
+ * Copyright (c) 2011-2017 Grant McLean <grantm@cpan.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1726,7 +1726,7 @@
                 $viewport.html('<div class="init">Loading map data</div>'),
                 $('<div class="map-separator" />')
             ),
-            $('<p class="copyright">Copyright &copy; 2011-2014 <a href="#/maint/GRANTM">Grant McLean</a></p>')
+            $('<p class="copyright">Copyright &copy; 2011-2017 <a href="#/maint/GRANTM">Grant McLean</a></p>')
         );
         if(opt.sponsor_text) {
             $el.append(
