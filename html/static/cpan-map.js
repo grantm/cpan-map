@@ -1,6 +1,6 @@
 /*
  * Map of CPAN
- * Copyright (c) 2011-2014 Grant McLean <grantm@cpan.org>
+ * Copyright (c) 2011-2017 Grant McLean <grantm@cpan.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +23,8 @@
 (function($) {
     'use strict';
 
-    var api_server_base_url = 'http://api.metacpan.org/v0';
+    // var api_server_base_url = 'http://api.metacpan.org/v0';
+    var api_server_base_url = 'https://fastapi.metacpan.org/v1';
     var opt = {
         app_selector          : 'body',
         app_title             : 'Map of CPAN',
@@ -181,6 +182,16 @@
             }
         });
 
+        this.bind('error', function(message, exception) {
+            var html = $('<div class="info" />').append(
+                $('<p />').text(message)
+            );
+            if(exception) {
+                html.append( $('<p />').text( exception.toString() ) );
+            }
+            this.$element().find('.map-info-panel').html(html).removeClass('loading');
+        });
+
         this.bind('ajax_load_failed', function(e) {
             this.update_info('#tmpl-ajax-error', 'AJAX Load Failed');
             return this;
@@ -279,7 +290,7 @@
             });
         });
 
-        this.get('#/sights/profile-updates', function(context) {
+        this.get('#/sights/profile-updates', function(context) {  // TODO: Avatars not coming through?
             this.loading();
             ajax_load_profile_updates( function(data) {
                 context.set_highlights([])
@@ -733,7 +744,6 @@
             $('#misc-dialog').html(header_html + '<p>Loading...</p>');
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
-                data: { 'application': 'cpan-map' },
                 dataType: 'html',
                 success: function (pod_html) {
                     $('#misc-dialog').html(header_html + pod_html);
@@ -883,7 +893,6 @@
             }
             $.ajax({
                 url: file_source_url,
-                data: { 'application': 'cpan-map' },
                 success: function (file_content) {
                     distro.file[filename] = file_content;
                     handler(file_content);
@@ -916,7 +925,6 @@
             }
             $.ajax({
                 url: opt.ajax_release_url_base + release_name,
-                data: { application: 'cpan-map' },
                 dataType: 'json',
                 success: function(data) {
                     if(!data.resources) {
@@ -944,7 +952,7 @@
             var main_module = distro.main_module || distro.name;
             $.ajax({
                 url: opt.ajax_pod_url_base + main_module,
-                data: { 'application': 'cpan-map', 'content-type': 'text/x-pod' },
+                data: { 'content-type': 'text/x-pod' },
                 dataType: 'text',
                 success: function (pod_text) {
                     distro.meta.abstract = extract_abstract_from_pod(pod_text);
@@ -1062,9 +1070,9 @@
                 "query":  { "match_all": {} },
                 "filter": {
                     "and": [
-                        { "term": { "release.dependency.module": distro.name } },
-                        { "term": { "release.maturity":          "released"  } },
-                        { "term": { "release.status":            "latest"    } }
+                        { "term": { "dependency.module": distro.name } },
+                        { "term": { "maturity":          "released"  } },
+                        { "term": { "status":            "latest"    } }
                     ]
                 },
                 "fields": [ "distribution", "author", "date" ],
@@ -1073,7 +1081,6 @@
             });
             $.ajax({
                 url: query_url,
-                data: { application: 'cpan-map' },
                 dataType: 'json',
                 success: function(data) {
                     format_reverse_dependencies( distro, (data.hits || {}).hits || [] );
@@ -1121,7 +1128,6 @@
             }
             $.ajax({
                 url: opt.ajax_author_url_base + maint_id,
-                data: { application: 'cpan-map' },
                 dataType: 'json',
                 success: function(data) {
                     maint.meta = data;
@@ -1161,7 +1167,6 @@
             });
             $.ajax({
                 url: ajax_distro_list_url,
-                data: { application: 'cpan-map' },
                 dataType: 'json',
                 success: function(data) {
                     var hits = (data.hits || {}).hits || [];
@@ -1290,7 +1295,6 @@
             var search_url = opt.ajax_module_url_base + mod_name;
             $.ajax({
                 url: search_url,
-                data: { application: 'cpan-map' },
                 dataType: 'json',
                 success: function(data) {
                     var distro_name = (data || {}).distribution;
@@ -1333,7 +1337,7 @@
             return data;
         }
 
-        function ajax_load_favorites_leaderboard(handler) {
+        function ajax_load_favorites_leaderboard(handler) {  // TODO: fix this
             var cache_key = 'favorites_leaderboard';
             if(load_from_cache(cache_key, handler)) {
                 return;
@@ -1460,15 +1464,14 @@
             if(load_from_cache(cache_key, handler)) {
                 return;
             }
-            var query_url = make_query_url('/release/_search', {
-                "query": { "match_all": {} },
-                "size": 100,
-                "fields": [ "name", "distribution", "version", "author", "date" ],
-                "filter": { "term": {"release.status": "latest"} },
-                "sort": [ { "date": "desc" } ]
-            });
             $.ajax({
-                url: query_url,
+                url: opt.ajax_release_url_base + '_search',
+                data: {
+                    "q"      : "status:latest",
+                    "fields" : "name,distribution,version,author,date",
+                    "sort"   : "date:desc",
+                    "size"   : "100"
+                },
                 dataType: 'json',
                 success: function(data) {
                     var highlights  = [];
@@ -1541,8 +1544,7 @@
 
         function make_query_url(path, query) {
             return opt.ajax_query_url_base + path +
-                '?source=' + encodeURI( JSON.stringify(query) ) +
-                '&application=cpan-map';
+                '?source=' + encodeURI( JSON.stringify(query) );
         }
 
         function add_rankings(list, field) {
@@ -1729,7 +1731,7 @@
                 $viewport.html('<div class="init">Loading map data</div>'),
                 $('<div class="map-separator" />')
             ),
-            $('<p class="copyright">Copyright &copy; 2011-2014 <a href="#/maint/GRANTM">Grant McLean</a></p>')
+            $('<p class="copyright">Copyright &copy; 2011-2017 <a href="#/maint/GRANTM">Grant McLean</a></p>')
         );
         if(opt.sponsor_text) {
             $el.append(

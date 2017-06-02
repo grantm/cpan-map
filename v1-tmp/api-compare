@@ -1,0 +1,118 @@
+#!/usr/bin/perl
+
+use 5.014;
+use strict;
+use warnings;
+use autodie;
+
+use Pod::Usage      qw(pod2usage);
+use Getopt::Long    qw(GetOptions);
+use JSON::XS        qw(decode_json);
+use LWP::UserAgent  qw();
+use FindBin         qw();
+
+my $base_url_v0 = 'http://api.metacpan.org/v0';
+my $base_url_v1 = 'https://fastapi.metacpan.org/v1';
+
+my(%opt);
+
+if(!GetOptions(\%opt,
+    'name|n=s',
+    'url_path|url-path|url|u=s',
+    'help|?',
+)) {
+    pod2usage(-exitval => 1,  -verbose => 0);
+}
+
+pod2usage(-exitstatus => 0, -verbose => 2) if $opt{help};
+
+pod2usage(-exitval => 1,  -verbose => 0,
+    -message => 'Need a query name: --name'
+) unless $opt{name};
+
+pod2usage(-exitval => 1,  -verbose => 0,
+    -message => 'Need a query URL path: --url'
+) unless $opt{url_path};
+
+compare_results($opt{name}, $opt{url_path});
+
+exit 0;
+
+
+sub compare_results {
+    my($name, $url_path) = @_;
+
+    my $v0_filename = save_api_result(0, $name, $url_path);
+    my $v1_filename = save_api_result(1, $name, $url_path);
+
+    system("bash -c 'diff -u $v0_filename $v1_filename | less'");
+}
+
+
+sub save_api_result {
+    my($version, $name, $url_path) = @_;
+
+    my $filename = $FindBin::Bin . "/${name}-v${version}.json";
+    return $filename if -e $filename;
+
+    my $url = $version == 0 ? $base_url_v0 : $base_url_v1;
+    $url .= $url_path;
+
+    my $ua = LWP::UserAgent->new;
+    my $resp = $ua->get($url);
+    die $resp->as_string unless $resp->is_success;
+
+    die "Response is " . $resp->content_type . " expected: application/json"
+        unless $resp->content_type =~ m{^application/json\b};
+
+    my $ref = decode_json($resp->content);
+
+    open my $fh, '>', $filename;
+    print $fh JSON::XS->new->pretty->canonical->encode($ref);
+
+    return $filename;
+}
+
+__END__
+
+=head1 NAME
+
+api-compare - for exploring Metacpan API /v0 vs /v1
+
+=head1 SYNOPSIS
+
+  api-compare -n <name> -u <url-path>
+
+  Options:
+
+   --name <name>      query name (just a label)
+   --url  <url-path>  query path (e.g.: /release/libwww-perl)
+   --help             detailed help message
+
+=head1 DESCRIPTION
+
+Runs a query against both /v0 and /v1 servers, saves compares the results
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<< --name <name> >>
+
+The name for the query - used in naming the files where results are stored.
+
+=item B<< --url <url-path> >>
+
+The path and querystring portion of the query.  The /v0 and /v1 prefix will
+be added.
+
+=item B<--help>
+
+Display this documentation.
+
+=back
+
+=cut
+
+
+

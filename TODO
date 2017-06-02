@@ -1,3 +1,10 @@
+Switch to /v1 API
+ - api_server_base_url
+ - https://github.com/metacpan/metacpan-api/wiki/fastapi-Consumers
+Fixes required:
+ - ++ Top 100 leader-board
+ - Recent profile updates - avatars not coming through?
+ - Back button not working (after Sammy upgrade?)
 Consider: Intro.js - http://usablica.github.io/intro.js
 http://diveintohtml5.info/history.html pushState + popState with data?
 Switch to using /changes endpoint: http://api.metacpan.org/v0/changes/Moose
