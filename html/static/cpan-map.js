@@ -289,7 +289,7 @@
             });
         });
 
-        this.get('#/sights/profile-updates', function(context) {
+        this.get('#/sights/profile-updates', function(context) {  // TODO: Avatars not coming through?
             this.loading();
             ajax_load_profile_updates( function(data) {
                 context.set_highlights([])
@@ -1332,7 +1332,7 @@
             return data;
         }
 
-        function ajax_load_favorites_leaderboard(handler) {
+        function ajax_load_favorites_leaderboard(handler) {  // TODO: fix this
             var cache_key = 'favorites_leaderboard';
             if(load_from_cache(cache_key, handler)) {
                 return;
