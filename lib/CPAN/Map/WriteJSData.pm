@@ -140,17 +140,12 @@ sub write_distribution_list {
                       : '';
         my $maint_index = $maintainer_number->{ $distro->maintainer_id }
             // die "Can't find maintainer number for " . $distro->maintainer_id;
-        my $score_count = '';
-        if($distro->rating_count) {
-            $score_count = ',' . $distro->rating_score . ','. $distro->rating_count;
-        }
-        printf $out "%s,%s,%X,%X,%X%s\n",
+        printf $out "%s,%s,%X,%X,%X\n",
             $distro_name,
             $ns_number,
             $maint_index,
             $distro->row,
-            $distro->col,
-            $score_count;
+            $distro->col;
         $i++;
     });
     $builder->progress_message(" - listed $i distros");

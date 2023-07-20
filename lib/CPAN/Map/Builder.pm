@@ -112,22 +112,6 @@ has 'authors_source' => (
     },
 );
 
-has 'ratings_source_url' => (
-    is      => 'rw',
-    isa     => 'Str',
-    lazy    => 1,
-    default => 'http://cpanratings.perl.org/csv/all_ratings.csv',
-);
-
-has 'ratings_source' => (
-    is      => 'rw',
-    isa     => 'Str',
-    lazy    => 1,
-    default => sub {
-        File::Spec->catfile(shift->source_data_dir, 'all_ratings.csv');
-    },
-);
-
 has 'label_font_path' => (
     is      => 'rw',
     isa     => 'Str',
@@ -205,7 +189,6 @@ sub generate {
     $self->map_distros_to_plane;
     $self->identify_mass_areas;
     $self->load_maintainer_data;
-    $self->load_ratings_data;
     $self->write_output_mappings;
 }
 
@@ -268,14 +251,6 @@ sub update_source_data {
     $status   = LWP::Simple::mirror($src_url, $dst_file);
     die "Status code: $status downloading $src_url"
         unless $status =~ m/^(200|304)$/;
-
-    $dst_file = $self->ratings_source;
-    if(!-e $dst_file  or  -M $dst_file > 0.8) {
-        $src_url  = $self->ratings_source_url;
-        $status   = LWP::Simple::mirror($src_url, $dst_file);
-        die "Status code: $status downloading $src_url"
-            unless $status =~ m/^(200|304)$/;
-    }
 }
 
 
@@ -626,30 +601,6 @@ sub each_maintainer {
 }
 
 
-sub load_ratings_data {
-    my $self = shift;
-
-    $self->progress_message("Loading ratings details");
-
-    my $csv = Text::CSV_XS->new ({ binary => 1, eol => $/ });
-    my $file = $self->ratings_source;
-    open my $fh, "<", $file or die "$file: $!";
-
-    my $count = 0;
-    while (my $row = $csv->getline($fh)) {
-        my($name, $rating, $reviews) = @$row;
-        next if length($name) == 0 || $name eq 'distribution';
-        $name =~ s/-/::/g;
-        my $distro = $self->distro_by_name($name) or next;
-        $distro->rating_score($rating);
-        $distro->rating_count($reviews);
-        $count++;
-    }
-
-    $self->progress_message(" - found ratings for $count distributions");
-}
-
-
 sub write_output_mappings {
     my $self = shift;
 
@@ -739,8 +690,6 @@ has 'maintainer_id'     => ( is => 'rw', isa => 'Str' );
 has 'index'             => ( is => 'rw', isa => 'Int' );
 has 'row'               => ( is => 'rw', isa => 'Int' );
 has 'col'               => ( is => 'rw', isa => 'Int' );
-has 'rating_score'      => ( is => 'rw', isa => 'Num' );
-has 'rating_count'      => ( is => 'rw', isa => 'Int' );
 has 'is_eponymous'      => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'main_module_guess' => ( is => 'rw', isa => 'ArrayRef');
 

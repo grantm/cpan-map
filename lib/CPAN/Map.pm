@@ -77,10 +77,6 @@ L<https://github.com/grantm/cpan-map/issues>
 
 L<http://annocpan.org/dist/CPAN::Map>
 
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/CPAN::Map>
-
 =item * MetaCPAN
 
 L<https://metacpan.org/release/CPAN-Map>
