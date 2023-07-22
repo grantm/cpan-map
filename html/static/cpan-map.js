@@ -264,8 +264,8 @@
             this.loading();
             ajax_load_favorites_leaderboard( function(data) {
                 context.set_highlights(data.highlights)
-                       .update_info('#tmpl-favorites-leaderboard', '++ Top 100', data)
-                       .title('++ Top 100 Leaderboard | ' + opt.app_title);
+                       .update_info('#tmpl-favorites-leaderboard', '++ Top 200', data)
+                       .title('++ Top 200 Leaderboard | ' + opt.app_title);
             });
         });
 
@@ -1343,7 +1343,7 @@
                     "leaderboard": {
                         "terms": {
                             "field": "distribution",
-                            "size": 100
+                            "size": 200
                         }
                     }
                 }
