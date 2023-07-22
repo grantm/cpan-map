@@ -1707,6 +1707,7 @@
 
         var $viewport = $('<div class="map-viewport" />');
         $el.addClass('cpan-map');
+        var this_year = new Date().getFullYear();
         $el.append(
             $('<div class="map-controls-wrapper" />').append(
                 $('<h1 class="app-title" />').append(
@@ -1719,7 +1720,7 @@
                 $viewport.html('<div class="init">Loading map data</div>'),
                 $('<div class="map-separator" />')
             ),
-            $('<p class="copyright">Copyright &copy; 2011-2017 <a href="#/maint/GRANTM">Grant McLean</a></p>')
+            $('<p class="copyright">Copyright &copy; 2011-' + this_year + ' <a href="#/maint/GRANTM">Grant McLean</a></p>')
         );
         if(opt.sponsor_text) {
             $el.append(
