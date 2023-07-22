@@ -1339,7 +1339,7 @@
             var ajax_leaderboard_url = make_query_url('/favorite/_search', {
                 "size": 0,
                 "query": { "match_all": {} },
-                "facets": {
+                "aggregations": {
                     "leaderboard": {
                         "terms": {
                             "field": "distribution",
@@ -1354,11 +1354,11 @@
                 success: function(data) {
                     var highlights  = [];
                     var distro_list = [];
-                    var hits = ((data.facets || {}).leaderboard || {}).terms || [];
+                    var hits = ((data.aggregations || {}).leaderboard || {}).buckets || [];
                     for(var i = 0; i < hits.length; i++) {
-                        var name = hits[i].term.replace(/-/g, '::');
+                        var name = hits[i].key.replace(/-/g, '::');
                         distro_list.push({
-                            "score": hits[i].count,
+                            "score": hits[i].doc_count,
                             "name":  name
                         });
                         var distro = find_distro_by_name(name);
