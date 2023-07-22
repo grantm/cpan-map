@@ -44,7 +44,7 @@
                                 'q=updated:*&sort=updated:desc&fields=pauseid,name,updated&size=50',
         rt_dist_url           : 'https://rt.cpan.org/Public/Dist/Display.html?Name=',
         avatar_url_template   : 'http://www.gravatar.com/avatar/%ID%?s=80&d=%DEFAULT_URL%',
-        default_avatar        : 'static/images/no-photo.png'
+        default_avatar        : 'blank'
     };
 
     var social_links = {
@@ -119,9 +119,6 @@
             var $panel = $el.find('.map-info-panel');
             $panel.html(header).append(html).removeClass('loading').addClass('loaded');
             size_info_pane_content($panel);
-            $panel.find('div.avatar img').load(function() {
-                $(this).addClass('loaded');
-            });
             if(typeof(history.length) !== 'undefined' && history.length > 1) {
                 $panel.find('a.back-button').click(function() { window.history.go(-1); });
             }
@@ -1709,12 +1706,6 @@
         opt.app_base_url = loc.protocol + '//' + loc.host +
                            loc.pathname.replace(/index[.]html$/, '');
         var default_avatar = opt.default_avatar;
-        if(!window.location.hostname.match(/[.]/)) {
-            default_avatar = 'mm';
-        }
-        else if(!default_avatar.match(/^\w+:/)) {
-            default_avatar = opt.app_base_url + default_avatar;
-        }
         opt.avatar_url_template = opt.avatar_url_template.replace(/%DEFAULT_URL%/, encodeURI(default_avatar));
 
         var $viewport = $('<div class="map-viewport" />');
