@@ -373,11 +373,6 @@
       <% } %>
       <p><label>Version:</label><%= meta.version %></p>
       <p><label>Released:</label><%= meta.date.replace(/T.*$/, '') %></p>
-      <% if(rating_stars) { %>
-        <div class="cpanratings"><div class="stars s<%= rating_stars %>"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>" title="Read reviews and rate this module on cpanratings.perl.org"><%= rating_count %>&nbsp;review<%= rating_count > 1 ? 's' : '' %></a>)</div>
-      <% } else { %>
-        <div class="cpanratings"><div class="stars s0"></div> (<a href="http://cpanratings.perl.org/dist/<%= meta.distribution %>" title="Rate this module on cpanratings.perl.org">not&nbsp;rated</a>)</div>
-      <% } %>
       <p class="changes-link" title="Display distribution change history">Change log</p>
       <p><a href="https://metacpan.org/release/<%= meta.distribution %>" title="View this distribution on metacpan.org">Distribution contents</a>
       (<a href="https://metacpan.org/source/<%= meta.author %>/<%= meta.name %>" title="Browse the raw files on metacpan.org">raw</a>)</p>
