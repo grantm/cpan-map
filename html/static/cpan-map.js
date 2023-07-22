@@ -1625,8 +1625,8 @@
         var $ul = $('<ul />').css({
             'left': parseInt($viewport.width(), 10) - 150
         });
-        var hovering = false;
-        var paused   = false;
+        var paused  = true;
+        var blocked = false;
         for(var i = 0; i < items.length; i++) {
             if(i > 30) { continue; }
             var distro = items[i];
@@ -1641,18 +1641,28 @@
             );
         }
         $ul.append( $('<li>. . . . . . . . .</li>') );
+        var $pause_play_button = $('<button class="ticker-play paused" />')
+            .click(function() {
+                $el.trigger(
+                    $pause_play_button.hasClass('paused') ? 'ticker-play' : 'ticker-pause'
+                );
+            });
+
         var $ticker = $('<div class="uploads-ticker" />').append(
             $('<div class="mask" />'),
             $ul,
-            $('<label><a href="#/sights/recent-uploads">Recent Uploads:</a></label>'),
-            $('<div class="x">X</div>').click(function() {
+            $('<div class="ticker-title" />').append(
+                '<a href="#/sights/recent-uploads">Recent Uploads</a>',
+                $pause_play_button
+            ),
+            $('<div class="x">✕</div>').click(function() {
                 $(this).parent().remove();
             })
         );
         $viewport.append( $ticker );
 
-        function start_ticker () {
-            if(hovering || paused) { return; }
+        function tick_ticker () {
+            if(paused || blocked) { return; }
             var w = parseInt($ul.find('li').outerWidth(), 10);
             var x = parseInt($ul.css('left'), 10);
             var target = x > 0 ? 0 : (0 - w);
@@ -1663,16 +1673,39 @@
                     $ul.css({'left': 0});
                 }
                 paused = true;
-                setTimeout(function() { paused = false; start_ticker(); }, 2000);
+                setTimeout(function() { paused = false; tick_ticker(); }, 2000);
             });
         }
 
+        $el.on('ticker-play', function() {
+            paused = false;
+            tick_ticker();
+            $pause_play_button.removeClass('paused').addClass('playing');
+        });
+        $el.on('ticker-pause', function() {
+            paused = true;
+            $ul.stop(true);
+            $pause_play_button.removeClass('playing').addClass('paused');
+        });
+        $el.on('ticker-block', function() {
+            blocked = true;
+            $ul.stop(true);
+        });
+        $el.on('ticker-unblock', function() {
+            blocked = false;
+            tick_ticker();
+        });
+
         $ul.hover(
-            function() { hovering = true;  $(this).stop(true); },
-            function() { hovering = false; start_ticker(); }
+            function() { $el.trigger('ticker-block'); },
+            function() { $el.trigger('ticker-unblock'); },
         );
 
-        $ticker.animate({ bottom: 0 }, 700, start_ticker);
+        $ticker.animate(
+            { bottom: 0 },
+            700,
+            function() { $el.trigger('ticker-play'); }
+        );
     }
 
 

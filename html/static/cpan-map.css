@@ -19,6 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+body {
+  --icon-width: 12px;
+}
+
+
 * {
   padding: 0;
   margin: 0;
@@ -606,16 +611,45 @@ div#intro p.note {
   opacity: 0.9;
 }
 
-.cpan-map div.uploads-ticker label {
+.cpan-map div.uploads-ticker .ticker-title {
   position: absolute;
   top: 0;
   left: 0;
   background-color: #880000;
   color: #aaaaaa;
-  width: 150px;
-  padding: 2px;
-  text-align: center;
+  padding: 1px 0 1px 0.4em;
+  text-align: left;
   font-weight: bold;
+  white-space: nowrap;
+}
+
+.cpan-map .ticker-play {
+  vertical-align: top;
+  margin: 2px 8px;
+  background-color: transparent;
+  color: #aaaaaa;
+  width: var(--icon-width);
+  height: var(--icon-width);
+  box-sizing: border-box;
+  transition: border 200ms;
+  border-top: 0 solid transparent;
+  border-right: 0 solid transparent;
+  border-bottom: 0 solid transparent;
+  border-left: 0 solid transparent;
+}
+
+.cpan-map .ticker-play.paused {
+  border-top: calc(var(--icon-width) / 2) solid transparent;
+  border-right: 0 solid transparent;
+  border-bottom: calc(var(--icon-width) / 2) solid transparent;
+  border-left: var(--icon-width) solid #aaaaaa;
+}
+
+.cpan-map .ticker-play.playing {
+  border-top: 0 solid transparent;
+  border-right: calc(var(--icon-width) / 3) solid #aaaaaa;
+  border-bottom: 0 solid transparent;
+  border-left: calc(var(--icon-width) / 3) solid #aaaaaa;
 }
 
 .cpan-map div.uploads-ticker div.x {
@@ -629,7 +663,7 @@ div#intro p.note {
   cursor: pointer;
 }
 
-.cpan-map div.uploads-ticker label a {
+.cpan-map div.uploads-ticker .ticker-title a {
   color: #aaaaaa;
   font-weight: bold;
 }
