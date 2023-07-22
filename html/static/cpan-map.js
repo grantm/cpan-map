@@ -1247,9 +1247,6 @@
             if(maintainer.gravatar_id) {
                 maintainer.avatar_url = opt.avatar_url_template.replace(/%ID%/, maintainer.gravatar_id);
             }
-            else {
-                maintainer.avatar_url = opt.default_avatar;
-            }
         }
 
         function format_social_links(maintainer) {

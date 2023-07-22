@@ -363,9 +363,11 @@
           <p class="abstract" id="abstract-<%= dist_id %>">Retrieving abstract ...</p>
       <% } %>
       <p class="pod-link" title="Display module POD">Module documentation</p>
+      <div class="avatar"><a href="#/maint/<%= maintainer.id %>" title="View other distributions maintained by: <%= maintainer.id %> - <%= maintainer.name %>">
       <% if(maintainer.avatar_url) { %>
-      <div class="avatar"><a href="#/maint/<%= maintainer.id %>" title="View other distributions maintained by: <%= maintainer.id %> - <%= maintainer.name %>"><img src="<%= maintainer.avatar_url %>"></a></div>
+        <img src="<%= maintainer.avatar_url %>">
       <% } %>
+      </a></div>
       <% if(maintainer.name) { %>
       <p><label>Maintainer:</label><a href="#/maint/<%= maintainer.id %>" title="View other distributions maintained by: <%= maintainer.id %> - <%= maintainer.name %>"><%= maintainer.name %></a></p>
       <% } else { %>

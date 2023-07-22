@@ -726,7 +726,7 @@ div#intro p.note {
   margin: 4px 0 10px 0;
 }
 
-.cpan-map div.map-info-panel .info div.avatar {
+.cpan-map div.map-info-panel .info div.avatar a {
   float: right;
   margin-left: 4px;
   width: 80px;
