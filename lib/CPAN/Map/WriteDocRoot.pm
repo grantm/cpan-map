@@ -18,9 +18,9 @@ use IO::Compress::Gzip qw(gzip $GzipError);
 
 my %external_script = (
     'static/jquery-1.7.min.js'
-        => 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+        => '://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
     'static/jqueryui/1.8.16/ui/minified/jquery-ui.min.js'
-        => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
+        => '://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
 );
 
 has 'builder' => (
