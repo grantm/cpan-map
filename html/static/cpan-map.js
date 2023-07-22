@@ -692,12 +692,15 @@
         }
 
         function show_intro_dialog() {
+            var $el = $(opt.app_selector);
             var dlg_height = $(window).height() - 100;
             var dlg_width  = $(window).width()  - 100;
             if(dlg_width > 800) { dlg_width = 800; }
             $('#intro').dialog( "option", {
                 "height" : dlg_height,
-                "width"  : dlg_width
+                "width"  : dlg_width,
+                "open"   : function() { $el.trigger('ticker-block'); },
+                "close"  : function() { $el.trigger('ticker-unblock'); }
             }).dialog('open');
         }
 
@@ -862,6 +865,7 @@
         }
 
         function open_misc_dialog(max_width) {
+            var $el = $(opt.app_selector);
             if(!max_width) {
                 max_width = 800;
             }
@@ -870,7 +874,9 @@
             if(dlg_width > max_width) { dlg_width = max_width; }
             $('#misc-dialog').dialog( "option", {
                 "height" : dlg_height,
-                "width"  : dlg_width
+                "width"  : dlg_width,
+                "open"   : function() { $el.trigger('ticker-block'); },
+                "close"  : function() { $el.trigger('ticker-unblock'); }
             }).dialog('open');
         }
 
